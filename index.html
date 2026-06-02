@@ -1,0 +1,1151 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>島本善太 | Game Planner Portfolio</title>
+  <style>
+    :root {
+      --bg: #f5f7fb;
+      --surface: #ffffff;
+      --surface-2: #eef3ff;
+      --text: #1b2430;
+      --muted: #5f6b7a;
+      --line: #dbe3f0;
+      --accent: #2f6fed;
+      --accent-dark: #1d4fb6;
+      --shadow: 0 18px 40px rgba(31, 48, 78, 0.08);
+      --radius: 20px;
+      --max: 1120px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Segoe UI", "Hiragino Sans", "Yu Gothic UI", sans-serif;
+      color: var(--text);
+      background: linear-gradient(180deg, #f7f9fd 0%, #eef3fb 100%);
+      line-height: 1.7;
+    }
+
+    a {
+      color: #2f6fed;
+      text-decoration: underline;
+      font-weight: 600;
+      transition: color 0.2s ease, transform 0.2s ease;
+    }
+
+    a:hover {
+      color: #1d4fb6;
+      transform: translateY(-1px);
+    }
+
+    .button {
+      text-decoration: none;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    .container {
+      width: min(calc(100% - 32px), var(--max));
+      margin: 0 auto;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+      backdrop-filter: blur(12px);
+      background: rgba(245, 247, 251, 0.82);
+      border-bottom: 1px solid rgba(219, 227, 240, 0.9);
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 72px;
+      gap: 24px;
+    }
+
+    .brand {
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      font-size: 1rem;
+    }
+
+    .brand small {
+      display: block;
+      font-size: 0.76rem;
+      color: var(--muted);
+      font-weight: 600;
+      margin-top: 2px;
+    }
+
+    .nav {
+      display: flex;
+      gap: 18px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .nav a {
+      color: var(--muted);
+      font-weight: 600;
+      font-size: 0.95rem;
+      transition: color 0.2s ease;
+    }
+
+    .nav a:hover,
+    .nav a.active {
+      color: var(--accent);
+    }
+
+    .hero {
+      padding: 84px 0 56px;
+    }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.9fr;
+      gap: 28px;
+      align-items: stretch;
+    }
+
+    .hero-main,
+    .hero-side,
+    .card,
+    .work-detail,
+    .proposal-card,
+    .skill-card,
+    .contact-card {
+      background: var(--surface);
+      border: 1px solid rgba(219, 227, 240, 0.9);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .hero-main {
+      padding: 40px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--surface-2);
+      color: var(--accent-dark);
+      border: 1px solid #d6e3ff;
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 4vw, 3.8rem);
+      line-height: 1.15;
+      letter-spacing: -0.03em;
+    }
+
+    .hero-main p.lead {
+      color: var(--muted);
+      margin: 18px 0 0;
+      font-size: 1.05rem;
+      max-width: 52ch;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 28px;
+    }
+
+    .button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 14px 20px;
+      border-radius: 999px;
+      font-weight: 700;
+      border: 1px solid transparent;
+      transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+      cursor: pointer;
+    }
+
+    .button:hover {
+      transform: translateY(-1px);
+      background: var(--accent);
+      color: white;
+      box-shadow: 0 12px 24px rgba(47, 111, 237, 0.22);
+      border-color: var(--accent);
+    }
+
+    .button.primary {
+      background: white;
+      border-color: var(--line);
+      color: var(--text);
+    }
+
+    .button.secondary {
+      background: white;
+      border-color: var(--line);
+      color: var(--text);
+    }
+
+    .stats {
+      margin-top: 34px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .stat {
+      background: #f9fbff;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 1.5rem;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+
+    .stat span {
+      color: var(--muted);
+      font-size: 0.92rem;
+      font-weight: 600;
+    }
+
+    .stat--row {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .stat--row strong {
+      display: inline;
+      font-size: 1.1rem;
+      margin-bottom: 0;
+      white-space: nowrap;
+    }
+
+    .hero-side {
+      padding: 22px;
+      display: grid;
+      gap: 14px;
+      background: linear-gradient(180deg, #ffffff 0%, #f6f9ff 100%);
+    }
+
+    .preview {
+      border-radius: 18px;
+      padding: 20px;
+      min-height: 130px;
+      border: 1px solid var(--line);
+      background: linear-gradient(135deg, #2f6fed 0%, #6da3ff 100%);
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .preview::after {
+      content: "";
+      position: absolute;
+      right: -20px;
+      top: -18px;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.16);
+    }
+
+    .preview small {
+      display: block;
+      opacity: 0.85;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+
+    .preview strong {
+      font-size: 1.15rem;
+      display: block;
+      line-height: 1.4;
+      max-width: 18ch;
+    }
+
+    .preview p {
+      margin: 8px 0 0;
+      font-size: 0.92rem;
+      opacity: 0.94;
+    }
+
+    section {
+      padding: 28px 0;
+    }
+
+    .section-heading {
+      margin-bottom: 22px;
+    }
+
+    .section-heading .label {
+      color: var(--accent);
+      font-weight: 800;
+      font-size: 0.85rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .section-heading h2 {
+      margin: 8px 0 8px;
+      font-size: clamp(1.6rem, 3vw, 2.5rem);
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+    }
+
+    .section-heading p {
+      margin: 0;
+      color: var(--muted);
+      max-width: 60ch;
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 20px;
+    }
+
+    .card {
+      padding: 28px;
+    }
+
+    .card h3 {
+      margin: 0 0 14px;
+      font-size: 1.2rem;
+    }
+
+    .card p,
+    .card li {
+      color: var(--muted);
+    }
+
+    .info-list {
+      display: grid;
+      gap: 14px;
+      padding: 0;
+      margin: 0;
+      list-style: none;
+    }
+
+    .info-list li {
+      padding: 14px 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .info-list li:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+
+    .info-list strong {
+      display: block;
+      color: var(--text);
+      margin-bottom: 4px;
+      font-size: 0.96rem;
+    }
+
+    .works-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .work-detail {
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .work-thumb {
+      min-height: 220px;
+      padding: 24px;
+      background: linear-gradient(140deg, #19325f 0%, #356fd1 52%, #89b1ff 100%);
+      color: white;
+      position: relative;
+    }
+
+    .work-thumb::before {
+      content: "GAME";
+      position: absolute;
+      top: 18px;
+      right: 18px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.18em;
+      opacity: 0.88;
+    }
+
+    .work-thumb small {
+      display: inline-block;
+      padding: 6px 12px;
+      background: rgba(255,255,255,0.14);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 999px;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+
+    .work-thumb h3 {
+      margin: 0;
+      font-size: 1.5rem;
+      line-height: 1.2;
+      max-width: 12ch;
+    }
+
+    .work-thumb p {
+      margin: 12px 0 0;
+      color: rgba(255,255,255,0.88);
+      max-width: 26ch;
+      font-size: 0.95rem;
+    }
+
+    .work-body {
+      padding: 24px;
+    }
+
+    .meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 16px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #f2f6ff;
+      border: 1px solid #dbe6ff;
+      color: var(--accent-dark);
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .work-body h4 {
+      margin: 18px 0 8px;
+      font-size: 0.98rem;
+    }
+
+    .work-body p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .work-body ul {
+      margin: 10px 0 0;
+      padding-left: 18px;
+      color: var(--muted);
+    }
+
+    .play-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 4px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: #eef4ff;
+      border: 1px solid #cfe0ff;
+      color: #2f6fed;
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .play-link:hover {
+      background: #dfeaff;
+      color: #1d4fb6;
+    }
+
+    .proposal-grid,
+    .skills-grid,
+    .contact-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .proposal-card,
+    .skill-card,
+    .contact-card {
+      padding: 24px;
+    }
+
+    .proposal-card h3,
+    .skill-card h3,
+    .contact-card h3 {
+      margin-top: 0;
+      margin-bottom: 12px;
+      font-size: 1.14rem;
+    }
+
+    .proposal-card p,
+    .skill-card p,
+    .contact-card p {
+      color: var(--muted);
+      margin: 0;
+      font-size: 0.95rem;
+    }
+
+    .proposal-card ul,
+    .skill-card ul {
+      margin: 14px 0 0;
+      padding-left: 18px;
+      color: var(--muted);
+    }
+
+    .thinking-box {
+      padding: 28px;
+      background: linear-gradient(180deg, #ffffff 0%, #f4f8ff 100%);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .thinking-box ul {
+      margin: 0;
+      padding-left: 18px;
+      color: var(--muted);
+    }
+
+    .thinking-box li + li {
+      margin-top: 10px;
+    }
+
+    .site-footer {
+      padding: 30px 0 48px;
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+    }
+
+    @media (max-width: 980px) {
+      .hero-grid,
+      .about-grid,
+      .works-grid,
+      .proposal-grid,
+      .skills-grid,
+      .contact-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        padding-top: 56px;
+      }
+    }
+
+    @media (max-width: 720px) {
+      .header-inner {
+        min-height: auto;
+        padding: 14px 0;
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .nav {
+        gap: 12px 16px;
+      }
+
+      .hero-main,
+      .card,
+      .work-body,
+      .proposal-card,
+      .skill-card,
+      .contact-card,
+      .thinking-box {
+        padding: 20px;
+      }
+
+      .hero-main {
+        padding: 28px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="#top" class="brand">
+        島本善太
+        <small>Game Planner Portfolio</small>
+      </a>
+      <nav class="nav">
+        <a href="#about">About</a>
+        <a href="#works">Games</a>
+        <a href="#proposals">Proposals</a>
+        <a href="#specifications">Specifications</a>
+        <a href="#thinking">Planning</a>
+        <a href="#skills">Skills</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-main">
+          <div class="eyebrow">ゲームプランナー志望</div>
+          <h1>島本善太<br>Portfolio Site</h1>
+          <p class="lead">
+            遊びの面白さを言葉と設計で整理し、企画として形にしていくことを大切にしています。制作したゲームと企画書を通して、考え方と制作姿勢が伝わるポートフォリオをまとめました。
+          </p>
+          <div class="hero-actions">
+            <a class="button primary" href="#works">ゲーム作品を見る</a>
+            <a class="button secondary" href="#proposals">企画書を見る</a>
+            <a class="button secondary" href="#specifications">仕様書を見る</a>
+          </div>
+
+          <div class="stats">
+            <div class="stat">
+              <strong>4</strong>
+              <span>制作ゲーム</span>
+            </div>
+            <div class="stat">
+              <strong>3</strong>
+              <span>企画書</span>
+            </div><div class="stat">
+              <strong>3</strong>
+              <span>仕様書</span>
+            </div>
+            <div class="stat stat--row">
+              <strong>学生</strong>
+              <span>札幌デザイン＆テクノロジー専門学校</span>
+            </div>
+          </div>
+        </div>
+
+        <aside class="hero-side">
+          <div class="preview">
+            <small>Main Focus</small>
+            <strong>遊びの核を言語化し、体験として成立させる企画設計</strong>
+            <p>面白さの要点を整理し、プレイヤー行動を意識したルール設計を重視しています。</p>
+          </div>
+          <div class="preview" style="background: linear-gradient(135deg, #24344f 0%, #3d5f95 100%);">
+            <small>School</small>
+            <strong>札幌デザイン＆テクノロジー専門学校</strong>
+            <p>スーパーゲームクリエーター専攻で学びながら、ゲーム企画と制作に取り組んでいます。</p>
+          </div>
+          <div class="preview" style="background: linear-gradient(135deg, #1f6d67 0%, #4ca89d 100%);">
+            <small>Portfolio Theme</small>
+            <strong>作品だけでなく、企画意図と改善視点まで伝える</strong>
+            <p>採用担当者が読みやすい、整理された構成を意識しています。</p>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="about">
+      <div class="container">
+        <div class="section-heading">
+          <div class="label">About</div>
+          <h2>プロフィール</h2>
+          <p>ゲームプランナーとして、どのような視点で遊びを考え、何を大事にしているのかが伝わるようにまとめています。</p>
+        </div>
+
+        <div class="about-grid">
+          <div class="card">
+            <h3>自己紹介</h3>
+            <p>
+              島本善太です。札幌デザイン＆テクノロジー専門学校 スーパーゲームクリエーター専攻で学んでいます。ゲームプランナー志望として、プレイヤーが何を楽しいと感じるのかを考えながら、企画立案、ルール設計、ゲーム体験の整理に取り組んでいます。
+            </p>
+            <p>
+              制作では、面白そうなアイデアを出すだけでなく、それが実際の遊びとして成立するか、プレイヤーにどのような判断や感情を生むかを意識しています。作品制作や企画書作成を通して、考えたことを言語化し、相手に伝わる形にまとめる力を磨いています。
+            </p>
+          </div>
+
+          <div class="card">
+            <h3>基本情報</h3>
+            <ul class="info-list">
+              <li>
+                <strong>氏名</strong>
+                島本善太
+              </li>
+              <li>
+                <strong>学校・専攻</strong>
+                札幌デザイン＆テクノロジー専門学校<br>スーパーゲームクリエーター専攻
+              </li>
+              <li>
+                <strong>志望職種</strong>
+                ゲームプランナー
+              </li>
+              <li>
+                <strong>強み</strong>
+                企画意図の整理 / ルール設計 / 遊びの言語化 / 制作経験を踏まえた改善視点
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="works">
+      <div class="container">
+        <div class="section-heading">
+          <div class="label">Games</div>
+          <h2>制作したゲーム作品</h2>
+          <p>作品そのものだけでなく、どのような面白さを狙い、何を工夫したのかが分かるように整理しています。</p>
+        </div>
+
+        <div class="works-grid">
+          <article class="work-detail">
+            <div class="work-thumb">
+              <small>作品 01</small>
+              <h3>線のこちら側 / 向こう側</h3>
+              <p>境界線で世界を分けるパズルアクションゲーム。</p>
+            </div>
+            <div class="work-body">
+              <div class="meta">
+                <span class="tag">ジャンル：パズル</span>
+                <span class="tag">制作人数：4人</span>
+                <span class="tag">担当：企画 / タスク振り分け / 仕様整理 / レベル設計 / 雑用</span>
+              </div>
+              <h4>概要</h4>
+              <p>プレイヤーは自由に境界線を引くことができ、線を境に世界が分かれます。片側は重力あり、もう片側は無重力になります。境界線をうまく配置して、ゴールを目指すパズルアクションゲームです。</p>
+              <h4>企画意図</h4>
+              <p>重力の違いを利用することで、プレイヤーの空間認識と発想力を試すパズル体験を目指した。</p>
+              <h4>工夫した点</h4>
+              <ul>
+                <li>重力と無重力の切り替えによる思考性のあるパズル設計</li>
+                <li>線の引き方によって解法が変わる自由度</li>
+              </ul>
+              <h4>プレイURL</h4>
+              <p><a class="play-link" href="https://unityroom.com/games/kochiratomukou" target="_blank" rel="noopener noreferrer">ゲームを遊ぶ</a></p>
+            </div>
+          </article>
+
+          <article class="work-detail">
+            <div class="work-thumb" style="background: linear-gradient(140deg, #452565 0%, #6d43a9 55%, #b08cff 100%);">
+              <small>作品 02</small>
+              <h3>反転暗殺</h3>
+              <p>盤面反転を使ったステルスアクションゲーム。</p>
+            </div>
+            <div class="work-body">
+              <div class="meta">
+                <span class="tag">ジャンル：ステルスアクション</span>
+                <span class="tag">制作人数：4人</span>
+                <span class="tag">担当：企画 / タスク振り分け / 仕様整理 / レベル設計</span>
+              </div>
+              <h4>概要</h4>
+              <p>敵に見つかる前にすべてを終わらせるステルスゲーム。プレイヤーは盤面を反転しながら進み、敵の視界を避けて安全なルートとタイミングで標的を仕留める。反転によって安全地帯と危険地帯が入れ替わるため、行動前の判断が重要になる。</p>
+              <h4>企画意図</h4>
+              <p>状況が変化する中で最適な行動を考える、思考型ステルス体験を目指した。</p>
+              <h4>工夫した点</h4>
+              <ul>
+                <li>盤面反転によって安全と危険が入れ替わる構造</li>
+                <li>一手ごとの判断が重要になる設計</li>
+              </ul>
+              <h4>プレイURL</h4>
+              <p><a class="play-link" href="https://unityroom.com/games/hanntenn-ansatu" target="_blank" rel="noopener noreferrer">ゲームを遊ぶ</a></p>
+            </div>
+          </article>
+
+          <article class="work-detail">
+            <div class="work-thumb" style="background: linear-gradient(140deg, #284b37 0%, #2f8a63 56%, #89ddb8 100%);">
+              <small>作品 03</small>
+              <h3>てるてるウォーズ</h3>
+              <p>モード切替と多様な効果で守り抜くタワーディフェンス。</p>
+            </div>
+            <div class="work-body">
+              <div class="meta">
+                <span class="tag">ジャンル：タワーディフェンス</span>
+                <span class="tag">制作人数：4人</span>
+                <span class="tag">担当：企画 / タスク振り分け / 仕様整理 / レベル設計 / 素材集め / 雑用</span>
+              </div>
+              <h4>概要</h4>
+              <p>てるてる坊主には「通常」と「逆さ」の2つのモードがあり、それぞれ異なる性能を発揮。スロー・毒・スタン・ノックバックなど10種類の特殊能力を駆使して、制限時間まで耐えるタワーディフェンスゲーム。</p>
+              <h4>企画意図</h4>
+              <p>モード切替と複数の能力を組み合わせることで、戦略的に考えるタワーディフェンス体験を目指した。</p>
+              <h4>工夫した点</h4>
+              <ul>
+                <li>通常と逆さモードによる性能変化</li>
+                <li>複数の状態異常を組み合わせた戦略性</li>
+              </ul>
+              <h4>プレイURL</h4>
+              <p><a class="play-link" href="https://unityroom.com/games/teruteru-wars" target="_blank" rel="noopener noreferrer">ゲームを遊ぶ</a></p>
+            </div>
+          </article>
+
+          <article class="work-detail">
+            <div class="work-thumb" style="background: linear-gradient(140deg, #5b351b 0%, #bf6a32 56%, #ffd08a 100%); color: #fff;">
+              <small>作品 04</small>
+              <h3>V-Link Battle</h3>
+              <p>配信文化そのものを戦いに変える、Vtuber対戦アクション。</p>
+            </div>
+            <div class="work-body">
+              <div class="meta">
+                <span class="tag">ジャンル：3D対戦アクション</span>
+                <span class="tag">制作人数：8人</span>
+                <span class="tag">担当：企画 / タスク振り分け / 仕様整理 / システム設計 / 雑用</span>  
+              </div>
+              <h4>概要</h4>
+              <p>Vtuberをモチーフにした3D対戦アクションゲーム。通常攻撃やガードに加え、「アピール」によってボルテージを高めながら戦う独自システムを採用。コメントや通知ウィンドウなど、配信文化を取り入れたギミックによって他にはない対戦体験を目指しました。</p>
+              <h4>企画意図</h4>
+              <p>Vtuberの魅力である「視聴者との双方向コミュニケーション」を格闘ゲームに落とし込むことを目標に企画しました。勝敗だけでなく、観客を盛り上げる行動そのものを戦略にすることで、配信文化らしい駆け引きを生み出しています。</p>
+              <h4>工夫した点</h4>
+              <ul>
+                <li>アピールと攻撃を組み合わせた独自のボルテージシステムを設計</li>
+                <li>コメントや通知ウィンドウを戦闘ギミックとして活用</li>
+                <li>「魅せる行動」が強さにつながるルールを構築</li>
+                <li>配信文化と格闘ゲームを融合し、新しい対戦体験を目指した</li>
+              </ul>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="proposals">
+      <div class="container">
+        <div class="section-heading">
+          <div class="label">Proposals</div>
+          <h2>企画書</h2>
+          <p>ゲームのコンセプトや面白さ、プレイヤー体験をどのように設計したのかをまとめた資料です。PDFへのリンクやZIPファイルは、あとから差し替えできます。</p>
+        </div>
+
+        <div class="proposal-grid">
+          <article class="proposal-card">
+            <h3>線のこちら側 / 向こう側</h3>
+            <p>境界線によって重力が変化する世界を利用し、プレイヤーの発想力と空間認識を試すパズルゲーム企画。</p>
+            <ul>
+              <li>コンセプト：境界線によって世界を変化させる</li>
+              <li>ターゲット：思考型パズルが好きなプレイヤー</li>
+              <li>特徴：重力と無重力を使った空間操作</li>
+            </ul>
+            <p>
+              <a href="files/line-boundary-proposal.pdf" target="_blank" rel="noopener noreferrer">
+                企画書を見る
+              </a>
+            </p>
+            <p>
+              <a href="files/line-boundary-proposal.zip" download>
+                ZIPダウンロード
+              </a>
+            </p>
+          </article>
+
+          <article class="proposal-card">
+            <h3>反転暗殺</h3>
+            <p>盤面反転によって安全地帯と危険地帯が変化する、思考型ステルスアクションゲーム企画。</p>
+            <ul>
+              <li>コンセプト：反転で変化する状況判断</li>
+              <li>ターゲット：戦略性を重視するプレイヤー</li>
+              <li>特徴：一手ごとの判断が重要になる設計</li>
+            </ul>
+            <p>
+              <a href="files/hantenansatsu_proposal.pdf" target="_blank" rel="noopener noreferrer">
+                企画書を見る
+              </a>
+            </p>
+            <p>
+              <a href="files/hantenansatsu_proposal.zip" download>
+                ZIPダウンロード
+              </a>
+            </p>
+          </article>
+
+          <article class="proposal-card">
+            <h3>てるてるウォーズ</h3>
+            <p>モード切替と状態異常を組み合わせ、戦略的な配置と判断を重視したタワーディフェンス企画。</p>
+            <ul>
+              <li>コンセプト：状況に応じた戦略切替</li>
+              <li>ターゲット：戦略ゲーム好きなプレイヤー</li>
+              <li>特徴：通常・逆さモードによる役割変化</li>
+            </ul>
+            <p>
+              <a href="files/teruteruwars_proposal.pdf" target="_blank" rel="noopener noreferrer">
+                企画書を見る
+              </a>
+            </p>
+            <p>
+              <a href="files/teruteruwars_proposal.zip" download>
+                ZIPダウンロード
+              </a>
+            </p>
+          </article>
+
+          <article class="proposal-card">
+            <h3>V-Link Battle</h3>
+            <p>配信文化をテーマにしたVtuber同士の3D対戦アクションゲーム。アピールやコメントを活用してボルテージを高めながら戦い、観客を盛り上げつつ勝利を目指す。</p>
+            <ul>
+              <li>コンセプト：配信文化と格闘ゲームの融合</li>
+              <li>ターゲット：Vtuberや配信文化に興味があるプレイヤー</li>
+              <li>特徴：アピールやコメントを活用した独自のボルテージシステム</li>
+            </ul>
+            <p>
+              <a href="files/VLinkBattle.pdf" target="_blank" rel="noopener noreferrer">
+                企画書を見る
+              </a>
+            </p>
+            <p>
+              <a href="files/VLinkBattle.zip" download>
+                ZIPダウンロード
+              </a>
+            </p>
+          </article>
+          
+          <article class="proposal-card">
+            <h3>5分ダンジョン</h3>
+            <p>崩壊まで残り5分のダンジョンを探索し、限られた時間の中で強化を重ねながらボス討伐を目指す短時間ローグライクアクション企画。</p>
+            <ul>
+              <li>コンセプト：5分で味わう濃密なローグライク体験</li>
+              <li>ターゲット：ローグライクやハクスラが好きなプレイヤー</li>
+              <li>特徴：時間制限と成長要素の組み合わせによる緊張感</li>
+            </ul>
+            <p>
+              <a href="files/FiveMinuteDungeon.pdf" target="_blank" rel="noopener noreferrer">
+                企画書を見る
+              </a>
+            </p>
+            <p>
+              <a href="files/five_minute_dungeon.zip" download>
+                ZIPダウンロード
+              </a>
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="specifications">
+      <div class="container">
+        <div class="section-heading">
+          <div class="label">Specifications</div>
+          <h2>仕様書</h2>
+          <p>実際の制作に必要なルール、画面、システム、数値などを整理した資料です。企画書とは分けて掲載することで、企画力と設計力を別々に見せられます。</p>
+        </div>
+
+        <div class="proposal-grid">
+          <article class="proposal-card">
+            <h3>線のこちら側 / 向こう側 仕様書</h3>
+            <p>重力切替システムやステージ構造、プレイヤー挙動などを整理した仕様書。</p>
+            <ul>
+              <li>重力変更ルール</li>
+              <li>プレイヤー移動仕様</li>
+              <li>ステージギミック</li>
+              <li>UI設計</li>
+            </ul>
+            <p>
+              <a href="files/kochiratomukou_spec.pdf" target="_blank" rel="noopener noreferrer">
+                仕様書を見る
+              </a>
+            </p>
+            <p>
+              <a href="files/kochiratomukou_spec.zip" download>
+                ZIPダウンロード
+              </a>
+            </p>
+          </article>
+
+          <article class="proposal-card">
+            <h3>反転暗殺 仕様書</h3>
+            <p>盤面反転ルールや敵の視界、ステルス判定などを整理した仕様書。</p>
+            <ul>
+              <li>敵視界システム</li>
+              <li>盤面反転仕様</li>
+              <li>暗殺判定</li>
+              <li>ステージ設計</li>
+            </ul>
+            <p>
+              <a href="files/hantenansatsu_spec.pdf" target="_blank" rel="noopener noreferrer">
+                仕様書を見る
+              </a>
+            </p>
+            <p>
+              <a href="files/hantenansatsu_spec.zip" download>
+                ZIPダウンロード
+              </a>
+            </p>
+          </article>
+
+          <article class="proposal-card">
+            <h3>てるてるウォーズ 仕様書</h3>
+            <p>ユニット性能や状態異常、ウェーブ構成を整理した仕様書。</p>
+            <ul>
+              <li>通常 / 逆さモード</li>
+              <li>状態異常仕様</li>
+              <li>敵ウェーブ設計</li>
+              <li>UI・ゲームフロー</li>
+            </ul>
+            <p>
+              <a href="files/teruteruwars_spec.pdf" target="_blank" rel="noopener noreferrer">
+                仕様書を見る
+              </a>
+            </p>
+            <p>
+              <a href="files/teruteruwars_spec.zip" download>
+                ZIPダウンロード
+              </a>
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="thinking">
+      <div class="container">
+        <div class="section-heading">
+          <div class="label">Planning</div>
+          <h2>企画で意識していること</h2>
+          <p>アイデアを出すだけでなく、どのように遊びへ落とし込むかを大切にしています。</p>
+        </div>
+
+        <div class="thinking-box">
+          <ul>
+            <li>面白さを一言で説明できる企画にすること</li>
+            <li>プレイヤーが何を考え、どう行動するかを想定してルールを組むこと</li>
+            <li>新しさだけでなく、分かりやすさと遊びやすさを両立すること</li>
+            <li>テストプレイで得た気づきを企画や仕様に反映すること</li>
+            <li>企画意図を文章や資料として他者に伝えられる形にすること</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="skills">
+      <div class="container">
+        <div class="section-heading">
+          <div class="label">Skills</div>
+          <h2>スキル</h2>
+          <p>ゲームプランナー志望として活かしていきたいスキルを、企画・制作・資料作成の観点で整理しています。</p>
+        </div>
+
+        <div class="skills-grid">
+          <article class="skill-card">
+            <h3>企画・設計</h3>
+            <p>ゲームの遊びの核を考え、ルールや体験へ落とし込むためのスキルです。</p>
+            <ul>
+              <li>企画立案</li>
+              <li>ルール設計</li>
+              <li>レベルデザイン</li>
+              <li>仕様整理</li>
+            </ul>
+          </article>
+
+          <article class="skill-card">
+            <h3>制作ツール</h3>
+            <p>授業や制作を通して触れてきたツールを想定しています。実際に使えるものへ書き換えてください。</p>
+            <ul>
+              <li>Unity</li>
+              <li>Unreal Engine</li>
+              <li>Excel / Googleスプレッドシート</li>
+              <li>PowerPoint / Googleスライド</li>
+            </ul>
+          </article>
+
+          <article class="skill-card">
+            <h3>補助スキル</h3>
+            <p>プランナー業務を支える基礎的なスキルや、制作で活かせる知識です。</p>
+            <ul>
+              <li>文章作成・資料構成</li>
+              <li>チーム制作での共有</li>
+              <li>テストプレイからの改善提案</li>
+              <li>基本的なプログラム理解</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="contact">
+      <div class="container">
+        <div class="section-heading">
+          <div class="label">Contact</div>
+          <h2>連絡先</h2>
+          <p>メールアドレスやポートフォリオ提出先など、実際に使う情報へ差し替えてください。</p>
+        </div>
+
+        <div class="contact-grid">
+          <article class="contact-card">
+            <h3>Email</h3>
+            <p>shimachan.z@icloud.com</p>
+          </article>
+          <article class="contact-card">
+            <h3>GitHub / URL</h3>
+            <p><a href="https://github.com/kuon-haruto" target="_blank" rel="noopener noreferrer">https://github.com/kuon-haruto</a></p>
+          </article>
+          <article class="contact-card">
+            <h3>Message</h3>
+            <p>ここまでご覧いただきありがとうございます。作品や企画書、仕様書の詳細も必要に応じて提出できます。</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <div>© <span id="year"></span> 島本善太 Portfolio</div>
+      <div>Game Planner Portfolio Site</div>
+    </div>
+  </footer>
+
+  <script>
+    const year = document.getElementById('year');
+    if (year) {
+      year.textContent = new Date().getFullYear();
+    }
+
+    const navLinks = document.querySelectorAll('.nav a');
+    const sections = [...document.querySelectorAll('main section[id]')];
+
+    const setActiveLink = () => {
+      const scrollY = window.scrollY + 140;
+      let currentId = '';
+
+      for (const section of sections) {
+        if (scrollY >= section.offsetTop) {
+          currentId = section.id;
+        }
+      }
+
+      navLinks.forEach(link => {
+        link.classList.toggle('active', link.getAttribute('href') === `#${currentId}`);
+      });
+    };
+
+    window.addEventListener('scroll', setActiveLink);
+    window.addEventListener('load', setActiveLink);
+  </script>
+</body>
+</html>
