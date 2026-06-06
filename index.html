@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -274,7 +275,7 @@
       width: 120px;
       height: 120px;
       border-radius: 50%;
-      background: rgba(255,255,255,0.16);
+      background: rgba(255, 255, 255, 0.16);
     }
 
     .preview small {
@@ -405,8 +406,8 @@
     .work-thumb small {
       display: inline-block;
       padding: 6px 12px;
-      background: rgba(255,255,255,0.14);
-      border: 1px solid rgba(255,255,255,0.2);
+      background: rgba(255, 255, 255, 0.14);
+      border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: 999px;
       font-weight: 700;
       margin-bottom: 14px;
@@ -421,7 +422,7 @@
 
     .work-thumb p {
       margin: 12px 0 0;
-      color: rgba(255,255,255,0.88);
+      color: rgba(255, 255, 255, 0.88);
       max-width: 26ch;
       font-size: 0.95rem;
     }
@@ -485,6 +486,73 @@
       color: #1d4fb6;
     }
 
+
+    .featured-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .featured-card {
+      background: var(--surface);
+      border: 2px solid var(--accent);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .featured-head {
+      padding: 28px;
+      background: linear-gradient(140deg, #19325f 0%, #356fd1 52%, #89b1ff 100%);
+      color: white;
+      position: relative;
+    }
+
+    .featured-head small {
+      display: inline-block;
+      padding: 6px 12px;
+      background: rgba(255,255,255,0.14);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 999px;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+
+    .featured-head h3 {
+      margin: 0;
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
+      line-height: 1.2;
+    }
+
+    .featured-head p {
+      margin: 12px 0 0;
+      color: rgba(255,255,255,0.9);
+      max-width: 64ch;
+    }
+
+    .featured-body {
+      padding: 28px;
+    }
+
+    .achievement-box {
+      margin: 18px 0;
+      padding: 18px;
+      border-radius: 16px;
+      background: #f2f6ff;
+      border: 1px solid #dbe6ff;
+    }
+
+    .achievement-box h4 {
+      margin-top: 0;
+    }
+
+    .featured-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
     .proposal-grid,
     .skills-grid,
     .contact-grid {
@@ -536,8 +604,37 @@
       color: var(--muted);
     }
 
-    .thinking-box li + li {
+    .thinking-box li+li {
       margin-top: 10px;
+    }
+
+    .featured-work {
+      padding: 28px 0;
+    }
+
+    .featured-card {
+      background: var(--surface);
+      border: 2px solid var(--accent);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 32px;
+    }
+
+    .featured-card h4 {
+      margin: 18px 0 8px;
+      font-size: 0.98rem;
+    }
+
+    .featured-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    .featured-card ul {
+      margin: 10px 0 0;
+      padding-left: 18px;
+      color: var(--muted);
     }
 
     .site-footer {
@@ -556,10 +653,78 @@
     }
 
     @media (max-width: 980px) {
+
       .hero-grid,
       .about-grid,
       .works-grid,
-      .proposal-grid,
+  
+    .featured-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    .featured-card {
+      background: var(--surface);
+      border: 2px solid var(--accent);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .featured-head {
+      padding: 28px;
+      background: linear-gradient(140deg, #19325f 0%, #356fd1 52%, #89b1ff 100%);
+      color: white;
+      position: relative;
+    }
+
+    .featured-head small {
+      display: inline-block;
+      padding: 6px 12px;
+      background: rgba(255,255,255,0.14);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 999px;
+      font-weight: 700;
+      margin-bottom: 14px;
+    }
+
+    .featured-head h3 {
+      margin: 0;
+      font-size: clamp(1.6rem, 3vw, 2.4rem);
+      line-height: 1.2;
+    }
+
+    .featured-head p {
+      margin: 12px 0 0;
+      color: rgba(255,255,255,0.9);
+      max-width: 64ch;
+    }
+
+    .featured-body {
+      padding: 28px;
+    }
+
+    .achievement-box {
+      margin: 18px 0;
+      padding: 18px;
+      border-radius: 16px;
+      background: #f2f6ff;
+      border: 1px solid #dbe6ff;
+    }
+
+    .achievement-box h4 {
+      margin-top: 0;
+    }
+
+    .featured-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .proposal-grid,
       .skills-grid,
       .contact-grid {
         grid-template-columns: 1fr;
@@ -599,9 +764,11 @@
       .hero-main {
         padding: 28px 20px;
       }
+
     }
-  </style>
+</style>
 </head>
+
 <body>
   <header class="site-header">
     <div class="container header-inner">
@@ -611,6 +778,7 @@
       </a>
       <nav class="nav">
         <a href="#about">About</a>
+        <a href="#featured-works">Featured</a>
         <a href="#works">Games</a>
         <a href="#proposals">Proposals</a>
         <a href="#specifications">Specifications</a>
@@ -631,7 +799,8 @@
             遊びの面白さを言葉と設計で整理し、企画として形にしていくことを大切にしています。制作したゲームと企画書を通して、考え方と制作姿勢が伝わるポートフォリオをまとめました。
           </p>
           <div class="hero-actions">
-            <a class="button primary" href="#works">ゲーム作品を見る</a>
+            <a class="button primary" href="#featured-works">注目作品を見る</a>
+            <a class="button secondary" href="#works">ゲーム作品を見る</a>
             <a class="button secondary" href="#proposals">企画書を見る</a>
             <a class="button secondary" href="#specifications">仕様書を見る</a>
           </div>
@@ -644,7 +813,8 @@
             <div class="stat">
               <strong>3</strong>
               <span>企画書</span>
-            </div><div class="stat">
+            </div>
+            <div class="stat">
               <strong>3</strong>
               <span>仕様書</span>
             </div>
@@ -687,7 +857,8 @@
           <div class="card">
             <h3>自己紹介</h3>
             <p>
-              島本善太です。札幌デザイン＆テクノロジー専門学校 スーパーゲームクリエーター専攻で学んでいます。ゲームプランナー志望として、プレイヤーが何を楽しいと感じるのかを考えながら、企画立案、ルール設計、ゲーム体験の整理に取り組んでいます。
+              島本善太です。札幌デザイン＆テクノロジー専門学校
+              スーパーゲームクリエーター専攻で学んでいます。ゲームプランナー志望として、プレイヤーが何を楽しいと感じるのかを考えながら、企画立案、ルール設計、ゲーム体験の整理に取り組んでいます。
             </p>
             <p>
               制作では、面白そうなアイデアを出すだけでなく、それが実際の遊びとして成立するか、プレイヤーにどのような判断や感情を生むかを意識しています。作品制作や企画書作成を通して、考えたことを言語化し、相手に伝わる形にまとめる力を磨いています。
@@ -718,6 +889,124 @@
         </div>
       </div>
     </section>
+
+    <section id="featured-works">
+      <div class="container">
+        <div class="section-heading">
+          <div class="label">Featured</div>
+          <h2>注目作品</h2>
+          <p>特に見てほしい作品をまとめています。注目作品は今後増えても、このカードを追加するだけで対応できます。</p>
+        </div>
+
+        <div class="featured-grid">
+          <article class="featured-card">
+            <div class="featured-head">
+              <small>注目作品 01</small>
+              <h3>V-Link Battle</h3>
+              <p>配信文化そのものを戦いに変える、Vtuber対戦アクション。</p>
+            </div>
+
+            <div class="featured-body">
+              <div class="meta">
+                <span class="tag">ジャンル：3D対戦アクション</span>
+                <span class="tag">制作人数：8人</span>
+                <span class="tag">担当：企画 / タスク振り分け / 仕様整理 / システム設計 / 雑用</span>
+              </div>
+
+              <h4>概要</h4>
+              <p>
+                Vtuberをモチーフにした3D対戦アクションゲーム。通常攻撃やガードに加え、「アピール」によってボルテージを高めながら戦う独自システムを採用。コメントや通知ウィンドウなど、配信文化を取り入れたギミックによって他にはない対戦体験を目指しました。
+              </p>
+
+              <h4>企画意図</h4>
+              <p>
+                Vtuberの魅力である「視聴者との双方向コミュニケーション」を格闘ゲームに落とし込むことを目標に企画しました。勝敗だけでなく、観客を盛り上げる行動そのものを戦略にすることで、配信文化らしい駆け引きを生み出しています。
+              </p>
+
+              <h4>工夫した点</h4>
+              <ul>
+                <li>アピールと攻撃を組み合わせた独自のボルテージシステムを設計</li>
+                <li>コメントや通知ウィンドウを戦闘ギミックとして活用</li>
+                <li>「魅せる行動」が強さにつながるルールを構築</li>
+                <li>配信文化と格闘ゲームを融合し、新しい対戦体験を目指した</li>
+              </ul>
+
+              <div class="achievement-box">
+                <h4>注目理由・実績</h4>
+                <p>
+                  この作品は、企画としての独自性だけでなく、実績があるため注目作品として掲載しています。
+                  配信文化、Vtuber、対戦アクションを組み合わせた体験設計に取り組み、企画立案から仕様整理、システム設計まで関わりました。
+                </p>
+                <ul>
+                  <li>配信文化をゲームシステムへ落とし込んだ企画として制作</li>
+                  <li>チーム制作で企画・仕様整理・タスク振り分けを担当</li>
+                  <li>独自ギミックとしてアピール、コメント、通知ウィンドウの戦闘利用を設計</li>
+                </ul>
+              </div>
+
+              <h4>関連資料</h4>
+              <p>
+                <a href="files/VLinkBattle.pdf" target="_blank" rel="noopener noreferrer">
+                  企画書を見る
+                </a>
+              </p>
+              <p>
+                <a href="files/v-link-battle-spec.xlsx" target="_blank" rel="noopener noreferrer">
+                  仕様書を見る
+                </a>
+              </p>
+
+              <div class="featured-actions">
+                <a href="#works" class="button secondary">作品一覧を見る</a>
+                <a href="#proposals" class="button secondary">企画書一覧を見る</a>
+                <a href="#specifications" class="button secondary">仕様書一覧を見る</a>
+              </div>
+            </div>
+          </article>
+
+          <!--
+          注目作品を増やす場合は、この article をコピーして使ってください。
+
+          <article class="featured-card">
+            <div class="featured-head">
+              <small>注目作品 02</small>
+              <h3>作品タイトル</h3>
+              <p>作品の一言説明。</p>
+            </div>
+            <div class="featured-body">
+              <div class="meta">
+                <span class="tag">ジャンル：〇〇</span>
+                <span class="tag">制作人数：〇人</span>
+                <span class="tag">担当：〇〇</span>
+              </div>
+
+              <h4>概要</h4>
+              <p>作品概要を書く。</p>
+
+              <h4>企画意図</h4>
+              <p>なぜ作ったかを書く。</p>
+
+              <h4>工夫した点</h4>
+              <ul>
+                <li>工夫1</li>
+                <li>工夫2</li>
+              </ul>
+
+              <div class="achievement-box">
+                <h4>注目理由・実績</h4>
+                <p>なぜ注目作品なのか、どんな実績があるのかを書く。</p>
+              </div>
+
+              <h4>関連資料</h4>
+              <p><a href="files/example-proposal.pdf" target="_blank" rel="noopener noreferrer">企画書を見る</a></p>
+              <p><a href="files/example-spec.xlsx" target="_blank" rel="noopener noreferrer">仕様書を見る</a></p>
+            </div>
+          </article>
+          -->
+        </div>
+      </div>
+    </section>
+
 
     <section id="works">
       <div class="container">
@@ -750,7 +1039,8 @@
                 <li>線の引き方によって解法が変わる自由度</li>
               </ul>
               <h4>プレイURL</h4>
-              <p><a class="play-link" href="https://unityroom.com/games/kochiratomukou" target="_blank" rel="noopener noreferrer">ゲームを遊ぶ</a></p>
+              <p><a class="play-link" href="https://unityroom.com/games/kochiratomukou" target="_blank"
+                  rel="noopener noreferrer">ゲームを遊ぶ</a></p>
             </div>
           </article>
 
@@ -767,7 +1057,9 @@
                 <span class="tag">担当：企画 / タスク振り分け / 仕様整理 / レベル設計</span>
               </div>
               <h4>概要</h4>
-              <p>敵に見つかる前にすべてを終わらせるステルスゲーム。プレイヤーは盤面を反転しながら進み、敵の視界を避けて安全なルートとタイミングで標的を仕留める。反転によって安全地帯と危険地帯が入れ替わるため、行動前の判断が重要になる。</p>
+              <p>
+                敵に見つかる前にすべてを終わらせるステルスゲーム。プレイヤーは盤面を反転しながら進み、敵の視界を避けて安全なルートとタイミングで標的を仕留める。反転によって安全地帯と危険地帯が入れ替わるため、行動前の判断が重要になる。
+              </p>
               <h4>企画意図</h4>
               <p>状況が変化する中で最適な行動を考える、思考型ステルス体験を目指した。</p>
               <h4>工夫した点</h4>
@@ -776,7 +1068,8 @@
                 <li>一手ごとの判断が重要になる設計</li>
               </ul>
               <h4>プレイURL</h4>
-              <p><a class="play-link" href="https://unityroom.com/games/hanntenn-ansatu" target="_blank" rel="noopener noreferrer">ゲームを遊ぶ</a></p>
+              <p><a class="play-link" href="https://unityroom.com/games/hanntenn-ansatu" target="_blank"
+                  rel="noopener noreferrer">ゲームを遊ぶ</a></p>
             </div>
           </article>
 
@@ -802,33 +1095,8 @@
                 <li>複数の状態異常を組み合わせた戦略性</li>
               </ul>
               <h4>プレイURL</h4>
-              <p><a class="play-link" href="https://unityroom.com/games/teruteru-wars" target="_blank" rel="noopener noreferrer">ゲームを遊ぶ</a></p>
-            </div>
-          </article>
-
-          <article class="work-detail">
-            <div class="work-thumb" style="background: linear-gradient(140deg, #5b351b 0%, #bf6a32 56%, #ffd08a 100%); color: #fff;">
-              <small>作品 04</small>
-              <h3>V-Link Battle</h3>
-              <p>配信文化そのものを戦いに変える、Vtuber対戦アクション。</p>
-            </div>
-            <div class="work-body">
-              <div class="meta">
-                <span class="tag">ジャンル：3D対戦アクション</span>
-                <span class="tag">制作人数：8人</span>
-                <span class="tag">担当：企画 / タスク振り分け / 仕様整理 / システム設計 / 雑用</span>  
-              </div>
-              <h4>概要</h4>
-              <p>Vtuberをモチーフにした3D対戦アクションゲーム。通常攻撃やガードに加え、「アピール」によってボルテージを高めながら戦う独自システムを採用。コメントや通知ウィンドウなど、配信文化を取り入れたギミックによって他にはない対戦体験を目指しました。</p>
-              <h4>企画意図</h4>
-              <p>Vtuberの魅力である「視聴者との双方向コミュニケーション」を格闘ゲームに落とし込むことを目標に企画しました。勝敗だけでなく、観客を盛り上げる行動そのものを戦略にすることで、配信文化らしい駆け引きを生み出しています。</p>
-              <h4>工夫した点</h4>
-              <ul>
-                <li>アピールと攻撃を組み合わせた独自のボルテージシステムを設計</li>
-                <li>コメントや通知ウィンドウを戦闘ギミックとして活用</li>
-                <li>「魅せる行動」が強さにつながるルールを構築</li>
-                <li>配信文化と格闘ゲームを融合し、新しい対戦体験を目指した</li>
-              </ul>
+              <p><a class="play-link" href="https://unityroom.com/games/teruteru-wars" target="_blank"
+                  rel="noopener noreferrer">ゲームを遊ぶ</a></p>
             </div>
           </article>
         </div>
@@ -923,7 +1191,7 @@
               </a>
             </p>
           </article>
-          
+
           <article class="proposal-card">
             <h3>5分ダンジョン</h3>
             <p>崩壊まで残り5分のダンジョンを探索し、限られた時間の中で強化を重ねながらボス討伐を目指す短時間ローグライクアクション企画。</p>
@@ -1102,7 +1370,8 @@
           </article>
           <article class="contact-card">
             <h3>GitHub / URL</h3>
-            <p><a href="https://github.com/kuon-haruto" target="_blank" rel="noopener noreferrer">https://github.com/kuon-haruto</a></p>
+            <p><a href="https://github.com/kuon-haruto" target="_blank"
+                rel="noopener noreferrer">https://github.com/kuon-haruto</a></p>
           </article>
           <article class="contact-card">
             <h3>Message</h3>
@@ -1148,4 +1417,5 @@
     window.addEventListener('load', setActiveLink);
   </script>
 </body>
+
 </html>
