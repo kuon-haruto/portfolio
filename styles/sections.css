@@ -1,0 +1,77 @@
+section {
+  padding: 28px 0;
+}
+
+.section-heading {
+  margin-bottom: 22px;
+}
+
+.section-heading .label {
+  color: var(--accent);
+  font-weight: 800;
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.section-heading h2 {
+  margin: 8px 0 8px;
+  font-size: clamp(1.6rem, 3vw, 2.5rem);
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+.section-heading p {
+  margin: 0;
+  color: var(--muted);
+  max-width: 60ch;
+}
+
+.about-grid {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 20px;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid rgba(219, 227, 240, 0.9);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 28px;
+}
+
+.card h3 {
+  margin: 0 0 14px;
+  font-size: 1.2rem;
+}
+
+.card p,
+.card li {
+  color: var(--muted);
+}
+
+.info-list {
+  display: grid;
+  gap: 14px;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.info-list li {
+  padding: 14px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.info-list li:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.info-list strong {
+  display: block;
+  color: var(--text);
+  margin-bottom: 4px;
+  font-size: 0.96rem;
+}
