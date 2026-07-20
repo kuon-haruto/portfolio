@@ -4,6 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0c1226" />
   <title>島本善太 | Game Planner Portfolio</title>
   <link rel="stylesheet" href="styles/main.css" />
   <link rel="stylesheet" href="styles/header.css" />
@@ -11,10 +12,23 @@
   <link rel="stylesheet" href="styles/sections.css" />
   <link rel="stylesheet" href="styles/components.css" />
   <link rel="stylesheet" href="styles/grids.css" />
+  <link rel="stylesheet" href="styles/effects.css" />
   <link rel="stylesheet" href="styles/responsive.css" />
 </head>
 
 <body>
+  <!-- タイトル画面（クリックまたはキー入力でポートフォリオが開く） -->
+  <div id="title-screen" role="button" tabindex="0" aria-label="クリックしてポートフォリオを開く">
+    <div class="title-inner">
+      <small class="title-label">GAME PLANNER PORTFOLIO</small>
+      <div class="title-name">島本善太</div>
+      <div class="title-sub">Portfolio Site</div>
+      <div class="title-press">▶ PRESS START</div>
+      <div class="title-hint">クリック / 任意のキーでスタート</div>
+    </div>
+    <div class="title-foot">© 島本善太 Game Planner Portfolio</div>
+  </div>
+
   <header class="site-header">
     <div class="container header-inner">
       <a href="#top" class="brand">
@@ -76,7 +90,7 @@
             <strong>遊びの核を言語化し、ゲームとして実装させる企画設計</strong>
             <p>面白さの本質を理解し、レイヤー構造を検証したルール設計を施しています。</p>
           </div>
-          <div class="preview" style="background: linear-gradient(135deg, #24344f 0%, #3d5f95 100%);">
+          <div class="preview" style="background: linear-gradient(135deg, #2f63c9 0%, #5b8bee 100%);">
             <small>School</small>
             <strong>札幌デザイン＆テクノロジー専門学校</strong>
             <p>スーパーゲームクリエーター専攻で学びながら、ゲーム企画と制作に取り組んでいます。</p>
@@ -119,7 +133,11 @@
               </li>
               <li>
                 <strong>学校・専攻</strong>
-                札幌デザイン＆テクノロジー専門学校<br>スーパーゲームクリエーター専攻
+                札幌デザイン＆テクノロジー専門学校<br>スーパーゲームクリエーター専攻（4年制）<br>2024年入学　2028年卒業予定
+              </li>
+              <li>
+                <strong>受賞歴</strong>
+                <br>神ゲーエボリューション2025年　神エボ1次審査通過
               </li>
               <li>
                 <strong>志望職種</strong>
@@ -301,7 +319,7 @@
           </article>
 
           <article class="work-detail">
-            <div class="work-thumb" style="background: linear-gradient(140deg, #452565 0%, #6d43a9 55%, #b08cff 100%);">
+            <div class="work-thumb" style="background: linear-gradient(140deg, #6d43a9 0%, #9a6fe0 55%, #c9aaff 100%);">
               <small>作品 02</small>
               <h3>反転暗殺</h3>
               <p>盤面反転を使ったステルスアクションゲーム。</p>
@@ -330,7 +348,7 @@
           </article>
 
           <article class="work-detail">
-            <div class="work-thumb" style="background: linear-gradient(140deg, #284b37 0%, #2f8a63 56%, #89ddb8 100%);">
+            <div class="work-thumb" style="background: linear-gradient(140deg, #1f8a68 0%, #3cb98a 56%, #8fe3bd 100%);">
               <small>作品 03</small>
               <h3>てるてるウォーズ</h3>
               <p>モード切替と多様な効果で守り抜くタワーディフェンス。</p>
@@ -681,15 +699,37 @@
           </article>
 
           <article class="skill-card">
-            <h3>制作ツール</h3>
-            <p>授業や制作を通して触れてきたツールを想定しています。実際に使えるものへ書き換えてください。</p>
-            <ul>
-              <li>Unity</li>
-              <li>Unreal Engine</li>
-              <li>Excel / Googleスプレッドシート</li>
-              <li>PowerPoint / Googleスライド</li>
-              <li>Visual Studio Code</li>
-              <li>Visual Studio 2022</li>
+            <h3>制作ツール・経歴</h3>
+            <p>3年間の学習と制作を通じて習得したツールと経験。</p>
+            <ul class="tool-bars">
+              <li>
+                <div class="tool-head"><span>Unity</span><small>2年</small></div>
+                <div class="tool-bar"><span style="--w: 66%"></span></div>
+              </li>
+              <li>
+                <div class="tool-head"><span>Visual Studio Code</span><small>2年</small></div>
+                <div class="tool-bar"><span style="--w: 66%"></span></div>
+              </li>
+              <li>
+                <div class="tool-head"><span>Git</span><small>2年</small></div>
+                <div class="tool-bar"><span style="--w: 66%"></span></div>
+              </li>
+              <li>
+                <div class="tool-head"><span>PowerPoint</span><small>2年</small></div>
+                <div class="tool-bar"><span style="--w: 66%"></span></div>
+              </li>
+              <li>
+                <div class="tool-head"><span>Excel / Googleスプレッドシート</span><small>2年</small></div>
+                <div class="tool-bar"><span style="--w: 66%"></span></div>
+              </li>
+              <li>
+                <div class="tool-head"><span>Blender</span><small>1年</small></div>
+                <div class="tool-bar"><span style="--w: 33%"></span></div>
+              </li>
+              <li>
+                <div class="tool-head"><span>Unreal Engine 5</span><small>3か月</small></div>
+                <div class="tool-bar"><span style="--w: 10%"></span></div>
+              </li>
             </ul>
           </article>
 
@@ -741,6 +781,7 @@
     </div>
   </footer>
 
+  <script src="scripts/profile-data.js"></script>
   <script src="scripts/main.js"></script>
 </body>
 

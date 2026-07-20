@@ -1,0 +1,737 @@
+/* ================================
+   目を引く仕掛け：実績解除トースト & 案内キャラ
+   （DOMは scripts/main.js が生成する。位置はJSがinlineで設定し、
+     data-corner属性は吹き出し・メニューの向きの制御に使う）
+   ================================ */
+
+/* ---- タイトル画面 ---- */
+#title-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background-color: #0c1226;
+  background-image:
+    radial-gradient(900px 560px at 80% 0%, rgba(63, 140, 255, 0.18), transparent 62%),
+    radial-gradient(820px 560px at 10% 100%, rgba(47, 212, 181, 0.12), transparent 60%),
+    linear-gradient(rgba(111, 158, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(111, 158, 255, 0.06) 1px, transparent 1px);
+  background-size: auto, auto, 48px 48px, 48px 48px;
+  transition: opacity 0.5s ease;
+}
+
+#title-screen.closing {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* タイトル画面表示中は後ろのページをスクロールさせない */
+body.title-lock {
+  overflow: hidden;
+}
+
+.title-inner {
+  text-align: center;
+  animation: titleIn 0.9s ease both;
+}
+
+.title-label {
+  display: block;
+  color: var(--blue-bright);
+  font-weight: 800;
+  font-size: 0.85rem;
+  letter-spacing: 0.34em;
+  margin-bottom: 18px;
+}
+
+.title-name {
+  font-size: clamp(2.6rem, 9vw, 5.2rem);
+  font-weight: 800;
+  line-height: 1.1;
+  color: #ffffff;
+  letter-spacing: 0.04em;
+  text-shadow: 0 0 40px rgba(63, 140, 255, 0.55);
+}
+
+.title-sub {
+  margin-top: 10px;
+  color: var(--muted);
+  font-weight: 700;
+  font-size: clamp(1rem, 3vw, 1.4rem);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.title-press {
+  display: inline-block;
+  margin-top: 48px;
+  padding: 12px 28px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-ui);
+  background: rgba(63, 140, 255, 0.1);
+  color: #ffffff;
+  font-weight: 800;
+  letter-spacing: 0.26em;
+  animation: titlePulse 1.6s ease-in-out infinite;
+}
+
+.title-hint {
+  margin-top: 14px;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.title-foot {
+  position: absolute;
+  bottom: 24px;
+  color: var(--muted);
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+}
+
+@keyframes titleIn {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes titlePulse {
+  0%,
+  100% {
+    opacity: 1;
+    box-shadow: 0 0 18px rgba(63, 140, 255, 0.35);
+  }
+  50% {
+    opacity: 0.55;
+    box-shadow: 0 0 6px rgba(63, 140, 255, 0.15);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .title-inner {
+    animation: none;
+  }
+
+  .title-press {
+    animation: none;
+  }
+}
+
+/* ---- 実績解除トースト ---- */
+.toast-stack {
+  position: fixed;
+  top: 84px;
+  right: 18px;
+  z-index: 1200;
+  display: grid;
+  gap: 10px;
+  pointer-events: none;
+}
+
+.toast {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 260px;
+  max-width: 320px;
+  padding: 12px 16px;
+  background: linear-gradient(180deg, var(--surface-2) 0%, var(--surface) 100%);
+  border: 1px solid rgba(47, 212, 181, 0.55);
+  border-radius: 10px;
+  box-shadow: 0 12px 30px rgba(3, 7, 20, 0.5), 0 0 20px rgba(47, 212, 181, 0.25);
+  animation: toastIn 0.35s cubic-bezier(0.2, 0.9, 0.3, 1.15), toastOut 0.4s ease 3.6s forwards;
+}
+
+.toast-icon {
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(47, 212, 181, 0.14);
+  border: 1px solid rgba(47, 212, 181, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.05rem;
+}
+
+.toast-text small {
+  display: block;
+  color: var(--teal);
+  font-weight: 800;
+  font-size: 0.66rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.toast-text strong {
+  color: #ffffff;
+  font-size: 0.92rem;
+}
+
+/* 「制作中」のお知らせトースト（黄色系） */
+.toast--notice {
+  border-color: rgba(255, 193, 87, 0.55);
+  box-shadow: 0 12px 30px rgba(3, 7, 20, 0.5), 0 0 20px rgba(255, 193, 87, 0.2);
+}
+
+.toast--notice .toast-icon {
+  background: rgba(255, 193, 87, 0.14);
+  border-color: rgba(255, 193, 87, 0.5);
+}
+
+.toast--notice .toast-text small {
+  color: #ffc157;
+}
+
+/* まだ用意できていない資料リンクの見た目 */
+a[data-missing] {
+  opacity: 0.65;
+}
+
+a[data-missing]::after {
+  content: "（制作中）";
+  font-size: 0.85em;
+  opacity: 0.8;
+}
+
+@keyframes toastIn {
+  from {
+    transform: translateX(120%);
+    opacity: 0;
+  }
+  to {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+@keyframes toastOut {
+  to {
+    transform: translateX(120%);
+    opacity: 0;
+  }
+}
+
+/* ---- 案内キャラ（ナビ） ---- */
+.guide {
+  position: fixed;
+  z-index: 1100;
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+/* 右側にいるときはキャラと吹き出しを左右反転 */
+.guide[data-corner="br"],
+.guide[data-corner="tr"] {
+  flex-direction: row-reverse;
+}
+
+/* 上側にいるときは上揃え */
+.guide[data-corner="tl"],
+.guide[data-corner="tr"] {
+  align-items: flex-start;
+}
+
+/* キャラ本体（クリックでメニュー開閉） */
+.guide-char-btn {
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  line-height: 0;
+}
+
+.guide-char-btn:focus-visible {
+  outline: 2px solid var(--blue-bright);
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+
+/* サイズはスライダーで --guide-size が変わる（viewBox比率 64:84） */
+.guide-char {
+  width: var(--guide-size, 60px);
+  height: calc(var(--guide-size, 60px) * 1.31);
+  filter: drop-shadow(0 6px 14px rgba(63, 140, 255, 0.4));
+  animation: guideBob 3.2s ease-in-out infinite;
+}
+
+/* まばたき */
+.guide-eye {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: guideBlink 4.5s infinite;
+}
+
+.guide-bubble {
+  position: relative;
+  width: var(--bubble-w, 280px);
+  max-width: calc(100vw - 130px);
+  background: linear-gradient(180deg, var(--surface-2) 0%, var(--surface) 100%);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  border-bottom-left-radius: 3px;
+  padding: 10px 32px 10px 14px;
+  box-shadow: var(--shadow);
+  margin-bottom: 6px;
+}
+
+.guide[data-corner="br"] .guide-bubble {
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 3px;
+}
+
+.guide[data-corner="tl"] .guide-bubble {
+  border-bottom-left-radius: 12px;
+  border-top-left-radius: 3px;
+  margin-bottom: 0;
+  margin-top: 6px;
+}
+
+.guide[data-corner="tr"] .guide-bubble {
+  border-bottom-left-radius: 12px;
+  border-top-right-radius: 3px;
+  margin-bottom: 0;
+  margin-top: 6px;
+}
+
+/* 吹き出しのしっぽ */
+.guide-bubble::after {
+  content: "";
+  position: absolute;
+  left: -6px;
+  bottom: 14px;
+  width: 11px;
+  height: 11px;
+  background: var(--surface);
+  border-left: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  transform: rotate(45deg);
+}
+
+.guide[data-corner="br"] .guide-bubble::after,
+.guide[data-corner="tr"] .guide-bubble::after {
+  left: auto;
+  right: -6px;
+  border-left: none;
+  border-bottom: none;
+  border-right: 1px solid var(--line);
+  border-top: 1px solid var(--line);
+}
+
+.guide[data-corner="tl"] .guide-bubble::after,
+.guide[data-corner="tr"] .guide-bubble::after {
+  bottom: auto;
+  top: 16px;
+}
+
+.guide-bubble p {
+  margin: 0;
+  font-size: 0.84rem;
+  line-height: 1.55;
+  color: var(--text);
+}
+
+/* メッセージが切り替わるときに小さくポップ */
+.guide-bubble p.pop {
+  animation: guidePop 0.3s ease;
+}
+
+.guide-close {
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.guide-close:hover {
+  color: #ffffff;
+  background: rgba(111, 176, 255, 0.15);
+}
+
+/* ---- 質問チャット ----
+   ドラッグで決めた高さ（--chat-h）をそのまま確保する */
+.guide-chat {
+  margin-top: 10px;
+  border-top: 1px solid var(--line-soft);
+  padding-top: 10px;
+  height: var(--chat-h, 150px);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.guide-chat[hidden] {
+  display: none;
+}
+
+.guide-chat-log {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  display: grid;
+  align-content: start;
+  gap: 6px;
+}
+
+.guide-chat-log[hidden] {
+  display: none;
+}
+
+.chat-msg {
+  padding: 6px 10px;
+  border-radius: 9px;
+  font-size: 0.8rem;
+  line-height: 1.55;
+  color: var(--text);
+  overflow-wrap: break-word;
+}
+
+.chat-msg--user {
+  justify-self: end;
+  max-width: 90%;
+  background: rgba(63, 140, 255, 0.16);
+  border: 1px solid rgba(63, 140, 255, 0.35);
+  border-bottom-right-radius: 3px;
+}
+
+.chat-msg--navi {
+  justify-self: start;
+  max-width: 95%;
+  background: rgba(12, 18, 38, 0.6);
+  border: 1px solid var(--line-soft);
+  border-bottom-left-radius: 3px;
+}
+
+/* 質問の選択肢一覧（あふれたらスクロール） */
+.guide-chips {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-content: flex-start;
+  overflow-y: auto;
+}
+
+/* ---- 吹き出しのサイズ変更ハンドル（Windowsのウィンドウ風） ----
+   フチにカーソルを合わせると矢印カーソルになり、ドラッグで変更できる */
+.guide-resize {
+  position: absolute;
+  z-index: 2;
+  border-radius: 4px;
+  transition: background 0.15s ease;
+}
+
+.guide-resize:hover {
+  background: rgba(63, 140, 255, 0.45);
+}
+
+/* 幅の変更：外側の縦フチ（既定＝左下配置では右フチ） */
+.guide-resize-x {
+  top: 8px;
+  bottom: 8px;
+  right: -4px;
+  width: 8px;
+  cursor: ew-resize;
+}
+
+/* 高さの変更：外側の横フチ（既定＝下側配置では上フチ） */
+.guide-resize-y {
+  left: 8px;
+  right: 8px;
+  top: -4px;
+  height: 8px;
+  cursor: ns-resize;
+}
+
+/* 角：幅と高さを同時に変更 */
+.guide-resize-xy {
+  top: -5px;
+  right: -5px;
+  width: 14px;
+  height: 14px;
+  cursor: nesw-resize;
+}
+
+/* 右側配置のときは縦フチが左になる */
+.guide[data-corner="br"] .guide-resize-x,
+.guide[data-corner="tr"] .guide-resize-x {
+  right: auto;
+  left: -4px;
+}
+
+/* 上側配置のときは横フチが下になる */
+.guide[data-corner="tl"] .guide-resize-y,
+.guide[data-corner="tr"] .guide-resize-y {
+  top: auto;
+  bottom: -4px;
+}
+
+/* 角の位置とカーソルの向きを配置ごとに調整 */
+.guide[data-corner="br"] .guide-resize-xy {
+  right: auto;
+  left: -5px;
+  cursor: nwse-resize;
+}
+
+.guide[data-corner="tl"] .guide-resize-xy {
+  top: auto;
+  bottom: -5px;
+  cursor: nwse-resize;
+}
+
+.guide[data-corner="tr"] .guide-resize-xy {
+  top: auto;
+  bottom: -5px;
+  right: auto;
+  left: -5px;
+  cursor: nesw-resize;
+}
+
+/* 質問コーナーが閉じているときは高さ変更ハンドルを隠す */
+.guide:not(.chat-open) .guide-resize-y,
+.guide:not(.chat-open) .guide-resize-xy {
+  display: none;
+}
+
+/* ドラッグ中は文字選択を防ぐ */
+body.guide-resizing,
+body.guide-resizing * {
+  user-select: none;
+}
+
+.guide-chips button {
+  font-size: 0.74rem;
+  font-weight: 600;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: rgba(63, 140, 255, 0.12);
+  border: 1px solid var(--line);
+  color: var(--blue-bright);
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+}
+
+.guide-chips button:hover {
+  border-color: var(--blue-bright);
+  color: #ffffff;
+}
+
+/* すでに聞いた質問は少し薄くする */
+.guide-chips button.asked {
+  opacity: 0.45;
+}
+
+/* ---- ナビの設定メニュー ----
+   キャラのすぐ上（上側配置のときはすぐ下）に開く。
+   吹き出しの高さに影響されないよう、キャラの高さを基準に配置する */
+.guide-menu {
+  display: none;
+  position: absolute;
+  /* 吹き出しやサイズ変更ハンドルより必ず手前に出す */
+  z-index: 10;
+  bottom: calc(var(--guide-size, 60px) * 1.31 + 14px);
+  left: 0;
+  min-width: 180px;
+  background: linear-gradient(180deg, var(--surface-2) 0%, var(--surface) 100%);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 6px;
+  box-shadow: var(--shadow), 0 0 18px rgba(63, 140, 255, 0.15);
+}
+
+.guide.menu-open .guide-menu {
+  display: grid;
+  gap: 2px;
+}
+
+.guide[data-corner="br"] .guide-menu,
+.guide[data-corner="tr"] .guide-menu {
+  left: auto;
+  right: 0;
+}
+
+.guide[data-corner="tl"] .guide-menu,
+.guide[data-corner="tr"] .guide-menu {
+  bottom: auto;
+  top: calc(var(--guide-size, 60px) * 1.31 + 14px);
+}
+
+.guide-menu button {
+  text-align: left;
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 8px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.guide-menu button:hover {
+  background: rgba(63, 140, 255, 0.15);
+  color: #ffffff;
+}
+
+/* サイズ調整スライダー（「サイズ調整」を押すと開く） */
+.guide-size-row {
+  display: none;
+  padding: 2px 10px 8px;
+}
+
+.guide-size-row.show {
+  display: block;
+}
+
+.guide-size-row input {
+  width: 100%;
+  accent-color: var(--blue);
+  cursor: pointer;
+}
+
+/* ---- 場所移動モードの案内 ---- */
+.guide-prompt {
+  display: none;
+  position: fixed;
+  top: 90px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1300;
+  max-width: calc(100% - 32px);
+  padding: 12px 20px;
+  background: linear-gradient(180deg, var(--surface-2) 0%, var(--surface) 100%);
+  border: 1px solid rgba(47, 212, 181, 0.55);
+  border-radius: 10px;
+  box-shadow: 0 12px 30px rgba(3, 7, 20, 0.5), 0 0 20px rgba(47, 212, 181, 0.25);
+  color: var(--text);
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.guide-prompt.show {
+  display: block;
+}
+
+body.guide-placing,
+body.guide-placing * {
+  cursor: crosshair !important;
+}
+
+/* ---- 非表示中の再表示ボタン ---- */
+.guide-restore {
+  position: fixed;
+  z-index: 1100;
+  width: 46px;
+  height: 46px;
+  padding: 6px 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: linear-gradient(180deg, var(--surface-2) 0%, var(--surface) 100%);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.guide-restore:hover {
+  border-color: var(--blue-bright);
+  box-shadow: var(--shadow), 0 0 16px rgba(63, 140, 255, 0.35);
+}
+
+.guide-restore .guide-char {
+  width: 25px;
+  height: 33px;
+  animation: none;
+  filter: none;
+}
+
+@keyframes guideBob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes guideBlink {
+  0%,
+  91%,
+  100% {
+    transform: scaleY(1);
+  }
+  94% {
+    transform: scaleY(0.12);
+  }
+}
+
+@keyframes guidePop {
+  0% {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* モバイルでは邪魔にならないように調整 */
+@media (max-width: 720px) {
+  .guide,
+  .guide-restore,
+  .guide-prompt {
+    display: none !important;
+  }
+
+  .toast-stack {
+    top: auto;
+    bottom: 14px;
+    left: 14px;
+    right: 14px;
+  }
+
+  .toast {
+    min-width: 0;
+    max-width: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast {
+    animation: none;
+  }
+
+  .guide-char,
+  .guide-eye,
+  .guide-bubble p.pop {
+    animation: none;
+  }
+}

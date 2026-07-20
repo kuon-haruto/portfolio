@@ -1,54 +1,87 @@
+/* ---- 作品カード（ランチャーのタイトル選択画面風） ---- */
 .work-detail {
-  background: var(--surface);
-  border: 1px solid rgba(219, 227, 240, 0.9);
+  background: linear-gradient(180deg, var(--surface-2) 0%, var(--surface) 100%);
+  border: 1px solid var(--line);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+}
+
+/* 選択中のタイトルのように青く発光する */
+.work-detail:hover {
+  transform: translateY(-4px);
+  border-color: var(--blue-bright);
+  box-shadow: var(--shadow), 0 0 26px rgba(63, 140, 255, 0.28);
 }
 
 .work-thumb {
   min-height: 220px;
   padding: 24px;
-  background: linear-gradient(140deg, #19325f 0%, #356fd1 52%, #89b1ff 100%);
+  background: linear-gradient(140deg, #1a3f8f 0%, #2f6fe0 52%, #6fa5ff 100%);
   color: white;
   position: relative;
+  overflow: hidden;
 }
 
 .work-thumb::before {
-  content: "GAME";
+  content: "STAGE";
   position: absolute;
   top: 18px;
   right: 18px;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-weight: 800;
-  letter-spacing: 0.18em;
-  opacity: 0.88;
+  letter-spacing: 0.24em;
+  opacity: 0.9;
+}
+
+/* キービジュアルに走査線を重ねてゲーム画面らしさを出す */
+.work-thumb::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(255, 255, 255, 0.045) 0px,
+    rgba(255, 255, 255, 0.045) 1px,
+    transparent 1px,
+    transparent 4px
+  );
 }
 
 .work-thumb small {
   display: inline-block;
   padding: 6px 12px;
-  background: rgba(255, 255, 255, 0.14);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 999px;
+  background: rgba(8, 14, 30, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  border-radius: 6px;
   font-weight: 700;
+  letter-spacing: 0.08em;
   margin-bottom: 14px;
+  position: relative;
+  z-index: 1;
 }
 
 .work-thumb h3 {
   margin: 0;
   font-size: 1.5rem;
   line-height: 1.2;
-  max-width: 12ch;
+  max-width: 14ch;
+  position: relative;
+  z-index: 1;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
 }
 
 .work-thumb p {
   margin: 12px 0 0;
-  color: rgba(255, 255, 255, 0.88);
+  color: rgba(255, 255, 255, 0.9);
   max-width: 26ch;
   font-size: 0.95rem;
+  position: relative;
+  z-index: 1;
 }
 
 .work-body {
@@ -65,18 +98,32 @@
 .tag {
   display: inline-flex;
   align-items: center;
-  padding: 6px 10px;
-  border-radius: 999px;
-  background: #f2f6ff;
-  border: 1px solid #dbe6ff;
-  color: var(--accent-dark);
-  font-size: 0.82rem;
+  padding: 5px 11px;
+  border-radius: 6px;
+  background: rgba(63, 140, 255, 0.1);
+  border: 1px solid var(--line);
+  color: #9cc4ff;
+  font-size: 0.8rem;
   font-weight: 700;
+  letter-spacing: 0.02em;
 }
 
-.work-body h4 {
-  margin: 18px 0 8px;
-  font-size: 0.98rem;
+.work-body h4,
+.featured-body h4 {
+  margin: 20px 0 8px;
+  font-size: 0.95rem;
+  color: var(--blue-bright);
+  letter-spacing: 0.1em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.work-body h4::before,
+.featured-body h4::before {
+  content: "◆";
+  font-size: 0.6rem;
+  color: var(--teal);
 }
 
 .work-body p {
@@ -91,69 +138,114 @@
   color: var(--muted);
 }
 
+.work-body li::marker,
+.featured-body li::marker,
+.proposal-card li::marker,
+.skill-card li::marker {
+  color: var(--blue-bright);
+}
+
+/* プレイボタン：一番目立つCTAに */
 .play-link {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  margin-top: 4px;
-  padding: 10px 16px;
-  border-radius: 999px;
-  background: #eef4ff;
-  border: 1px solid #cfe0ff;
-  color: #2f6fed;
+  margin-top: 6px;
+  padding: 11px 20px;
+  border-radius: var(--radius-ui);
+  background: var(--grad);
+  border: none;
+  color: #06101f;
   text-decoration: none;
-  font-weight: 700;
+  font-weight: 800;
+  transition: transform 0.16s ease, box-shadow 0.16s ease;
+}
+
+.play-link::before {
+  content: "▶";
+  font-size: 0.8rem;
 }
 
 .play-link:hover {
-  background: #dfeaff;
-  color: #1d4fb6;
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px rgba(63, 140, 255, 0.4);
+  color: #06101f;
 }
 
+/* ---- 注目作品カード（青発光で「選択中」の特別感を出す） ---- */
 .featured-card {
-  background: var(--surface);
-  border: 2px solid var(--accent);
+  background: linear-gradient(180deg, var(--surface-2) 0%, var(--surface) 100%);
+  border: 1px solid var(--blue-bright);
   border-radius: var(--radius);
-  box-shadow: var(--shadow);
+  box-shadow: var(--shadow), 0 0 44px rgba(63, 140, 255, 0.35);
   overflow: hidden;
 }
 
 .featured-head {
   padding: 28px;
-  background: linear-gradient(140deg, #19325f 0%, #356fd1 52%, #89b1ff 100%);
+  background: linear-gradient(140deg, #1a3f8f 0%, #2f6fe0 52%, #6fa5ff 100%);
   color: white;
   position: relative;
+  overflow: hidden;
+}
+
+.featured-head::before {
+  content: "FEATURED";
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.24em;
+  opacity: 0.9;
+}
+
+.featured-head::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(255, 255, 255, 0.045) 0px,
+    rgba(255, 255, 255, 0.045) 1px,
+    transparent 1px,
+    transparent 4px
+  );
 }
 
 .featured-head small {
   display: inline-block;
   padding: 6px 12px;
-  background: rgba(255, 255, 255, 0.14);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 999px;
+  background: rgba(8, 14, 30, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  border-radius: 6px;
   font-weight: 700;
+  letter-spacing: 0.08em;
   margin-bottom: 14px;
+  position: relative;
+  z-index: 1;
 }
 
 .featured-head h3 {
   margin: 0;
   font-size: clamp(1.6rem, 3vw, 2.4rem);
   line-height: 1.2;
+  position: relative;
+  z-index: 1;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
 }
 
 .featured-head p {
   margin: 12px 0 0;
-  color: rgba(255, 255, 255, 0.9);
+  color: rgba(255, 255, 255, 0.92);
   max-width: 64ch;
+  position: relative;
+  z-index: 1;
 }
 
 .featured-body {
   padding: 28px;
-}
-
-.featured-body h4 {
-  margin: 18px 0 8px;
-  font-size: 0.98rem;
 }
 
 .featured-body p {
@@ -168,16 +260,33 @@
   color: var(--muted);
 }
 
+/* 実績ボックス：青緑のアクセント（文字は明るいまま） */
 .achievement-box {
-  margin: 18px 0;
-  padding: 18px;
-  border-radius: 16px;
-  background: #f2f6ff;
-  border: 1px solid #dbe6ff;
+  margin: 20px 0;
+  padding: 18px 20px;
+  border-radius: 10px;
+  background: rgba(47, 212, 181, 0.08);
+  border: 1px solid rgba(47, 212, 181, 0.45);
 }
 
 .achievement-box h4 {
   margin-top: 0;
+  color: var(--teal);
+}
+
+.achievement-box h4::before {
+  content: "★";
+  font-size: 0.85rem;
+  color: var(--teal);
+}
+
+.achievement-box p,
+.achievement-box li {
+  color: #c5d7d1;
+}
+
+.achievement-box li::marker {
+  color: var(--teal);
 }
 
 .featured-video {
@@ -186,9 +295,10 @@
 
 .featured-video video {
   width: 100%;
-  border-radius: 12px;
+  border-radius: 10px;
   background: #000;
   display: block;
+  border: 1px solid var(--line);
 }
 
 .featured-actions {
@@ -198,14 +308,24 @@
   margin-top: 18px;
 }
 
+/* ---- 企画書 / スキル / 連絡先カード ---- */
 .proposal-card,
 .skill-card,
 .contact-card {
-  background: var(--surface);
-  border: 1px solid rgba(219, 227, 240, 0.9);
+  background: linear-gradient(180deg, var(--surface-2) 0%, var(--surface) 100%);
+  border: 1px solid var(--line);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
   padding: 24px;
+  transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+}
+
+.proposal-card:hover,
+.skill-card:hover,
+.contact-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--blue-bright);
+  box-shadow: var(--shadow), 0 0 26px rgba(63, 140, 255, 0.24);
 }
 
 .proposal-card h3,
@@ -214,6 +334,9 @@
   margin-top: 0;
   margin-bottom: 12px;
   font-size: 1.14rem;
+  color: #ffffff;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--line-soft);
 }
 
 .proposal-card p,
@@ -231,24 +354,86 @@
   color: var(--muted);
 }
 
+/* ---- ツール経験バー（ステータス画面風） ---- */
+.tool-bars {
+  list-style: none;
+  padding: 0 !important;
+  margin: 16px 0 0;
+  display: grid;
+  gap: 13px;
+}
+
+.tool-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 5px;
+}
+
+.tool-head span {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.tool-head small {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--teal);
+}
+
+.tool-bar {
+  height: 8px;
+  border-radius: 4px;
+  background: rgba(12, 18, 38, 0.8);
+  border: 1px solid var(--line-soft);
+  overflow: hidden;
+}
+
+.tool-bar span {
+  display: block;
+  height: 100%;
+  width: var(--w, 50%);
+  border-radius: 4px;
+  background: var(--grad);
+  box-shadow: 0 0 10px rgba(63, 140, 255, 0.5);
+}
+
+/* スクロール演出が有効なときはバーが伸びるアニメーション */
+.reveal .tool-bar span {
+  width: 0;
+  transition: width 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.25s;
+}
+
+.reveal.in .tool-bar span {
+  width: var(--w, 50%);
+}
+
+/* ---- 企画で意識していること ---- */
 .thinking-box {
   padding: 28px;
-  background: linear-gradient(180deg, #ffffff 0%, #f4f8ff 100%);
+  background: linear-gradient(180deg, var(--surface-2) 0%, var(--surface) 100%);
   border: 1px solid var(--line);
+  border-left: 3px solid var(--blue);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
 }
 
 .thinking-box ul {
   margin: 0;
-  padding-left: 18px;
+  padding-left: 20px;
   color: var(--muted);
+}
+
+.thinking-box li::marker {
+  color: var(--blue-bright);
 }
 
 .thinking-box li + li {
   margin-top: 10px;
 }
 
+/* ---- フッター ---- */
 .site-footer {
   padding: 30px 0 48px;
   color: var(--muted);

@@ -1,24 +1,49 @@
 section {
-  padding: 28px 0;
+  padding: 32px 0;
 }
 
 .section-heading {
-  margin-bottom: 22px;
+  margin-bottom: 24px;
 }
 
+/* 英字の小見出し（ランチャーのメニュー項目風） */
 .section-heading .label {
-  color: var(--accent);
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--blue-bright);
   font-weight: 800;
-  font-size: 0.85rem;
-  letter-spacing: 0.08em;
+  font-size: 0.8rem;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
 }
 
+.section-heading .label::before {
+  content: "";
+  width: 22px;
+  height: 2px;
+  background: var(--grad);
+  border-radius: 2px;
+}
+
 .section-heading h2 {
-  margin: 8px 0 8px;
+  margin: 10px 0 10px;
   font-size: clamp(1.6rem, 3vw, 2.5rem);
   line-height: 1.2;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
+  color: #ffffff;
+}
+
+/* 見出し下の青→青緑のバー */
+.section-heading h2::after {
+  content: "";
+  display: block;
+  width: 56px;
+  height: 3px;
+  margin-top: 12px;
+  border-radius: 3px;
+  background: var(--grad);
+  box-shadow: 0 0 12px rgba(63, 140, 255, 0.4);
 }
 
 .section-heading p {
@@ -34,8 +59,8 @@ section {
 }
 
 .card {
-  background: var(--surface);
-  border: 1px solid rgba(219, 227, 240, 0.9);
+  background: linear-gradient(180deg, var(--surface-2) 0%, var(--surface) 100%);
+  border: 1px solid var(--line);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
   padding: 28px;
@@ -44,6 +69,7 @@ section {
 .card h3 {
   margin: 0 0 14px;
   font-size: 1.2rem;
+  color: #ffffff;
 }
 
 .card p,
@@ -61,7 +87,7 @@ section {
 
 .info-list li {
   padding: 14px 0;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid var(--line-soft);
 }
 
 .info-list li:last-child {
@@ -71,7 +97,8 @@ section {
 
 .info-list strong {
   display: block;
-  color: var(--text);
+  color: var(--blue-bright);
   margin-bottom: 4px;
-  font-size: 0.96rem;
+  font-size: 0.9rem;
+  letter-spacing: 0.06em;
 }

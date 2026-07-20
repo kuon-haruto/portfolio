@@ -11,35 +11,75 @@
 
 .hero-main,
 .hero-side {
-  background: var(--surface);
-  border: 1px solid rgba(219, 227, 240, 0.9);
+  background: linear-gradient(180deg, var(--surface-2) 0%, var(--surface) 100%);
+  border: 1px solid var(--line);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
 }
 
 .hero-main {
   padding: 40px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* カード上辺に走る青→青緑のライン */
+.hero-main::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--grad);
+  box-shadow: 0 0 16px rgba(63, 140, 255, 0.5);
 }
 
 .eyebrow {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  background: var(--surface-2);
-  color: var(--accent-dark);
-  border: 1px solid #d6e3ff;
-  border-radius: 999px;
+  gap: 10px;
+  background: rgba(63, 140, 255, 0.1);
+  color: var(--blue-bright);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-ui);
   padding: 8px 14px;
   font-size: 0.85rem;
   font-weight: 700;
+  letter-spacing: 0.08em;
   margin-bottom: 18px;
+}
+
+/* ランチャーのオンライン表示のように点滅するインジケーター */
+.eyebrow::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--teal);
+  box-shadow: 0 0 8px rgba(47, 212, 181, 0.9);
+  animation: blink 1.6s steps(2, start) infinite;
+}
+
+@keyframes blink {
+  to {
+    visibility: hidden;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .eyebrow::before {
+    animation: none;
+  }
 }
 
 h1 {
   margin: 0;
   font-size: clamp(2rem, 4vw, 3.8rem);
   line-height: 1.15;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+  text-shadow: 0 0 30px rgba(63, 140, 255, 0.4);
 }
 
 .hero-main p.lead {
@@ -56,38 +96,41 @@ h1 {
   margin-top: 28px;
 }
 
+/* 角丸だが少し角張ったランチャーUI風ボタン */
 .button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  padding: 14px 20px;
-  border-radius: 999px;
+  padding: 13px 22px;
+  border-radius: var(--radius-ui);
   font-weight: 700;
-  border: 1px solid transparent;
-  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
-  cursor: pointer;
+  font-size: 0.95rem;
+  border: 1px solid var(--line);
+  background: rgba(28, 42, 78, 0.7);
+  color: var(--text);
   text-decoration: none;
+  transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease, background 0.16s ease;
+  cursor: pointer;
 }
 
 .button:hover {
-  transform: translateY(-1px);
-  background: var(--accent);
-  color: white;
-  box-shadow: 0 12px 24px rgba(47, 111, 237, 0.22);
-  border-color: var(--accent);
+  transform: translateY(-2px);
+  border-color: var(--blue-bright);
+  color: #ffffff;
+  background: rgba(38, 56, 102, 0.85);
+  box-shadow: 0 8px 22px rgba(63, 140, 255, 0.25);
 }
 
 .button.primary {
-  background: white;
-  border-color: var(--line);
-  color: var(--text);
+  background: var(--grad);
+  border-color: transparent;
+  color: #06101f;
 }
 
-.button.secondary {
-  background: white;
-  border-color: var(--line);
-  color: var(--text);
+.button.primary:hover {
+  color: #06101f;
+  box-shadow: 0 10px 28px rgba(63, 140, 255, 0.4);
 }
 
 .stats {
@@ -97,18 +140,22 @@ h1 {
   gap: 14px;
 }
 
+/* 実績表示：青緑のアクセント */
 .stat {
-  background: #f9fbff;
-  border: 1px solid var(--line);
-  border-radius: 18px;
-  padding: 18px;
+  background: rgba(12, 18, 38, 0.6);
+  border: 1px solid var(--line-soft);
+  border-left: 3px solid var(--teal);
+  border-radius: var(--radius-ui);
+  padding: 16px 18px;
 }
 
 .stat strong {
   display: block;
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   line-height: 1;
   margin-bottom: 6px;
+  color: var(--teal);
+  text-shadow: 0 0 14px rgba(47, 212, 181, 0.45);
 }
 
 .stat span {
@@ -122,28 +169,30 @@ h1 {
   display: flex;
   align-items: center;
   gap: 12px;
+  border-left-color: var(--blue);
 }
 
 .stat--row strong {
   display: inline;
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   margin-bottom: 0;
   white-space: nowrap;
+  color: var(--blue-bright);
+  text-shadow: 0 0 14px rgba(63, 140, 255, 0.45);
 }
 
 .hero-side {
   padding: 22px;
   display: grid;
   gap: 14px;
-  background: linear-gradient(180deg, #ffffff 0%, #f6f9ff 100%);
 }
 
 .preview {
-  border-radius: 18px;
+  border-radius: 10px;
   padding: 20px;
   min-height: 130px;
-  border: 1px solid var(--line);
-  background: linear-gradient(135deg, #2f6fed 0%, #6da3ff 100%);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: linear-gradient(135deg, #2f6fe0 0%, #1fa88f 100%);
   color: white;
   position: relative;
   overflow: hidden;
@@ -157,7 +206,7 @@ h1 {
   width: 120px;
   height: 120px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.12);
 }
 
 .preview small {
@@ -165,6 +214,9 @@ h1 {
   opacity: 0.85;
   margin-bottom: 8px;
   font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
 }
 
 .preview strong {
