@@ -40,8 +40,27 @@
 .nav {
   display: flex;
   gap: 20px;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
+  overflow-x: auto;
+  cursor: grab;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+  user-select: none;
+}
+
+.nav::-webkit-scrollbar {
+  display: none;
+}
+
+.nav.dragging {
+  cursor: grabbing;
+  scroll-behavior: auto;
+}
+
+.nav a {
+  flex: 0 0 auto;
 }
 
 .nav a {

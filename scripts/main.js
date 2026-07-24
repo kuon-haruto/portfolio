@@ -6,6 +6,58 @@ if (year) {
 const navLinks = document.querySelectorAll('.nav a');
 const sections = [...document.querySelectorAll('main section[id]')];
 
+// ---- ナビをドラッグで横移動できるようにする ----
+const navEl = document.querySelector('.nav');
+if (navEl) {
+  let dragging = false;
+  let moved = false;
+  let startX = 0;
+  let startScroll = 0;
+
+  navEl.addEventListener('pointerdown', e => {
+    // はみ出していない（スクロールの必要がない）場合はドラッグ扱いにしない
+    if (navEl.scrollWidth <= navEl.clientWidth) return;
+    dragging = true;
+    moved = false;
+    startX = e.clientX;
+    startScroll = navEl.scrollLeft;
+    navEl.classList.add('dragging');
+    navEl.setPointerCapture(e.pointerId);
+  });
+
+  navEl.addEventListener('pointermove', e => {
+    if (!dragging) return;
+    const dx = e.clientX - startX;
+    navEl.scrollLeft = startScroll - dx;
+    // 実際にスクロール位置が動いた場合のみ「ドラッグした」とみなす
+    if (Math.abs(navEl.scrollLeft - startScroll) > 4) moved = true;
+  });
+
+  const endDrag = e => {
+    if (!dragging) return;
+    dragging = false;
+    navEl.classList.remove('dragging');
+    if (e.pointerId !== undefined && navEl.hasPointerCapture(e.pointerId)) {
+      navEl.releasePointerCapture(e.pointerId);
+    }
+  };
+  navEl.addEventListener('pointerup', endDrag);
+  navEl.addEventListener('pointercancel', endDrag);
+
+  // ドラッグした後のクリックではリンク遷移させない
+  navEl.addEventListener(
+    'click',
+    e => {
+      if (moved) {
+        e.preventDefault();
+        e.stopPropagation();
+        moved = false;
+      }
+    },
+    { capture: true }
+  );
+}
+
 // ---- タイトル画面（クリックまたはキー入力でポートフォリオを開く） ----
 const titleScreen = document.getElementById('title-screen');
 if (titleScreen) {
@@ -79,16 +131,22 @@ const unlockAchievement = id => {
 };
 
 // ---- まだ用意できていない資料リンクは「制作中」の案内を出す ----
-// ファイルの有無を自動チェックするので、あとからPDFを置くだけで通常のリンクに戻る
+// file:// で直接開いた場合はfetchでの存在確認ができないため、
+// 用意済みファイル名を直接リストで管理する（追加したらここにも足す）
+const availableFiles = new Set([
+  'files/FiveMinuteDungeon.pdf',
+  'files/hantenansatsu_proposal.pdf',
+  'files/line-boundary_proposal.pdf',
+  'files/mushi-shooting.pdf',
+  'files/seibutsu-master.pdf',
+  'files/teruteruwars_proposal.pdf',
+]);
+
 const setupFileLinks = () => {
   document.querySelectorAll('a[href^="files/"]').forEach(link => {
-    fetch(link.getAttribute('href'), { method: 'HEAD' })
-      .then(res => {
-        if (!res.ok) link.dataset.missing = '1';
-      })
-      .catch(() => {
-        /* ローカル環境などで確認できない場合は通常リンクのまま */
-      });
+    if (!availableFiles.has(link.getAttribute('href'))) {
+      link.dataset.missing = '1';
+    }
 
     link.addEventListener('click', e => {
       if (link.dataset.missing) {
@@ -304,6 +362,7 @@ const createGuide = () => {
       <button class="guide-close" aria-label="ナビを隠す">×</button>
       <p>${guideMessages['']}</p>
       <div class="guide-chat" hidden>
+        <button type="button" class="guide-chat-clear" hidden>会話をクリア</button>
         <div class="guide-chat-log" hidden></div>
         <div class="guide-chips"></div>
       </div>
@@ -338,9 +397,47 @@ const createGuide = () => {
   guideText = guideEl.querySelector('.guide-bubble p');
   renderGuideChar();
 
+  // キャラをそのままドラッグ&ドロップで移動できるようにする（「場所を移動」を押さなくてもOK）
+  const charBtn = guideEl.querySelector('.guide-char-btn');
+  let charDragging = false;
+  let charMoved = false;
+  let charPointerId = null;
+
+  charBtn.addEventListener('pointerdown', e => {
+    charDragging = true;
+    charMoved = false;
+    charPointerId = e.pointerId;
+    charBtn.setPointerCapture(e.pointerId);
+  });
+
+  charBtn.addEventListener('pointermove', e => {
+    if (!charDragging) return;
+    charMoved = true;
+    guideEl.classList.remove('menu-open');
+    document.body.classList.add('guide-dragging');
+    placeAt(e.clientX, e.clientY);
+  });
+
+  const endCharDrag = e => {
+    if (!charDragging) return;
+    charDragging = false;
+    document.body.classList.remove('guide-dragging');
+    if (charPointerId !== null && charBtn.hasPointerCapture(charPointerId)) {
+      charBtn.releasePointerCapture(charPointerId);
+    }
+    charPointerId = null;
+  };
+  charBtn.addEventListener('pointerup', endCharDrag);
+  charBtn.addEventListener('pointercancel', endCharDrag);
+
   // キャラをクリックでメニュー開閉（1回のクリックで必ず開くようにする）
-  guideEl.querySelector('.guide-char-btn').addEventListener('click', e => {
+  // ドラッグして移動したあとのクリックではメニューを開かない
+  charBtn.addEventListener('click', e => {
     e.stopPropagation();
+    if (charMoved) {
+      charMoved = false;
+      return;
+    }
     const willOpen = !guideEl.classList.contains('menu-open');
     guideEl.classList.toggle('menu-open', willOpen);
     if (willOpen) {
@@ -389,9 +486,11 @@ const createGuide = () => {
   // 質問チャット（会話の選択肢のように、一覧から選んで質問する）
   const chatLog = guideEl.querySelector('.guide-chat-log');
   const chatChips = guideEl.querySelector('.guide-chips');
+  const chatClearBtn = guideEl.querySelector('.guide-chat-clear');
 
   const askQuestion = item => {
     chatLog.hidden = false;
+    chatClearBtn.hidden = false;
 
     const userMsg = document.createElement('div');
     userMsg.className = 'chat-msg chat-msg--user';
@@ -403,6 +502,14 @@ const createGuide = () => {
     chatLog.appendChild(naviMsg);
     typeMessage(naviMsg, item.answer, chatLog);
   };
+
+  // 会話をクリア（ログを空にして、選んだ質問の見た目も戻す）
+  chatClearBtn.addEventListener('click', () => {
+    chatLog.innerHTML = '';
+    chatLog.hidden = true;
+    chatClearBtn.hidden = true;
+    chatChips.querySelectorAll('button.asked').forEach(chip => chip.classList.remove('asked'));
+  });
 
   // データから質問の選択肢を生成する
   qaData.forEach(item => {
