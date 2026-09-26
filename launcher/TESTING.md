@@ -2,6 +2,19 @@
 
 Local verification on Windows x64, 2026-09-26.
 
+## Version 0.2.0
+
+- Renamed the visible application to `アプリインストーラー`; retained the internal app ID and the explicit `%APPDATA%/zenta-game-library` data directory.
+- Generated a dedicated PNG icon and verified that all seven icon sizes in the ZIP executable's PE resources match electron-builder's ICO output. Windows file-association thumbnails are not used as evidence of the embedded icon.
+- `node --test tests/*.test.cjs`: 9 tests passed, including identity preservation, branding, separate ZIP output, and portable distribution metadata.
+- `node tests/portable-smoke.cjs`: built ZIP extracted into an isolated directory, app launched without setup, five games shown, app name and image verified. Installer-based update calls were rejected; the ZIP edition's release-page button was verified without opening an external browser.
+- The extracted ZIP app passed renderer checks at 1220px and 880px widths and installed/launched Futago from its bundled archive using isolated test data.
+- Portfolio regression checks: 12 Python tests and 7 JavaScript tests passed. Its download buttons now prefer the ZIP edition; unrelated existing portfolio changes are not part of the launcher release commit.
+- The ZIP edition keeps game updates in-app but deliberately uses manual ZIP replacement for application updates. This avoids silently installing the normal edition.
+- Upgrade of an existing 0.1.0 installation through its automatic updater remains unverified. Builds remain unsigned.
+
+The following sections record the earlier 0.1.0 verification.
+
 ## Automated checks
 
 - `pnpm test`: 7 tests passed. Catalog validation, numeric version ordering, Windows-safe paths, HTTPS allowlist, checksum and exact-size verification, cancellation, ZIP extraction limits, traversal/symlink/case-collision rejection, failed-update rollback.

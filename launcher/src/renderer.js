@@ -35,10 +35,13 @@ function render() {
   if (!state.games.some(g => g.id === selected)) selected = state.games.find(g => g.package)?.id || state.games[0]?.id;
   const game = state.games.find(g => g.id === selected);
   renderList();
-  set('version', 'Launcher v' + state.appVersion);
+  set('version', (state.portable ? 'ZIP版 / ' : '') + 'v' + state.appVersion);
   set('total', state.games.length + '作品 / インストール済み ' + state.games.filter(g => g.installedVersion).length);
   set('app-update-status', state.appUpdateStatus);
   $('restart-app').hidden = !state.appUpdateReady;
+  $('check-app').hidden = state.portable;
+  $('download-app').hidden = state.portable;
+  $('open-release').hidden = !state.portable;
   $('check-app').disabled = !state.appUpdatesConfigured || ['checking', 'downloading', 'ready'].includes(state.appUpdatePhase);
   $('download-app').disabled = !state.appUpdatesConfigured || state.appUpdatePhase !== 'available';
   $('check-games').disabled = !state.updatesConfigured || state.busy || state.checkingGames;
@@ -101,6 +104,7 @@ bind('check-games', async () => {
 bind('check-app', () => window.library.checkApp());
 bind('download-app', () => window.library.downloadApp());
 bind('restart-app', () => window.library.restartApp());
+bind('open-release', () => window.library.openRelease());
 const tabs = ['play', 'version'];
 function selectTab(name) {
   for (const tab of tabs) {

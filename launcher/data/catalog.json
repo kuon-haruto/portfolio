@@ -21,7 +21,7 @@
         "executable": "LineBoundary.exe",
         "sha256": "b584d2c1933e38b4a7b1410fe173e30dd1ef15300778ed531c45c169980453f2",
         "size": 53548837,
-        "url": "https://github.com/kuon-haruto/portfolio/releases/download/launcher-v0.1.0/line-boundary-1.0.0.zip",
+        "url": "https://github.com/kuon-haruto/portfolio/releases/download/launcher-v0.2.0/line-boundary-1.0.0.zip",
         "bundled": "line-boundary-1.0.0.zip"
       }
     },
@@ -45,7 +45,7 @@
         "executable": "HantenAssassination.exe",
         "sha256": "07a05828adeacddf3be901843f691e3b0891bb5851839884e4d0c5d298d423ef",
         "size": 98668006,
-        "url": "https://github.com/kuon-haruto/portfolio/releases/download/launcher-v0.1.0/hanten-assassination-1.0.0.zip",
+        "url": "https://github.com/kuon-haruto/portfolio/releases/download/launcher-v0.2.0/hanten-assassination-1.0.0.zip",
         "bundled": "hanten-assassination-1.0.0.zip"
       }
     },
@@ -68,7 +68,7 @@
         "executable": "TeruteruWars.exe",
         "sha256": "f57b155c518aa331ac4fa50292be76f0c09df6842280412e40a84e648bacc0e9",
         "size": 63274408,
-        "url": "https://github.com/kuon-haruto/portfolio/releases/download/launcher-v0.1.0/teruteru-wars-1.0.0.zip",
+        "url": "https://github.com/kuon-haruto/portfolio/releases/download/launcher-v0.2.0/teruteru-wars-1.0.0.zip",
         "bundled": "teruteru-wars-1.0.0.zip"
       }
     },
@@ -91,7 +91,7 @@
         "executable": "Futago.exe",
         "sha256": "0c82ad9e2cf2ea869671b378e55e36883abf576a3ed7c2e64b0e88a6ba1a28b0",
         "size": 60318210,
-        "url": "https://github.com/kuon-haruto/portfolio/releases/download/launcher-v0.1.0/futago-1.0.0.zip",
+        "url": "https://github.com/kuon-haruto/portfolio/releases/download/launcher-v0.2.0/futago-1.0.0.zip",
         "bundled": "futago-1.0.0.zip"
       }
     },
@@ -115,7 +115,7 @@
         "executable": "V-LinkBattle.exe",
         "sha256": "a3e6666029d6579b8494ce0a0a89fac03399c5fa727460118638e8370bc1f331",
         "size": 723897760,
-        "url": "https://github.com/kuon-haruto/portfolio/releases/download/launcher-v0.1.0/v-link-battle-1.0.0.zip",
+        "url": "https://github.com/kuon-haruto/portfolio/releases/download/launcher-v0.2.0/v-link-battle-1.0.0.zip",
         "bundled": "v-link-battle-1.0.0.zip"
       }
     }

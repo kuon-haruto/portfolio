@@ -9,12 +9,17 @@ const path = require('node:path');
   await fs.mkdir(output, { recursive: true });
   const env = { ...process.env, ZENTA_USER_DATA: await fs.mkdtemp(path.join(output, 'ui-data-')) };
   delete env.ELECTRON_RUN_AS_NODE;
-  const app = await electron.launch({ args: [root], env, timeout: 60000 });
+  const executablePath = process.env.ZENTA_TEST_APP || undefined;
+  const app = await electron.launch({ executablePath, args: executablePath ? [] : [root], env, timeout: 60000 });
   try {
-    const page = await app.firstWindow();
+    const page = await app.firstWindow({ timeout: 60000 });
     const errors = [];
     page.on('pageerror', e => errors.push(e.message));
     await page.locator('#games button').first().waitFor();
+    assert.equal(await page.title(), 'アプリインストーラー');
+    assert.equal(await app.evaluate(({ app }) => app.getName()), 'アプリインストーラー');
+    assert.equal(await page.locator('.brand strong').textContent(), 'アプリインストーラー');
+    assert.equal(await page.locator('.brand img').evaluate(img => img.complete && img.naturalWidth > 0), true);
     assert.equal(await page.locator('#games button').count(), 5);
     for (const width of [1220, 880]) {
       await app.evaluate(({ BrowserWindow }, width) => BrowserWindow.getAllWindows()[0].setSize(width, 850), width);
@@ -22,6 +27,7 @@ const path = require('node:path');
         await page.locator('#games button').nth(i).click();
         assert.equal(await page.locator('#art').evaluate(img => img.complete && img.naturalWidth > 0), true);
         assert.equal(await page.evaluate(() => document.querySelector('main').scrollWidth <= document.querySelector('main').clientWidth), true);
+        assert.equal(await page.locator('.brand').evaluate(el => el.scrollWidth <= el.clientWidth), true);
       }
       await page.screenshot({ path: path.join(output, `library-${width}.png`) });
     }

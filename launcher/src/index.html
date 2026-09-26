@@ -4,12 +4,12 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
-  <title>Zenta Game Library</title>
+  <title>アプリインストーラー</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
   <aside class="sidebar">
-    <div class="brand"><strong>ZENTA</strong><span>GAME LIBRARY</span></div>
+    <div class="brand"><img src="../assets/app-installer.png" alt="" width="48" height="48"><div><strong>アプリ<wbr>インストーラー</strong><span>ZENTA / GAME LIBRARY</span></div></div>
     <label class="search-label" for="search">ゲームを検索</label>
     <input id="search" type="search" placeholder="タイトルで検索">
     <label class="search-label" for="filter">表示</label>
@@ -53,7 +53,7 @@
   <dialog id="update-dialog">
     <h2>アップデート</h2>
     <div class="update-row"><div><strong>ゲーム・作品情報</strong><p id="game-update-status">未確認</p></div><button id="check-games">確認</button></div>
-    <div class="update-row"><div><strong>ランチャー本体</strong><p id="app-update-status">未確認</p></div><div class="update-buttons"><button id="check-app">確認</button><button id="download-app">更新を取得</button><button id="restart-app" hidden>再起動して更新</button></div></div>
+    <div class="update-row"><div><strong>アプリ本体</strong><p id="app-update-status">未確認</p></div><div class="update-buttons"><button id="check-app">確認</button><button id="download-app">更新を取得</button><button id="restart-app" hidden>再起動して更新</button><button id="open-release" hidden><i data-lucide="external-link" aria-hidden="true"></i>配布ページ</button></div></div>
     <button id="close-updates">閉じる</button>
   </dialog>
   <script src="../node_modules/lucide/dist/umd/lucide.js"></script>

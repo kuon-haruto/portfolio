@@ -1,14 +1,19 @@
-# Zenta Game Library
+# アプリインストーラー
 
 Windows向けのゲームライブラリ。作品説明、操作方法、目的、開発エンジン、制作人数・期間を表示し、ゲームのインストール・起動・更新を行います。ポートフォリオ本体とは独立した `launcher` フォルダーです。
 
 ## 利用者向け
 
-公開後の GitHub Releases から `ZentaGameLibrary-Setup-<バージョン>.exe` を入手してインストールします。UnityやNode.jsは不要です。ゲーム一式をインストーラーに同梱するため、初回もネット接続なしで「インストールしてプレイ」を実行できます。
+GitHub Releasesで、インストール不要のZIP版と通常のインストーラーを配布します。UnityやNode.jsは不要です。どちらにも5作品を同梱しているため、ダウンロード後は初回もネット接続なしで「インストールしてプレイ」を実行できます。
 
-「更新を確認」からゲーム情報とランチャー本体を確認できます。ゲームの新版は作品画面の「ゲームを更新」、本体は「更新を取得」「再起動して更新」で反映します。プレイ中のゲームは終了してから更新してください。
+- **ZIP版**: `AppInstaller-Portable-<バージョン>.zip` をすべて展開し、`アプリインストーラー.exe` を開きます。付属ファイルも同じフォルダーに残してください。本体のセットアップやショートカット作成は行いません。
+- **通常版**: `AppInstaller-Setup-<バージョン>.exe` を実行してインストールします。
 
-初回リリースが公開されるまではオンライン更新先にファイルがありません。現在のビルドは未署名です。公開前に署名と実機配布テストを行うことを推奨します。Windowsの警告が出る場合は発行元・入手元を確認してください。
+どちらもゲームと設定は `%APPDATA%/zenta-game-library` に保存します。「何も保存しないブラウザー版」ではありません。旧名「Zenta Game Library」のゲームデータは引き継ぎます。同じユーザーで複数の版を同時に起動することはできません。
+
+「更新を確認」からゲーム情報を確認できます。ゲームの新版は作品画面の「ゲームを更新」で反映します。通常版の本体更新は「更新を取得」「再起動して更新」を使います。ZIP版は「配布ページ」から新しいZIPを入手し、アプリを終了して別のフォルダーに展開してください。ZIP版から通常版のセットアップは起動しません。プレイ中のゲームは終了してから更新してください。
+
+現在のビルドは未署名です。Windowsの警告が出る場合は発行元・入手元を確認してください。
 
 ## クローンからビルド
 
@@ -21,16 +26,17 @@ pnpm install --frozen-lockfile
 pnpm test
 pnpm fetch:games
 pnpm dist
+pnpm dist:portable
 ```
 
-生成先は `launcher/dist/ZentaGameLibrary-Setup-0.1.0.exe`。`pnpm fetch:games` はカタログに記録された公開済みZIPを取得し、サイズとSHA-256を検証します。**初回公開前は取得元がないため、次の手順で手元のWindowsビルドを登録してください。**
+生成先は `launcher/dist/AppInstaller-Setup-0.2.0.exe` と `launcher/dist/portable/AppInstaller-Portable-0.2.0.zip`。`pnpm fetch:games` はカタログに記録された公開済みZIPを取得し、サイズとSHA-256を検証します。
 
-開発起動は `pnpm start`、画面検証は `pnpm test:ui`。`pnpm test:install` は双子をテスト領域へ展開し、実際にゲームを起動して終了します。出力・スクリーンショットは `test-output/` に保存します。
+開発起動は `pnpm start`、画面検証は `pnpm test:ui`。`pnpm test:portable` は完成したZIPを展開してアプリ名・アイコン・ZIP版の更新制御を検証し、画面テストと双子の実起動も行います。`pnpm test:install` は双子をテスト領域へ展開し、実際にゲームを起動して終了します。出力・スクリーンショットは `test-output/` に保存します。
 
 インストール済みアプリと公開先との疎通確認:
 
 ```powershell
-$env:ZENTA_TEST_APP = "$env:LOCALAPPDATA/Programs/Zenta Game Library/Zenta Game Library.exe"
+$env:ZENTA_TEST_APP = "$env:LOCALAPPDATA/Programs/アプリインストーラー/アプリインストーラー.exe"
 node tests/live-release-smoke.cjs
 ```
 
@@ -71,8 +77,8 @@ Gitのコミットだけではインストール済みアプリは更新され�
 3. `pnpm pack:game` で新しいゲームバージョンを登録します。
 4. `data/catalog.json` の説明・操作・人数・期間を確認します。
 5. `package.json` のランチャーバージョンも上げます。ゲーム更新のみでもリリース単位で上げます。
-6. `pnpm test`、`pnpm prepare:release`、`pnpm dist`、実機テストを行います。
-7. `launcher-v<本体バージョン>` のGitHub Releaseに、`artifacts/launcher-v*/` の全ファイルと、`dist/` のインストーラー・`.blockmap`・`latest.yml` を添付します。
+6. `pnpm test`、`pnpm prepare:release`、`pnpm dist`、`pnpm dist:portable`、実機テストを行います。
+7. `launcher-v<本体バージョン>` のGitHub Releaseに、`artifacts/launcher-v*/` の全ファイル、`dist/` のインストーラー・`.blockmap`・`latest.yml`、`dist/portable/` のZIP版を添付します。
 8. 内容を確認し、DraftでもPre-releaseでもない通常リリースとして公開し、Latestに設定します。
 
 公開先は `kuon-haruto/portfolio`。すべてのゲームZIP・`games.json`・本体更新情報を**同じリリース**に置きます。ゲームZIPのURLは固定タグを参照するため、公開済みZIPを差し替えず新バージョンにしてください。旧版に戻したいときもバージョンを上げて再リリースします。

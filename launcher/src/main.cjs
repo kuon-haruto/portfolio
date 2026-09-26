@@ -9,14 +9,20 @@ const { copyVerified, readJson, trustedUrl } = require('./transfer.cjs');
 const { extractZip, readInstalled, commitInstallation } = require('./packages.cjs');
 const { autoUpdater } = require('electron-updater');
 
-if (process.env.ZENTA_USER_DATA) app.setPath('userData', path.resolve(process.env.ZENTA_USER_DATA));
+// Keep the existing library when the visible application name changes.
+app.setPath('userData', process.env.ZENTA_USER_DATA
+  ? path.resolve(process.env.ZENTA_USER_DATA)
+  : path.join(app.getPath('appData'), 'zenta-game-library'));
+app.setName('アプリインストーラー');
 
 const base = path.join(__dirname, '..');
 const publisher = require('../data/publisher.json');
+const portable = require('../package.json').distribution === 'portable';
+const portableUpdateMessage = 'ZIP版の本体更新は配布ページから取得してください。';
 const bundled = app.isPackaged ? path.join(process.resourcesPath, 'bundled') : path.join(base, 'bundled');
 let catalog = validateCatalog(require('../data/catalog.json'));
 let win, library, data, catalogFile, busy = null, appUpdateReady = false, checkingGames = false;
-let appUpdateStatus = '未確認';
+let appUpdateStatus = portable ? portableUpdateMessage : '未確認';
 let appUpdatePhase = 'idle';
 const running = new Map();
 const launching = new Set();
@@ -45,8 +51,8 @@ async function snapshot() {
       running: running.has(game.id) || launching.has(game.id), progress: statuses.get(game.id) || null };
   }));
   return { games, busy: Boolean(busy), appVersion: app.getVersion(), appUpdateReady, appUpdateStatus,
-    checkingGames, appUpdatePhase,
-    updatesConfigured: Boolean(publisher.catalogUrl), appUpdatesConfigured: Boolean(publisher.appUpdateFeed) };
+    checkingGames, appUpdatePhase, portable,
+    updatesConfigured: Boolean(publisher.catalogUrl), appUpdatesConfigured: !portable && Boolean(publisher.appUpdateFeed) };
 }
 async function install(id) {
   if (busy) throw new Error('現在の処理が完了してから操作してください。');
@@ -134,6 +140,7 @@ function handle(channel, action) {
   });
 }
 function setupUpdates() {
+  if (portable) return;
   autoUpdater.autoDownload = false;
   autoUpdater.autoInstallOnAppQuit = false;
   if (publisher.appUpdateFeed) autoUpdater.setFeedURL(publisher.appUpdateFeed);
@@ -175,23 +182,28 @@ else {
       if (result) throw new Error(result);
     });
     handle('app:check', async () => {
+      if (portable) throw new Error(portableUpdateMessage);
       if (!app.isPackaged || !publisher.appUpdateFeed) throw new Error('配布版と更新先の設定が必要です。');
       if (['checking', 'downloading', 'ready'].includes(appUpdatePhase)) throw new Error('更新の処理中です。');
       appUpdatePhase = 'checking'; appUpdateStatus = '本体の更新を確認中'; notify();
       await autoUpdater.checkForUpdates();
     });
     handle('app:download', async () => {
+      if (portable) throw new Error(portableUpdateMessage);
       if (!publisher.appUpdateFeed) throw new Error('更新先が未設定です。');
       if (appUpdatePhase !== 'available') throw new Error('先に本体の更新を確認してください。');
       appUpdatePhase = 'downloading'; notify();
       await autoUpdater.downloadUpdate();
     });
     handle('app:restart', () => {
+      if (portable) throw new Error(portableUpdateMessage);
       if (!appUpdateReady || busy || running.size || launching.size) throw new Error('ゲームとインストール処理を終了してください。');
       autoUpdater.quitAndInstall(false, true);
     });
+    handle('app:release', () => shell.openExternal('https://github.com/kuon-haruto/portfolio/releases/latest'));
     win = new BrowserWindow({ width: 1220, height: 850, minWidth: 880, minHeight: 640,
-      backgroundColor: '#151819', title: 'Zenta Game Library', autoHideMenuBar: true,
+      backgroundColor: '#151819', title: 'アプリインストーラー', autoHideMenuBar: true,
+      icon: path.join(base, 'assets', 'app-installer.png'),
       webPreferences: { preload: path.join(__dirname, 'preload.cjs'), contextIsolation: true, nodeIntegration: false, sandbox: true } });
     win.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
     win.webContents.on('will-navigate', e => e.preventDefault());

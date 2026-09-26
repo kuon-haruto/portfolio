@@ -30,6 +30,7 @@ jobs:
       - run: pnpm fetch:games
       - run: pnpm prepare:release
       - run: pnpm dist
+      - run: pnpm dist:portable
       - uses: actions/upload-artifact@v4
         with:
           name: windows-release
@@ -38,6 +39,7 @@ jobs:
             launcher/dist/*.exe
             launcher/dist/*.blockmap
             launcher/dist/latest.yml
+            launcher/dist/portable/*.zip
             launcher/artifacts/launcher-v*/*
   draft:
     if: inputs.create_draft_release
@@ -59,4 +61,4 @@ jobs:
           version=$(node -p "require('./launcher/package.json').version")
           tag="launcher-v$version"
           mapfile -d '' files < <(find release-files -type f -print0)
-          gh release create "$tag" "${files[@]}" --target "$GITHUB_SHA" --draft --title "Zenta Game Library $version" --notes "Windows installer and verified game packages. Review and publish this draft to enable in-app updates."
+          gh release create "$tag" "${files[@]}" --target "$GITHUB_SHA" --draft --title "アプリインストーラー $version" --notes "Windows installer, no-install ZIP edition, and verified game packages. Review and publish this draft to enable in-app updates."

@@ -24,5 +24,5 @@ const { verifyFile } = require('./fetch-games.cjs');
   await fs.writeFile(path.join(output, 'games.json'), json);
   await fs.copyFile(path.join(root, 'data/game-sources.json'), path.join(output, 'game-sources.json'));
   console.log('Prepared local release files: ' + output);
-  console.log('Next: pnpm dist. Publish the installer, latest.yml, blockmap and all files above together.');
+  console.log('Next: pnpm dist and pnpm dist:portable. Publish both distributions, latest.yml, blockmap and all files above together.');
 })().catch(error => { console.error(error.message); process.exitCode = 1; });

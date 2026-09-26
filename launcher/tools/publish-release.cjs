@@ -41,7 +41,8 @@ async function main() {
   const output = path.join(root, 'artifacts', tag);
   const catalog = validateCatalog(JSON.parse(await fs.readFile(path.join(output, 'games.json'), 'utf8')));
   const files = ['games.json', 'game-sources.json', ...catalog.games.map(game => game.package.bundled)].map(name => path.join(output, name));
-  files.push(...[`ZentaGameLibrary-Setup-${appVersion}.exe`, `ZentaGameLibrary-Setup-${appVersion}.exe.blockmap`, 'latest.yml'].map(name => path.join(root, 'dist', name)));
+  files.push(...[`AppInstaller-Setup-${appVersion}.exe`, `AppInstaller-Setup-${appVersion}.exe.blockmap`, 'latest.yml'].map(name => path.join(root, 'dist', name)));
+  files.push(path.join(root, 'dist', 'portable', `AppInstaller-Portable-${appVersion}.zip`));
   for (const file of files) if (!(await fs.stat(file)).isFile()) throw new Error('Release file missing: ' + file);
   for (const game of catalog.games) {
     if (!await verifyFile(path.join(output, game.package.bundled), game.package)) throw new Error('Package checksum mismatch: ' + game.id);
@@ -64,8 +65,8 @@ async function main() {
   let release = await api('/releases/tags/' + tag);
   if (!release) {
     release = await api('/releases', 'POST', {
-      tag_name: tag, target_commitish: commit, name: 'Zenta Game Library ' + appVersion, draft: true, prerelease: false,
-      body: '## Windows版\n\n`ZentaGameLibrary-Setup-' + appVersion + '.exe` をインストールしてください。UnityやNode.jsは不要です。\n\n### 収録作品\n- 線のこちら側 / 向こう側\n- 反転暗殺\n- てるてるウォーズ\n- 双子\n- V-Link Battle\n\n作品説明・操作方法・目的・制作情報、ゲームとランチャー本体の更新機能を収録しています。ゲーム一式を同梱しているため、初回はオフラインでも起動できます。\n\nこのビルドは未署名です。ゲームZIPはランチャー・開発者向けで、通常はインストーラーのみ必要です。\n\nSource: `' + commit + '`',
+      tag_name: tag, target_commitish: commit, name: 'アプリインストーラー ' + appVersion, draft: true, prerelease: false,
+      body: '## Windows 10 / 11（64bit）\n\nアプリ名と専用アイコンを更新し、インストール不要のZIP版を追加しました。UnityやNode.jsは不要です。\n\n### インストール不要のZIP版\n`AppInstaller-Portable-' + appVersion + '.zip` をすべて展開し、フォルダー内の `アプリインストーラー.exe` を開きます。exeだけを取り出さず、付属ファイルも同じフォルダーに残してください。本体のセットアップは不要ですが、ゲームと設定は `%APPDATA%/zenta-game-library` に保存します。ゲームの更新はアプリ内、本体の更新は新しいZIPを別フォルダーに展開して行います。\n\n### 通常のインストーラー\n`AppInstaller-Setup-' + appVersion + '.exe` を使用します。本体のアプリ内更新に対応しています。旧版のゲームデータは引き継ぎます。\n\n### 収録作品\n- 線のこちら側 / 向こう側\n- 反転暗殺\n- てるてるウォーズ\n- 双子\n- V-Link Battle\n\nどちらも5作品を同梱しているため、ダウンロード後は初回もオフラインで起動できます。このビルドは未署名です。\n\nSource: `' + commit + '`',
     });
   }
   if (!release.draft) throw new Error('This version is already public. Published releases are immutable; increase the version.');

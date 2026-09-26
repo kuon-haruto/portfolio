@@ -11,9 +11,10 @@ button .lucide { width: 17px; height: 17px; flex: none; }
 button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid #8ce0c6; outline-offset: 3px; }
 [hidden] { display: none !important; }
 .sidebar { background: #1d2224; border-right: 1px solid #354044; padding: 28px 16px 20px; display: flex; flex-direction: column; gap: 10px; min-height: 0; }
-.brand { display: flex; flex-direction: column; padding: 0 12px 20px; }
-.brand strong { font-size: 28px; color: #8ce0c6; }
-.brand span { font-size: 11px; color: #adb8bc; }
+.brand { display: grid; grid-template-columns: 48px minmax(0, 1fr); align-items: center; gap: 10px; padding: 0 0 20px; }
+.brand img { width: 48px; height: 48px; object-fit: contain; }
+.brand strong { display: block; font-size: 16px; line-height: 1.55; color: #eef2f0; word-break: keep-all; overflow-wrap: anywhere; }
+.brand span { display: block; font-size: 10px; color: #adb8bc; margin-top: 4px; }
 .search-label { color: #b8c4c8; font-size: 12px; margin-top: 6px; }
 input, select { width: 100%; background: #131719; color: #eef2f0; padding: 9px; border: 1px solid #455155; border-radius: 4px; }
 #games { overflow-y: auto; margin-top: 12px; flex: 1; min-height: 0; }
@@ -59,5 +60,6 @@ dialog h2 { margin-top: 0; }
 .update-row { display: flex; justify-content: space-between; gap: 18px; align-items: flex-start; padding: 20px 0; border-top: 1px solid #3b464a; }
 .update-row p { font-size: 12px; max-width: 300px; overflow-wrap: anywhere; }
 .update-buttons { display: flex; flex-direction: column; gap: 8px; }
+#open-release { display: inline-flex; align-items: center; gap: 8px; }
 .version-list { display: grid; gap: 20px; }
 @media (max-width: 1000px) { body { grid-template-columns: 218px minmax(0, 1fr); } #detail { padding: 24px; } .game-heading { grid-template-columns: 132px minmax(0, 1fr); gap: 20px; } #art { width: 132px; height: 132px; } h1 { font-size: 24px; } }

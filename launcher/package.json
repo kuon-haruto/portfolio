@@ -1,8 +1,8 @@
 {
   "name": "zenta-game-library",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
-  "description": "Zenta Shimamoto game library for Windows",
+  "description": "アプリインストーラー - 島本善太のゲームライブラリ",
   "author": "Zenta Shimamoto",
   "main": "src/main.cjs",
   "scripts": {
@@ -12,7 +12,9 @@
     "test:ui": "node tests/ui-smoke.cjs",
     "test:install": "node tests/install-smoke.cjs",
     "test:update": "node tests/update-smoke.cjs",
+    "test:portable": "node tests/portable-smoke.cjs",
     "dist": "electron-builder --win nsis --publish never",
+    "dist:portable": "electron-builder --config electron-builder.portable.cjs --win zip --publish never",
     "dist:dir": "electron-builder --win --dir",
     "pack:game": "node tools/pack-game.cjs",
     "prepare:release": "node tools/prepare-release.cjs",
@@ -27,12 +29,13 @@
     "@playwright/test": "1.56.1",
     "electron": "44.4.5",
     "electron-builder": "26.15.3",
+    "resedit": "1.7.2",
     "yazl": "3.3.1"
   },
   "packageManager": "pnpm@11.25.0",
   "build": {
     "appId": "jp.zentashimamoto.gamelibrary",
-    "productName": "Zenta Game Library",
+    "productName": "アプリインストーラー",
     "asar": true,
     "beforePack": "./tools/verify-bundles.cjs",
     "directories": {
@@ -54,7 +57,7 @@
       }
     ],
     "win": {
-      "icon": "assets/line-boundary.png",
+      "icon": "assets/app-installer.png",
       "target": [
         {
           "target": "nsis",
@@ -63,7 +66,7 @@
           ]
         }
       ],
-      "artifactName": "ZentaGameLibrary-Setup-${version}.${ext}"
+      "artifactName": "AppInstaller-Setup-${version}.${ext}"
     },
     "nsis": {
       "oneClick": false,
