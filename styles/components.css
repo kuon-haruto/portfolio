@@ -69,7 +69,10 @@
   margin: 0;
   font-size: 1.5rem;
   line-height: 1.2;
-  max-width: 14ch;
+  max-width: none;
+  text-wrap: balance;
+  word-break: auto-phrase;
+  overflow-wrap: break-word;
   position: relative;
   z-index: 1;
   text-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
@@ -78,7 +81,9 @@
 .work-thumb p {
   margin: 12px 0 0;
   color: rgba(255, 255, 255, 0.9);
-  max-width: 26ch;
+  max-width: none;
+  text-wrap: pretty;
+  word-break: auto-phrase;
   font-size: 0.95rem;
   position: relative;
   z-index: 1;
@@ -143,33 +148,6 @@
 .proposal-card li::marker,
 .skill-card li::marker {
   color: var(--blue-bright);
-}
-
-/* プレイボタン：一番目立つCTAに */
-.play-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 6px;
-  padding: 11px 20px;
-  border-radius: var(--radius-ui);
-  background: var(--grad);
-  border: none;
-  color: #06101f;
-  text-decoration: none;
-  font-weight: 800;
-  transition: transform 0.16s ease, box-shadow 0.16s ease;
-}
-
-.play-link::before {
-  content: "▶";
-  font-size: 0.8rem;
-}
-
-.play-link:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 26px rgba(63, 140, 255, 0.4);
-  color: #06101f;
 }
 
 /* ---- 注目作品カード（青発光で「選択中」の特別感を出す） ---- */
@@ -366,8 +344,75 @@
 .tool-head {
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;
+  gap: 12px;
   margin-bottom: 5px;
+}
+
+.tool-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.tool-name span {
+  overflow-wrap: break-word;
+  word-break: auto-phrase;
+}
+
+.tool-names {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.app-icon {
+  display: block;
+  flex: 0 0 28px;
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  padding: 4px;
+  background: #fff;
+  border-radius: 4px;
+}
+
+.tool-head small {
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+.skill-card .support-skills {
+  list-style: none;
+  padding-left: 0;
+  display: grid;
+  gap: 14px;
+}
+
+.support-skills li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.9rem;
+  color: var(--text);
+}
+
+.support-skills li > span {
+  min-width: 0;
+  overflow-wrap: break-word;
+  word-break: auto-phrase;
+}
+
+.title-phrase {
+  display: inline-block;
+}
+
+.support-skills small {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.75rem;
+  color: var(--muted);
 }
 
 .tool-head span {

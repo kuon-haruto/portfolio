@@ -6,6 +6,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#0c1226" />
+  <meta name="description" content="ゲームプランナー志望・島本善太のポートフォリオ。自主開催の3日間ゲームジャム、チーム制作、企画・ルール設計・仕様整理の取り組みを紹介します。" />
   <title>島本善太 | Game Planner Portfolio</title>
   <link rel="stylesheet" href="styles/main.css" />
   <link rel="stylesheet" href="styles/header.css" />
@@ -15,21 +16,10 @@
   <link rel="stylesheet" href="styles/grids.css" />
   <link rel="stylesheet" href="styles/effects.css" />
   <link rel="stylesheet" href="styles/responsive.css" />
+  <link rel="stylesheet" href="styles/portfolio.css" />
 </head>
 
 <body>
-  <!-- タイトル画面（クリックまたはキー入力でポートフォリオが開く） -->
-  <div id="title-screen" role="button" tabindex="0" aria-label="クリックしてポートフォリオを開く">
-    <div class="title-inner">
-      <small class="title-label">GAME PLANNER PORTFOLIO</small>
-      <div class="title-name">島本善太</div>
-      <div class="title-sub">Portfolio Site</div>
-      <div class="title-press">▶ PRESS START</div>
-      <div class="title-hint">クリック / 任意のキーでスタート</div>
-    </div>
-    <div class="title-foot">© 島本善太 Game Planner Portfolio</div>
-  </div>
-
   <header class="site-header">
     <div class="container header-inner">
       <a href="#top" class="brand">
@@ -50,234 +40,130 @@
   </header>
 
   <main id="top">
-    <section class="hero">
-      <div class="container hero-grid">
-        <div class="hero-main">
-          <div class="eyebrow">ゲームプランナー志望</div>
-          <h1>島本善太<br>Portfolio Site</h1>
-          <p class="lead">
-            遊びの面白さを言語化と設計で整理し、企画と仕様書で形にしていく。考えたことを大切にして、作品と企画書を完成させ、考え方と製作能力が分かるポートフォリオをまとめました。
-          </p>
-          <div class="hero-actions">
-            <a class="button primary" href="#featured-works">注目作品を見る</a>
-            <a class="button secondary" href="#works">ゲーム作品を見る</a>
-            <a class="button secondary" href="#proposals">企画書を見る</a>
-            <a class="button secondary" href="#specifications">仕様書を見る</a>
-          </div>
-
-          <div class="stats">
-            <div class="stat">
-              <strong>4</strong>
-              <span>制作ゲーム</span>
-            </div>
-            <div class="stat">
-              <strong>6</strong>
-              <span>企画書</span>
-            </div>
-            <div class="stat">
-              <strong>3</strong>
-              <span>仕様書</span>
-            </div>
-            <div class="stat stat--row">
-              <strong>学校</strong>
-              <span>札幌デザイン＆テクノロジー専門学校</span>
-            </div>
+    <section class="hero portfolio-hero" aria-labelledby="portfolio-title">
+      <div class="game-gallery container" data-game-gallery aria-labelledby="game-gallery-title">
+        <div class="game-gallery-heading">
+          <h2 id="game-gallery-title">公開ゲーム <strong>4</strong><span>作品</span></h2>
+          <div class="game-gallery-actions">
+            <a href="#works">作品一覧</a>
+            <button class="gallery-toggle" type="button" aria-label="自動巡回を一時停止" title="自動巡回を一時停止" hidden>
+              <svg class="gallery-pause-icon" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="14" y="3" width="5" height="18" rx="1"></rect><rect x="5" y="3" width="5" height="18" rx="1"></rect></svg>
+              <svg class="gallery-play-icon" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"></path></svg>
+            </button>
           </div>
         </div>
-
-        <aside class="hero-side">
-          <div class="preview">
-            <small>Main Focus</small>
-            <strong>遊びの核を言語化し、ゲームとして実装させる企画設計</strong>
-            <p>面白さの本質を理解し、レイヤー構造を検証したルール設計を施しています。</p>
-          </div>
-          <div class="preview" style="background: linear-gradient(135deg, #2f63c9 0%, #5b8bee 100%);">
-            <small>School</small>
-            <strong>札幌デザイン＆テクノロジー専門学校</strong>
-            <p>スーパーゲームクリエーター専攻で学びながら、ゲーム企画と制作に取り組んでいます。</p>
-          </div>
-          <div class="preview" style="background: linear-gradient(135deg, #1f6d67 0%, #4ca89d 100%);">
-            <small>Portfolio Theme</small>
-            <strong>作品だけでなく、企画意図と改善視点まで伝える</strong>
-            <p>背景や理由が読みやすく、整理された資料を提示しています。</p>
-          </div>
-        </aside>
-      </div>
-    </section>
-
-    <section id="about">
-      <div class="container">
-        <div class="section-heading">
-          <div class="label">About</div>
-          <h2>プロフィール</h2>
-          <p>ゲームプランナーとして、どのような視点で遊びを定義し、何を大切にしているのかが分かるようにまとめています。</p>
-        </div>
-
-        <div class="about-grid">
-          <div class="card">
-            <h3>自己紹介</h3>
-            <p>
-              島本善太です。札幌デザイン＆テクノロジー専門学校
-              スーパーゲームクリエーター専攻で学んでいます。ゲームプランナー志望として、プレイヤーが何を楽しいと感じるのかを考えながら、企画立案、ルール設計、ゲーム体験の整理に取り組んでいます。
-            </p>
-            <p>
-              制作では、面白そうなアイデアを出すだけでなく、それが実際の遊びとして成立するか、プレイヤーにどのような判断や感情を生むかを意識しています。作品制作や企画書作成を通して、考えたことを言語化し、相手に伝わる形にまとめる力を磨いています。
-            </p>
-          </div>
-
-          <div class="card">
-            <h3>基本情報</h3>
-            <ul class="info-list">
-              <li>
-                <strong>氏名</strong>
-                島本善太
-              </li>
-              <li>
-                <strong>学校・専攻</strong>
-                札幌デザイン＆テクノロジー専門学校<br>スーパーゲームクリエーター専攻（4年制）<br>2024年入学　2028年卒業予定
-              </li>
-              <li>
-                <strong>受賞歴</strong>
-                <br>神ゲーエボリューション2025年　神エボ1次審査通過
-              </li>
-              <li>
-                <strong>志望職種</strong>
-                ゲームプランナー
-              </li>
-              <li>
-                <strong>強み</strong>
-                企画意図の整理 / ルール設計 / 遊びの言語化 / 制作経験を踏まえた改善視点
-              </li>
+        <div class="game-gallery-viewport">
+          <div class="game-gallery-track">
+            <ul class="game-gallery-group">
+              <li><a class="game-icon-link" href="#game-line-boundary"><span class="game-icon-frame"><img class="game-icon-art" src="files/game-icons/line-boundary.png" alt="" width="500" height="500" fetchpriority="high"></span><span>線のこちら側 / 向こう側</span></a></li>
+              <li><a class="game-icon-link" href="#game-hanten-assassination"><span class="game-icon-frame"><img class="game-icon-art" src="files/game-icons/hanten-assassination.jpeg" alt="" width="1024" height="1024"></span><span>反転暗殺</span></a></li>
+              <li><a class="game-icon-link" href="#game-teruteru-wars"><span class="game-icon-frame"><img class="game-icon-art" src="files/game-icons/teruteru-wars.png" alt="" width="500" height="500"></span><span>てるてるウォーズ</span></a></li>
+              <li><a class="game-icon-link" href="#game-futago"><span class="game-icon-frame"><img class="game-icon-art" src="files/game-icons/futago.png" alt="" width="500" height="500"></span><span>双子</span></a></li>
             </ul>
           </div>
         </div>
       </div>
+      <div class="hero-caption">
+        <div class="container">
+          <p class="hero-kicker">ゲームプランナー志望</p>
+          <h1 id="portfolio-title">島本善太<span>ZENTA SHIMAMOTO</span></h1>
+          <p class="hero-statement">遊びを考える。<wbr>仲間と、最後までつくる。</p>
+          <p class="hero-summary">企画・ルール設計・仕様整理から、チームでの制作まで。<br>自主開催の3日間ゲームジャムでも、完成までやり切っています。</p>
+          <div class="hero-actions">
+            <a class="button primary launcher-download-link" href="https://github.com/kuon-haruto/portfolio/releases/download/launcher-v0.2.0/AppInstaller-Portable-0.2.0.zip" aria-describedby="hero-download-info" title="インストール不要のWindows用ZIP版をダウンロード">
+              <svg aria-hidden="true" focusable="false" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" x2="12" y1="15" y2="3"></line></svg>
+              <span>インストール不要で<wbr>使う</span>
+            </a>
+            <a class="button secondary" href="#featured-works">代表作と担当内容</a>
+            <a class="button secondary" href="#about">自己紹介</a>
+          </div>
+          <p class="hero-download-info" id="hero-download-info"><span>Windows 10 / 11（64bit）専用</span><span>5作品収録 / ZIP 約1.13 GB</span></p>
+        </div>
+      </div>
     </section>
+    <div class="proof-band">
+      <div class="container proof-grid">
+        <div><small>SELECTION / 2025</small><strong>神エボ 1次審査通過</strong><span>神ゲーエボリューション2025</span></div>
+        <div><small>SELF-INITIATED</small><strong>3日間で、作り切る。</strong><span>仲間と自主開催するゲームジャム</span></div>
+        <div><small>TEAM PRODUCTION</small><strong>8人制作で企画・設計を担当</strong><span>V-Link Battle</span></div>
+      </div>
+    </div>
 
-    <section id="featured-works">
+    <section id="about" class="profile-section">
       <div class="container">
         <div class="section-heading">
-          <div class="label">Featured</div>
-          <h2>注目作品</h2>
-          <p>特に見てほしい作品をまとめています。注目作品は今後増えても、このカードを追加するだけで対応できます。</p>
+          <div class="label">01 / About Me</div>
+          <h2>アイデアを、<wbr>完成まで連れていく。</h2>
         </div>
+        <div class="profile-layout">
+          <div class="profile-story">
+            <article class="profile-panel">
+            <h3 class="profile-panel-title">自己紹介</h3>
+            <p class="profile-intro">はじめまして、島本善太です。<br>遊びの仕組みを考え、仲間と形にするゲームプランナーを目指しています。</p>
+            <p>札幌デザイン＆テクノロジー専門学校のスーパーゲームクリエーター専攻で学んでいます。制作で大切にしているのは、「面白そう」で終わらせず、プレイヤーが何を考え、どんな行動を選ぶのかまで具体的にすること。企画意図を言葉にし、ルールや仕様へ落とし込むことに取り組んでいます。</p>
+            </article>
+            <article class="profile-panel jam-story">
+              <span class="story-label">自分たちで始める、3日間の挑戦</span>
+              <h3>仲間とゲームジャムを開き、<wbr>最後までやり切る。</h3>
+              <p>学校での制作に加え、仲間と自主的に3日間のゲームジャムを開催しています。自分たちで制作の機会をつくり、短い期間でも最後まで作り切る。この経験は、私の主体性と完遂力を伝えられるものだと考えています。</p>
+            </article>
+            <article class="profile-panel">
+            <h3 class="profile-panel-title">チーム制作での経験と、目指す姿</h3>
+            <p>8人で制作した「V-Link Battle」では、企画・仕様整理・システム設計・タスク振り分けを担当しました。3Dオブジェクトやエフェクト、アニメーションの制作にも関わり、企画を資料にまとめるだけでなく、実際に形にする工程も経験しています。</p>
+            <p>これからも、遊びの面白さを説明する力と、チームで完成へ近づける力を磨いていきます。目指すのは、アイデアを出すだけでなく、実際に遊べる体験として届けられるプランナーです。</p>
+            </article>
+          </div>
+          <aside class="profile-panel profile-facts" aria-label="基本情報">
+            <h3 class="profile-panel-title">基本情報</h3>
+            <p class="profile-name">島本 善太<small>しまもと ぜんた</small></p>
+            <dl>
+              <div><dt>志望職種</dt><dd>ゲームプランナー</dd></div>
+              <div><dt>学校・専攻</dt><dd>札幌デザイン＆テクノロジー専門学校<br>スーパーゲームクリエーター専攻（4年制）</dd></div>
+              <div><dt>在学期間</dt><dd>2024年入学 / 2028年卒業予定</dd></div>
+              <div><dt>審査通過実績</dt><dd>神ゲーエボリューション2025<br><strong>1次審査通過</strong></dd></div>
+            </dl>
+            <a class="profile-contact" href="#contact">連絡先</a>
+          </aside>
+        </div>
+        <div class="strengths-grid">
+          <article><span>01 / INITIATIVE</span><h3>自分から動く</h3><p>仲間と自主的にゲームジャムを開催。3日間の制作に取り組み、最後まで作り切っています。</p></article>
+          <article><span>02 / GAME DESIGN</span><h3>遊びをルールにする</h3><p>「アピールが強さにつながる」「線で重力を分ける」など、体験の核をゲームの仕組みに落とし込みます。</p></article>
+          <article><span>03 / TEAMWORK</span><h3>企画から制作へつなぐ</h3><p>仕様整理・タスク振り分けに加え、素材制作にも参加。チームでゲームを形にする工程を経験しています。</p></article>
+        </div>
+      </div>
+    </section>
 
-        <div class="featured-grid">
-          <article class="featured-card">
-            <div class="featured-head">
-              <small>注目作品 01</small>
-              <h3>V-Link Battle</h3>
-              <p>配信文化そのものを戦いに変える、Vtuber対戦アクション。</p>
-            </div>
-
-            <div class="featured-body">
-              <div class="meta">
-                <span class="tag">ジャンル：3D対戦アクション</span>
-                <span class="tag">制作人数：8人</span>
-                <span class="tag">担当：企画 / タスク振り分け / 仕様整理 / システム設計 / 素材集め / 3Dオブジェクト作成 / エフェクト / アニメーション</span>
-              </div>
-
-              <h4>概要</h4>
-              <p>
-                Vtuberをモチーフにした3D対戦アクションゲーム。通常攻撃やガードに加え、「アピール」によってボルテージを高めながら戦う独自システムを採用。コメントや通知ウィンドウなど、配信文化を取り入れたギミックによって他にはない対戦体験を目指しました。
-              </p>
-
-              <h4>企画意図</h4>
-              <p>
-                Vtuberの魅力である「視聴者との双方向コミュニケーション」を格闘ゲームに落とし込むことを目標に企画しました。勝敗だけでなく、観客を盛り上げる行動そのものを戦略にすることで、配信文化らしい駆け引きを生み出しています。
-              </p>
-
-              <h4>工夫した点</h4>
-              <ul>
-                <li>アピールと攻撃を組み合わせた独自のボルテージシステムを設計</li>
-                <li>コメントや通知ウィンドウを戦闘ギミックとして活用</li>
-                <li>「魅せる行動」が強さにつながるルールを構築</li>
-                <li>配信文化と格闘ゲームを融合し、新しい対戦体験を目指した</li>
-              </ul>
-
-              <div class="achievement-box">
-                <h4>注目理由・実績</h4>
-
-                <p>
-                  この作品は、企画としての独自性だけでなく、実績があるため注目作品として掲載しています。
-                  配信文化、Vtuber、対戦アクションを組み合わせた体験設計に取り組み、企画立案から仕様整理、システム設計まで関わりました。
-                </p>
-
-                <ul>
-                  <li>配信文化をゲームシステムへ落とし込んだ企画として制作</li>
-                  <li>チーム制作で企画・仕様整理・タスク振り分けを担当</li>
-                  <li>独自ギミックとしてアピール、コメント、通知ウィンドウの戦闘利用を設計</li>
-                </ul>
-              </div>
-
-              <h4>動画</h4>
-              <div class="featured-video">
-                <video controls preload="metadata" style="width: 100%; height: auto;">
-                  <source src="files/Vlinkvideo.mp4" type="video/mp4">
-                  <source src="files/Vlinkvideo.mov" type="video/quicktime">
-                  お使いのブラウザは動画の再生に対応していません。
-                </video>
-              </div>
-
-              <h4>関連資料</h4>
-              <p>
-                <a href="files/VLinkBattle.pdf" target="_blank" rel="noopener noreferrer">
-                  企画書を見る
-                </a>
-              </p>
-              <p>
-                <a href="files/v-link-battle-spec.xlsx" target="_blank" rel="noopener noreferrer">
-                  仕様書を見る
-                </a>
-              </p>
-
-              <div class="featured-actions">
-                <a href="#works" class="button secondary">作品一覧を見る</a>
-                <a href="#proposals" class="button secondary">企画書一覧を見る</a>
-                <a href="#specifications" class="button secondary">仕様書一覧を見る</a>
-              </div>
-            </div>
-          </article>
-
-          <!--
-          注目作品を増やす場合は、この article をコピーして使ってください。
-
-          <article class="featured-card">
-            <div class="featured-head">
-              <small>注目作品 02</small>
-              <h3>作品タイトル</h3>
-              <p>作品の一言説明。</p>
-            </div>
-            <div class="featured-body">
-              <div class="meta">
-                <span class="tag">ジャンル：〇〇</span>
-                <span class="tag">制作人数：〇人</span>
-                <span class="tag">担当：〇〇</span>
-              </div>
-
-              <h4>概要</h4>
-              <p>作品概要を書く。</p>
-
-              <h4>企画意図</h4>
-              <p>なぜ作ったかを書く。</p>
-
-              <h4>工夫した点</h4>
-              <ul>
-                <li>工夫1</li>
-                <li>工夫2</li>
-              </ul>
-
-              <div class="achievement-box">
-                <h4>注目理由・実績</h4>
-                <p>なぜ注目作品なのか、どんな実績があるのかを書く。</p>
-              </div>
-
-              <h4>関連資料</h4>
-              <p><a href="files/example-proposal.pdf" target="_blank" rel="noopener noreferrer">企画書を見る</a></p>
-              <p><a href="files/example-spec.xlsx" target="_blank" rel="noopener noreferrer">仕様書を見る</a></p>
-            </div>
-          </article>
-          -->
+    <section id="featured-works" class="case-section">
+      <div class="container">
+        <div class="section-heading">
+          <div class="label">02 / Selected Work</div>
+          <h2>V-Link Battle</h2>
+          <p>「魅せる行動」を、勝つための戦略に。</p>
+        </div>
+        <div class="case-summary">
+          <p>Vtuberの配信文化を、3D対戦アクションへ。視聴者とのコミュニケーションをヒントに、アピールやコメントが駆け引きになるルールを企画しました。</p>
+          <div class="selection-note"><small>神ゲーエボリューション2025</small><strong>1次審査通過</strong></div>
+        </div>
+        <figure class="case-media" id="featured-video">
+          <video controls playsinline preload="metadata" poster="files/images/v-link-battle.jpg" width="1920" height="1080" aria-label="V-Link Battle プレイ動画">
+            <source src="files/Vlinkvideo.mp4" type="video/mp4">
+            <source src="files/Vlinkvideo.mov" type="video/quicktime">
+            お使いのブラウザは動画の再生に対応していません。
+          </video>
+          <figcaption><span>V-Link Battle / プレイ映像</span><span>3D対戦アクション / 8人制作</span></figcaption>
+        </figure>
+        <div class="case-role">
+          <h3>私の担当</h3>
+          <div><p><strong>企画 / 仕様整理 / システム設計 / タスク振り分け</strong></p><p>素材集め / 3Dオブジェクト作成 / エフェクト / アニメーション</p></div>
+        </div>
+        <div class="case-decisions">
+          <article><span>DESIGN 01</span><h3>配信の魅力を、<wbr>戦いの仕組みに。</h3><p>通常攻撃やガードに加え、アピールでボルテージを高めるシステムを設計。攻撃だけでなく、観客を盛り上げる行動も戦略になる体験を目指しました。</p></article>
+          <article><span>DESIGN 02</span><h3>世界観を飾りで終わらせない。</h3><p>コメントや通知ウィンドウを戦闘ギミックとして活用。配信らしい要素を背景だけでなく、プレイヤーの判断に関わるルールへ組み込みました。</p></article>
+          <article><span>PRODUCTION</span><h3>仕様と制作、<wbr>両方に関わる。</h3><p>企画意図の整理とタスク振り分けに加え、3Dオブジェクト・エフェクト・アニメーションの制作にも参加しました。</p></article>
+        </div>
+        <div class="case-footer">
+          <p>関連資料：企画書・仕様書は公開準備中</p>
+          <a href="#works">ほかの制作作品</a>
         </div>
       </div>
     </section>
@@ -290,11 +176,33 @@
           <p>作品そのものだけでなく、どのような面白さを狙い、何を工夫したのかが分かるように整理しています。</p>
         </div>
 
+        <div class="launcher-download" id="game-app" role="region" aria-labelledby="game-app-title">
+          <div class="launcher-download-summary">
+            <p class="launcher-download-label">インストール不要のZIP版 / 5作品収録</p>
+            <h3 class="launcher-app-heading" id="game-app-title"><img src="files/icons/app-installer.png" alt="" width="48" height="48"><span>アプリインストーラー</span></h3>
+            <p class="launcher-download-games">V-Link Battle / 線のこちら側・向こう側 / 反転暗殺 / てるてるウォーズ / 双子</p>
+            <div class="meta" id="game-app-details">
+              <span class="tag">Windows 10 / 11（64bit）専用</span>
+              <span class="tag">ZIP版：約1.13 GB</span>
+              <span class="tag">v0.2.0</span>
+            </div>
+          </div>
+          <div class="launcher-download-actions">
+            <a class="button primary launcher-download-link" href="https://github.com/kuon-haruto/portfolio/releases/download/launcher-v0.2.0/AppInstaller-Portable-0.2.0.zip" aria-describedby="game-app-details game-app-notice" title="インストール不要のWindows用ZIP版をダウンロード">
+              <svg aria-hidden="true" focusable="false" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" x2="12" y1="15" y2="3"></line></svg>
+              <span>インストール不要で<wbr>使う</span>
+            </a>
+            <a class="launcher-release-link launcher-install-link" href="https://github.com/kuon-haruto/portfolio/releases/download/launcher-v0.2.0/AppInstaller-Setup-0.2.0.exe">通常版をインストール（約1.06 GB）</a>
+            <a class="launcher-release-link" href="https://github.com/kuon-haruto/portfolio/releases/tag/launcher-v0.2.0" target="_blank" rel="noopener noreferrer">配布情報・更新履歴</a>
+          </div>
+          <p class="launcher-download-notice" id="game-app-notice">ZIP版もダウンロードと展開が必要です。ゲームデータはPCに保存されます。未署名のアプリのため、Windowsで警告が表示される場合があります。</p>
+        </div>
+
         <div class="works-grid">
-          <article class="work-detail">
+          <article class="work-detail" id="game-line-boundary">
             <div class="work-thumb">
               <small>作品 01</small>
-              <h3>線のこちら側 / 向こう側</h3>
+              <h3><span class="title-phrase">線のこちら側</span> / <span class="title-phrase">向こう側</span></h3>
               <p>境界線で世界を分けるパズルアクションゲーム。</p>
             </div>
             <div class="work-body">
@@ -312,13 +220,10 @@
                 <li>重力と無重力の切り替えによる思考性のあるパズル設計</li>
                 <li>線の引き方によって解法が変わる自由度</li>
               </ul>
-              <h4>プレイURL</h4>
-              <p><a class="play-link" href="https://unityroom.com/games/kochiratomukou" target="_blank"
-                  rel="noopener noreferrer">ゲームをプレイ</a></p>
             </div>
           </article>
 
-          <article class="work-detail">
+          <article class="work-detail" id="game-hanten-assassination">
             <div class="work-thumb" style="background: linear-gradient(140deg, #6d43a9 0%, #9a6fe0 55%, #c9aaff 100%);">
               <small>作品 02</small>
               <h3>反転暗殺</h3>
@@ -341,13 +246,10 @@
                 <li>盤面反転によって安全と危険が入れ替わる構造</li>
                 <li>一手ごとの判断が重要になる設計</li>
               </ul>
-              <h4>プレイURL</h4>
-              <p><a class="play-link" href="https://unityroom.com/games/hanntenn-ansatu" target="_blank"
-                  rel="noopener noreferrer">ゲームをプレイ</a></p>
             </div>
           </article>
 
-          <article class="work-detail">
+          <article class="work-detail" id="game-teruteru-wars">
             <div class="work-thumb" style="background: linear-gradient(140deg, #1f8a68 0%, #3cb98a 56%, #8fe3bd 100%);">
               <small>作品 03</small>
               <h3>てるてるウォーズ</h3>
@@ -368,13 +270,10 @@
                 <li>通常と逆さモードによる性能変化</li>
                 <li>複数の状態異常を組み合わせた戦略性</li>
               </ul>
-              <h4>プレイURL</h4>
-              <p><a class="play-link" href="https://unityroom.com/games/teruteru-wars" target="_blank"
-                  rel="noopener noreferrer">ゲームをプレイ</a></p>
             </div>
           </article>
 
-          <article class="work-detail">
+          <article class="work-detail" id="game-futago">
             <div class="work-thumb" style="background: linear-gradient(140deg, #b5451f 0%, #e0793c 55%, #ffc48f 100%);">
               <small>作品 04</small>
               <h3>双子</h3>
@@ -398,9 +297,6 @@
                 <li>発動済みリンクは消える／重複リンクは発動回数を制限するなど、無限ループを防ぐ仕組み</li>
                 <li>行動順のうちリンクの発動タイミングだけを可視化するUI（他は薄く表示し、リンクだけ光らせる）</li>
               </ul>
-              <h4>プレイURL</h4>
-              <p><a class="play-link" href="https://unityroom.com/games/futago" target="_blank"
-                  rel="noopener noreferrer">ゲームをプレイ</a></p>
             </div>
           </article>
         </div>
@@ -412,7 +308,7 @@
         <div class="section-heading">
           <div class="label">Proposals</div>
           <h2>企画書</h2>
-          <p>ゲームのコンセプトや面白さ、プレイヤー体験をどのように設計したのかをまとめた資料です。PDFへのリンクやZIPファイルは、あとから差し替えします</p>
+          <p>パズル、ステルス、戦略バトルなど、7つの企画。コンセプトからルール、プレイヤー体験までをまとめています。</p>
         </div>
 
         <div class="proposal-grid">
@@ -441,7 +337,7 @@
           -->
 
           <article class="proposal-card">
-            <h3>線のこちら側 / 向こう側</h3>
+            <h3><span class="title-phrase">線のこちら側</span> / <span class="title-phrase">向こう側</span></h3>
             <p>境界線によって重力が変化する世界を利用し、プレイヤーの発想力と空間認識を試すパズルゲーム企画。</p>
             <ul>
               <li>コンセプト：境界線によって世界を変化させる</li>
@@ -609,7 +505,7 @@
         <div class="section-heading">
           <div class="label">Specifications</div>
           <h2>仕様書</h2>
-          <p>実際の制作に必要なルール、画面、システム、数値などを整理した資料です。企画書とは分けて掲載することで、企画力と設計力を別々に見せられます。</p>
+          <p>ルール・画面・システム・数値を具体化した4つの仕様書。企画を制作へつなぐための設計資料です。</p>
         </div>
 
         <div class="proposal-grid">
@@ -639,7 +535,7 @@
           -->
 
           <article class="proposal-card">
-            <h3>線のこちら側 / 向こう側 仕様書</h3>
+            <h3><span class="title-phrase">線のこちら側</span> / <span class="title-phrase">向こう側</span> 仕様書</h3>
             <p>重力切替システムやステージ構造、プレイヤー挙動などを整理した仕様書。</p>
             <ul>
               <li>重力変更ルール</li>
@@ -671,13 +567,13 @@
               <li>ステージ設計</li>
             </ul>
             <p>
-              <a href="files/hantenansatsu_spec.pdf" target="_blank" rel="noopener noreferrer">
+              <a href="files/hanntenn-ansatu_spec.pdf" target="_blank" rel="noopener noreferrer">
                 仕様書を見る
               </a>
             </p>
             <!--
             <p>
-              <a href="files/hantenansatsu_spec.zip" download>
+              <a href="files/hanntenn-ansatu_spec.zip" download>
                 ZIPダウンロード
               </a>
             </p>
@@ -694,13 +590,13 @@
               <li>UI・ゲームフロー</li>
             </ul>
             <p>
-              <a href="files/teruteruwars_spec.pdf" target="_blank" rel="noopener noreferrer">
+              <a href="files/teruteru-wars_spec.pdf" target="_blank" rel="noopener noreferrer">
                 仕様書を見る
               </a>
             </p>
             <!--
             <p>
-              <a href="files/teruteruwars_spec.zip" download>
+              <a href="files/teruteru-wars_spec.zip" download>
                 ZIPダウンロード
               </a>
             </p>
@@ -721,13 +617,6 @@
                 仕様書を見る
               </a>
             </p>
-            <!--
-            <p>
-              <a href="files/futago_spec.zip" download>
-                ZIPダウンロード
-              </a>
-            </p>
-            -->
           </article>
         </div>
       </div>
@@ -778,31 +667,35 @@
             <p>3年間の学習と制作を通じて習得したツールと経験。</p>
             <ul class="tool-bars">
               <li>
-                <div class="tool-head"><span>Unity</span><small>2年</small></div>
+                <div class="tool-head"><span class="tool-name"><img class="app-icon" src="files/icons/unity.svg" alt="" width="28" height="28" loading="lazy"><span>Unity</span></span><small>2年</small></div>
                 <div class="tool-bar"><span style="--w: 66%"></span></div>
               </li>
               <li>
-                <div class="tool-head"><span>Visual Studio Code</span><small>2年</small></div>
+                <div class="tool-head"><span class="tool-name"><img class="app-icon" src="files/icons/visualstudiocode.svg" alt="" width="28" height="28" loading="lazy"><span>Visual Studio Code</span></span><small>2年</small></div>
                 <div class="tool-bar"><span style="--w: 66%"></span></div>
               </li>
               <li>
-                <div class="tool-head"><span>Git</span><small>2年</small></div>
+                <div class="tool-head"><span class="tool-name"><img class="app-icon" src="files/icons/git.svg" alt="" width="28" height="28" loading="lazy"><span>Git</span></span><small>2年</small></div>
                 <div class="tool-bar"><span style="--w: 66%"></span></div>
               </li>
               <li>
-                <div class="tool-head"><span>PowerPoint</span><small>2年</small></div>
+                <div class="tool-head"><span class="tool-name"><img class="app-icon" src="files/icons/microsoftpowerpoint.svg" alt="" width="28" height="28" loading="lazy"><span>PowerPoint</span></span><small>2年</small></div>
                 <div class="tool-bar"><span style="--w: 66%"></span></div>
               </li>
               <li>
-                <div class="tool-head"><span>Excel / Googleスプレッドシート</span><small>2年</small></div>
+                <div class="tool-head"><span class="tool-name"><img class="app-icon" src="files/icons/microsoftexcel.svg" alt="" width="28" height="28" loading="lazy"><span>Excel</span></span><small>2年</small></div>
                 <div class="tool-bar"><span style="--w: 66%"></span></div>
               </li>
               <li>
-                <div class="tool-head"><span>Blender</span><small>1年</small></div>
+                <div class="tool-head"><span class="tool-name"><img class="app-icon" src="files/icons/googlesheets.svg" alt="" width="28" height="28" loading="lazy"><span>Googleスプレッドシート</span></span><small>2年</small></div>
+                <div class="tool-bar"><span style="--w: 66%"></span></div>
+              </li>
+              <li>
+                <div class="tool-head"><span class="tool-name"><img class="app-icon" src="files/icons/blender.svg" alt="" width="28" height="28" loading="lazy"><span>Blender</span></span><small>1年</small></div>
                 <div class="tool-bar"><span style="--w: 33%"></span></div>
               </li>
               <li>
-                <div class="tool-head"><span>Unreal Engine 5</span><small>3か月</small></div>
+                <div class="tool-head"><span class="tool-name"><img class="app-icon" src="files/icons/unrealengine.svg" alt="" width="28" height="28" loading="lazy"><span>Unreal Engine 5</span></span><small>3か月</small></div>
                 <div class="tool-bar"><span style="--w: 10%"></span></div>
               </li>
             </ul>
@@ -811,14 +704,14 @@
           <article class="skill-card">
             <h3>補助スキル</h3>
             <p>プランナー業務を支える基礎的なスキルや、制作で活かせる知識です。</p>
-            <ul>
-              <li>文章作成・資料構成</li>
-              <li>チーム制作での共有</li>
-              <li>テストプレイからの改善提案</li>
-              <li>基本的なプログラム理解</li>
-              <li>3Dオブジェクトの作成</li>
-              <li>レベルデザイン</li>
-              <li>UIデザイン</li>
+            <ul class="support-skills">
+              <li><img class="app-icon" src="files/icons/microsoftpowerpoint.svg" alt="" width="28" height="28" loading="lazy"><span>文章作成・資料構成<small>PowerPoint</small></span></li>
+              <li><img class="app-icon" src="files/icons/git.svg" alt="" width="28" height="28" loading="lazy"><span>チーム制作での共有<small>Git</small></span></li>
+              <li><img class="app-icon" src="files/icons/googlesheets.svg" alt="" width="28" height="28" loading="lazy"><span>テストプレイからの改善提案<small>Googleスプレッドシート</small></span></li>
+              <li><img class="app-icon" src="files/icons/visualstudiocode.svg" alt="" width="28" height="28" loading="lazy"><span>基本的なプログラム理解<small>Visual Studio Code</small></span></li>
+              <li><img class="app-icon" src="files/icons/blender.svg" alt="" width="28" height="28" loading="lazy"><span>3Dオブジェクトの作成<small>Blender</small></span></li>
+              <li><img class="app-icon" src="files/icons/unity.svg" alt="" width="28" height="28" loading="lazy"><span>レベルデザイン<small>Unity</small></span></li>
+              <li><img class="app-icon" src="files/icons/unity.svg" alt="" width="28" height="28" loading="lazy"><span>UIデザイン<small>Unity</small></span></li>
             </ul>
           </article>
         </div>
@@ -830,13 +723,13 @@
         <div class="section-heading">
           <div class="label">Contact</div>
           <h2>連絡先</h2>
-          <p>メールアドレスやポートフォリオ提出先など、実際に使う情報へ差し替えてください。</p>
+          <p>制作作品・企画・担当内容についてのお問い合わせは、こちらへお願いいたします。</p>
         </div>
 
         <div class="contact-grid">
           <article class="contact-card">
             <h3>Email</h3>
-            <p>shimachan.z@icloud.com</p>
+            <p><a href="mailto:shimachan.z@icloud.com">shimachan.z@icloud.com</a></p>
           </article>
           <article class="contact-card">
             <h3>GitHub / URL</h3>
@@ -861,6 +754,7 @@
 
   <script src="scripts/profile-data.js"></script>
   <script src="scripts/main.js"></script>
+  <script src="scripts/game-gallery.js"></script>
 </body>
 
 </html>

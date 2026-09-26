@@ -223,7 +223,9 @@ h1 {
   font-size: 1.15rem;
   display: block;
   line-height: 1.4;
-  max-width: 18ch;
+  max-width: none;
+  text-wrap: pretty;
+  word-break: auto-phrase;
 }
 
 .preview p {

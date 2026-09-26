@@ -1,54 +1,48 @@
-    <section class="hero">
-      <div class="container hero-grid">
-        <div class="hero-main">
-          <div class="eyebrow">ゲームプランナー志望</div>
-          <h1>島本善太<br>Portfolio Site</h1>
-          <p class="lead">
-            遊びの面白さを言語化と設計で整理し、企画と仕様書で形にしていく。考えたことを大切にして、作品と企画書を完成させ、考え方と製作能力が分かるポートフォリオをまとめました。
-          </p>
-          <div class="hero-actions">
-            <a class="button primary" href="#featured-works">注目作品を見る</a>
-            <a class="button secondary" href="#works">ゲーム作品を見る</a>
-            <a class="button secondary" href="#proposals">企画書を見る</a>
-            <a class="button secondary" href="#specifications">仕様書を見る</a>
-          </div>
-
-          <div class="stats">
-            <div class="stat">
-              <strong>4</strong>
-              <span>制作ゲーム</span>
-            </div>
-            <div class="stat">
-              <strong>6</strong>
-              <span>企画書</span>
-            </div>
-            <div class="stat">
-              <strong>3</strong>
-              <span>仕様書</span>
-            </div>
-            <div class="stat stat--row">
-              <strong>学校</strong>
-              <span>札幌デザイン＆テクノロジー専門学校</span>
-            </div>
+    <section class="hero portfolio-hero" aria-labelledby="portfolio-title">
+      <div class="game-gallery container" data-game-gallery aria-labelledby="game-gallery-title">
+        <div class="game-gallery-heading">
+          <h2 id="game-gallery-title">公開ゲーム <strong>4</strong><span>作品</span></h2>
+          <div class="game-gallery-actions">
+            <a href="#works">作品一覧</a>
+            <button class="gallery-toggle" type="button" aria-label="自動巡回を一時停止" title="自動巡回を一時停止" hidden>
+              <svg class="gallery-pause-icon" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="14" y="3" width="5" height="18" rx="1"></rect><rect x="5" y="3" width="5" height="18" rx="1"></rect></svg>
+              <svg class="gallery-play-icon" aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"></path></svg>
+            </button>
           </div>
         </div>
-
-        <aside class="hero-side">
-          <div class="preview">
-            <small>Main Focus</small>
-            <strong>遊びの核を言語化し、ゲームとして実装させる企画設計</strong>
-            <p>面白さの本質を理解し、レイヤー構造を検証したルール設計を施しています。</p>
+        <div class="game-gallery-viewport">
+          <div class="game-gallery-track">
+            <ul class="game-gallery-group">
+              <li><a class="game-icon-link" href="#game-line-boundary"><span class="game-icon-frame"><img class="game-icon-art" src="files/game-icons/line-boundary.png" alt="" width="500" height="500" fetchpriority="high"></span><span>線のこちら側 / 向こう側</span></a></li>
+              <li><a class="game-icon-link" href="#game-hanten-assassination"><span class="game-icon-frame"><img class="game-icon-art" src="files/game-icons/hanten-assassination.jpeg" alt="" width="1024" height="1024"></span><span>反転暗殺</span></a></li>
+              <li><a class="game-icon-link" href="#game-teruteru-wars"><span class="game-icon-frame"><img class="game-icon-art" src="files/game-icons/teruteru-wars.png" alt="" width="500" height="500"></span><span>てるてるウォーズ</span></a></li>
+              <li><a class="game-icon-link" href="#game-futago"><span class="game-icon-frame"><img class="game-icon-art" src="files/game-icons/futago.png" alt="" width="500" height="500"></span><span>双子</span></a></li>
+            </ul>
           </div>
-          <div class="preview" style="background: linear-gradient(135deg, #2f63c9 0%, #5b8bee 100%);">
-            <small>School</small>
-            <strong>札幌デザイン＆テクノロジー専門学校</strong>
-            <p>スーパーゲームクリエーター専攻で学びながら、ゲーム企画と制作に取り組んでいます。</p>
+        </div>
+      </div>
+      <div class="hero-caption">
+        <div class="container">
+          <p class="hero-kicker">ゲームプランナー志望</p>
+          <h1 id="portfolio-title">島本善太<span>ZENTA SHIMAMOTO</span></h1>
+          <p class="hero-statement">遊びを考える。<wbr>仲間と、最後までつくる。</p>
+          <p class="hero-summary">企画・ルール設計・仕様整理から、チームでの制作まで。<br>自主開催の3日間ゲームジャムでも、完成までやり切っています。</p>
+          <div class="hero-actions">
+            <a class="button primary launcher-download-link" href="https://github.com/kuon-haruto/portfolio/releases/download/launcher-v0.2.0/AppInstaller-Portable-0.2.0.zip" aria-describedby="hero-download-info" title="インストール不要のWindows用ZIP版をダウンロード">
+              <svg aria-hidden="true" focusable="false" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" x2="12" y1="15" y2="3"></line></svg>
+              <span>インストール不要で<wbr>使う</span>
+            </a>
+            <a class="button secondary" href="#featured-works">代表作と担当内容</a>
+            <a class="button secondary" href="#about">自己紹介</a>
           </div>
-          <div class="preview" style="background: linear-gradient(135deg, #1f6d67 0%, #4ca89d 100%);">
-            <small>Portfolio Theme</small>
-            <strong>作品だけでなく、企画意図と改善視点まで伝える</strong>
-            <p>背景や理由が読みやすく、整理された資料を提示しています。</p>
-          </div>
-        </aside>
+          <p class="hero-download-info" id="hero-download-info"><span>Windows 10 / 11（64bit）専用</span><span>5作品収録 / ZIP 約1.13 GB</span></p>
+        </div>
       </div>
     </section>
+    <div class="proof-band">
+      <div class="container proof-grid">
+        <div><small>SELECTION / 2025</small><strong>神エボ 1次審査通過</strong><span>神ゲーエボリューション2025</span></div>
+        <div><small>SELF-INITIATED</small><strong>3日間で、作り切る。</strong><span>仲間と自主開催するゲームジャム</span></div>
+        <div><small>TEAM PRODUCTION</small><strong>8人制作で企画・設計を担当</strong><span>V-Link Battle</span></div>
+      </div>
+    </div>

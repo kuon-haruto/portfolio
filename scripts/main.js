@@ -140,6 +140,11 @@ const availableFiles = new Set([
   'files/mushi-shooting.pdf',
   'files/seibutsu-master.pdf',
   'files/teruteruwars_proposal.pdf',
+  'files/futago_proposal.pdf',
+  'files/kochiratomukou_spec.pdf',
+  'files/hanntenn-ansatu_spec.pdf',
+  'files/teruteru-wars_spec.pdf',
+  'files/futago_spec.pdf',
 ]);
 
 const setupFileLinks = () => {
@@ -167,7 +172,7 @@ const guideMessages = {
   '': 'ようこそ！ナビの「プラン」です。ポートフォリオをご案内いたします。',
   about: 'まずはプロフィールです。人柄や強みをぜひご覧ください。',
   'featured-works': 'こちらは注目作品です。実績のあるイチオシ作品で、プレイ動画もご覧いただけます。',
-  works: '制作したゲームの一覧です。「ゲームをプレイ」ボタンから実際にお楽しみいただけます。',
+  works: '制作したゲームの一覧です。Windows用の「アプリインストーラー」に、V-Link Battleを含む5作品を収録しています。インストール不要のZIP版も用意しています。',
   proposals: '企画書はPDFでご覧いただけます。企画の意図まで丁寧にまとめています。',
   specifications: '仕様書コーナーです。設計力はこちらでご確認ください。',
   thinking: '企画の際に大切にしている考え方をまとめています。',
@@ -245,7 +250,7 @@ const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
 const guideState = {
   size: clamp(parseInt(storage.get('guideSize'), 10) || 60, 40, 96),
   design: DESIGN_KEYS.includes(storage.get('guideDesign')) ? storage.get('guideDesign') : 'robot',
-  hidden: storage.get('guideHidden') === '1',
+  hidden: storage.get('guideHidden') !== '0',
   chat: storage.get('guideChat') === '1', // 質問コーナーの表示状態
   bubbleW: clamp(parseInt(storage.get('guideBubbleW'), 10) || 280, 200, 1200), // 吹き出しの幅
   chatH: clamp(parseInt(storage.get('guideChatH'), 10) || 150, 80, 1000), // 質問エリアの高さ
@@ -647,9 +652,6 @@ const setActiveLink = () => {
     link.classList.toggle('active', link.getAttribute('href') === `#${currentId}`);
   });
 
-  if (currentId in achievements) {
-    unlockAchievement(currentId);
-  }
   updateGuide(currentId);
 };
 
