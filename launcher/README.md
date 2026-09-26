@@ -27,6 +27,15 @@ pnpm dist
 
 開発起動は `pnpm start`、画面検証は `pnpm test:ui`。`pnpm test:install` は双子をテスト領域へ展開し、実際にゲームを起動して終了します。出力・スクリーンショットは `test-output/` に保存します。
 
+インストール済みアプリと公開先との疎通確認:
+
+```powershell
+$env:ZENTA_TEST_APP = "$env:LOCALAPPDATA/Programs/Zenta Game Library/Zenta Game Library.exe"
+node tests/live-release-smoke.cjs
+```
+
+`ZENTA_TEST_REMOTE=1` を設定して `node tests/install-smoke.cjs futago` を実行すると、同梱ZIPではなく公開済みGitHubファイルからの取得・起動を検証します。検証範囲と未検証事項は `TESTING.md` に記録しています。
+
 ## ゲームのWindows版を作成
 
 `data/game-sources.json` に4作品のリポジトリ、固定コミット、Unityバージョンを記録しています。該当UnityとWindows Build Support、および有効なUnityライセンスを用意してください。

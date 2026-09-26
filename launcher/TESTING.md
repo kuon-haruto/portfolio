@@ -23,5 +23,8 @@ Launch checks verify ZIP integrity, extracted files, the installed version marke
 
 - Unpacked Windows launcher built successfully.
 - NSIS installer built (1,056,973,775 bytes) and installed successfully into the per-user Programs directory. The installed, packaged app successfully installed and launched Futago with isolated test data.
-- GitHub Release has not been published. Live GitHub download and in-place launcher self-update across two public releases are not yet verified.
+- Public release: https://github.com/kuon-haruto/portfolio/releases/tag/launcher-v0.1.0 . All ten uploaded assets were verified against their local SHA-256 digests.
+- The installed app downloaded Futago from the public GitHub asset, verified it, extracted it, and launched the executable successfully. Both the public game catalog and the launcher's latest-version feed were checked from the installed UI.
+- A fresh sparse clone of source commit `9ad1465` successfully ran `pnpm install --frozen-lockfile`, `pnpm test`, `pnpm fetch:games`, and `pnpm dist`. The resulting installer is in the local ignored clone-verification directory. It is not expected to be byte-identical because build timestamps and generated installer metadata differ.
+- In-place launcher self-update across two different public app versions is not yet verified; this is the first public app version. Version detection, public feed access, the NSIS installer, and game-update success/failure paths have been verified separately.
 - Builds are unsigned. Code-signing certificate setup is not included.
