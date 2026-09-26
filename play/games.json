@@ -1,6 +1,115 @@
 {
   "games": [
     {
+      "id": "v-link-battle",
+      "title": "V-Link Battle",
+      "genre": "3D対戦アクション",
+      "description": "VTuberの配信を題材に、攻撃とガードで駆け引きを繰り広げる対戦アクション。コメントや通知など、配信の盛り上がりを表現した演出が特徴です。",
+      "objective": "攻撃とガードを使い分け、対戦相手に勝利する。",
+      "duration": "約半年〜1年",
+      "teamSize": 8,
+      "howToPlay": [
+        "キャラクターを選択して対戦を開始します。",
+        "W / A / S / D で移動、J で弱攻撃、K で強攻撃、U でガードします。",
+        "ゲームパッドにも対応しています。左スティックまたは方向キーで移動し、下ボタンで弱攻撃、左ボタンで強攻撃、右ボタンでガードします。"
+      ],
+      "icon": "../files/game-icons/v-link-battle.png",
+      "build": {
+        "loaderUrl": "builds/v-link-battle/v1/Build/5336a4b2c43054286fd70b1faa467eee.loader.js",
+        "dataUrl": "builds/v-link-battle/v1/Build/513138eacb8007231ded0f320d8d33db.data.unityweb",
+        "frameworkUrl": "builds/v-link-battle/v1/Build/198fa04d65b316ff44d5469dec2ca3f3.framework.js.unityweb",
+        "codeUrl": "builds/v-link-battle/v1/Build/74bbe058f4196363f20e3ef631361796.wasm.unityweb",
+        "streamingAssetsUrl": "builds/v-link-battle/v1/StreamingAssets",
+        "companyName": "DefaultCompany",
+        "productName": "V-LinkBattle",
+        "productVersion": "0.1.0",
+        "unityVersion": "2022.3.50f1",
+        "simplifiedEffects": 14,
+        "dataParts": [
+          {
+            "url": "builds/v-link-battle/v1/Build/513138eacb8007231ded0f320d8d33db.data.unityweb.part-000",
+            "bytes": 50331648,
+            "sha256": "7481ec03cad3455ee0fdd5e09ce0549b99bc7b3f7d0237b9214f3990b3394827"
+          },
+          {
+            "url": "builds/v-link-battle/v1/Build/513138eacb8007231ded0f320d8d33db.data.unityweb.part-001",
+            "bytes": 50331648,
+            "sha256": "f22f548bb0781ffb8c04dd28c5fdf1c2ad4cee655636688b55bec30c268c422f"
+          },
+          {
+            "url": "builds/v-link-battle/v1/Build/513138eacb8007231ded0f320d8d33db.data.unityweb.part-002",
+            "bytes": 50331648,
+            "sha256": "22b69609e39aaf7e72ba18f8427a58ff7707f0e25e92f18c467d2601a2eabd77"
+          },
+          {
+            "url": "builds/v-link-battle/v1/Build/513138eacb8007231ded0f320d8d33db.data.unityweb.part-003",
+            "bytes": 50331648,
+            "sha256": "f687e3da6a467d94ec0493f2bc22eacf271af57931a517df8fd4a571451c3301"
+          },
+          {
+            "url": "builds/v-link-battle/v1/Build/513138eacb8007231ded0f320d8d33db.data.unityweb.part-004",
+            "bytes": 50331648,
+            "sha256": "c9cfd11f3990dadefcd8cfacbf6aabbf9524c4016e5ffee47396b9d62fd24c89"
+          },
+          {
+            "url": "builds/v-link-battle/v1/Build/513138eacb8007231ded0f320d8d33db.data.unityweb.part-005",
+            "bytes": 17479310,
+            "sha256": "44376200077fc9826d9e736e761d59559228cd49c895140da4d18500c1fb30b4"
+          }
+        ]
+      },
+      "sourceCommit": "f880cf1582ccda1e9aae945cea72e2a5159514f5",
+      "browserNotice": "Web版では通知ウィンドウをゲーム画面内に表示し、一部のエフェクトを簡易表示しています。",
+      "downloadBytes": 280972531,
+      "integrity": [
+        {
+          "file": "198fa04d65b316ff44d5469dec2ca3f3.framework.js.unityweb",
+          "bytes": 83169,
+          "sha256": "c0ed916c402eb6227ba53e99f60ba1768ab8c21943fdc52226041fb553ba2bed"
+        },
+        {
+          "file": "513138eacb8007231ded0f320d8d33db.data.unityweb.part-000",
+          "bytes": 50331648,
+          "sha256": "7481ec03cad3455ee0fdd5e09ce0549b99bc7b3f7d0237b9214f3990b3394827"
+        },
+        {
+          "file": "513138eacb8007231ded0f320d8d33db.data.unityweb.part-001",
+          "bytes": 50331648,
+          "sha256": "f22f548bb0781ffb8c04dd28c5fdf1c2ad4cee655636688b55bec30c268c422f"
+        },
+        {
+          "file": "513138eacb8007231ded0f320d8d33db.data.unityweb.part-002",
+          "bytes": 50331648,
+          "sha256": "22b69609e39aaf7e72ba18f8427a58ff7707f0e25e92f18c467d2601a2eabd77"
+        },
+        {
+          "file": "513138eacb8007231ded0f320d8d33db.data.unityweb.part-003",
+          "bytes": 50331648,
+          "sha256": "f687e3da6a467d94ec0493f2bc22eacf271af57931a517df8fd4a571451c3301"
+        },
+        {
+          "file": "513138eacb8007231ded0f320d8d33db.data.unityweb.part-004",
+          "bytes": 50331648,
+          "sha256": "c9cfd11f3990dadefcd8cfacbf6aabbf9524c4016e5ffee47396b9d62fd24c89"
+        },
+        {
+          "file": "513138eacb8007231ded0f320d8d33db.data.unityweb.part-005",
+          "bytes": 17479310,
+          "sha256": "44376200077fc9826d9e736e761d59559228cd49c895140da4d18500c1fb30b4"
+        },
+        {
+          "file": "5336a4b2c43054286fd70b1faa467eee.loader.js",
+          "bytes": 44254,
+          "sha256": "cc62f6eb95c3d6723669537804b4010787528ec5986ac9a92cf15dfcafa633b2"
+        },
+        {
+          "file": "74bbe058f4196363f20e3ef631361796.wasm.unityweb",
+          "bytes": 11707558,
+          "sha256": "2e37a5b001c5036893e22a83960397414f811bb3a2fafd86beac140df06988a5"
+        }
+      ]
+    },
+    {
       "id": "line-boundary",
       "title": "線のこちら側 / 向こう側",
       "genre": "パズルアクション",

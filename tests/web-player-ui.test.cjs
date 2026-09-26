@@ -2,6 +2,7 @@ const assert = require('node:assert/strict');
 const { test, before, after } = require('node:test');
 const { chromium } = require('../launcher/node_modules/playwright');
 const { createServer } = require('../tools/web-test-server.cjs');
+const { createHash } = require('node:crypto');
 let server, browser, base;
 
 before(async () => {
@@ -98,6 +99,49 @@ test('runtime errors do not become false successful loads', async () => {
     assert.equal(await page.locator('#fullscreen').isDisabled(), true);
   } finally { await page.close(); }
 });
+
+for (const mode of ['success', 'missing', 'corrupt']) {
+  test(`split data: ${mode}, with verified parts and temporary URL cleanup`, async () => {
+    const page = await browser.newPage();
+    try {
+      const manifest = structuredClone(require('../play/games.json'));
+      const game = manifest.games.find(game => game.id === 'line-boundary');
+      const buffers = [Buffer.from([1, 2, 3]), Buffer.from([4, 5])];
+      game.build.dataParts = buffers.map((bytes, index) => ({
+        url: `builds/test/${index}.part`, bytes: bytes.length,
+        sha256: createHash('sha256').update(bytes).digest('hex'),
+      }));
+      await page.addInitScript(() => {
+        window.revoked = [];
+        const revoke = URL.revokeObjectURL.bind(URL);
+        URL.revokeObjectURL = url => { window.revoked.push(url); revoke(url); };
+      });
+      await page.route('**/games.json', route => route.fulfill({ json: manifest }));
+      await page.route('**/builds/test/*.part', route => {
+        const index = Number(new URL(route.request().url()).pathname.split('/').at(-1).split('.')[0]);
+        if (mode === 'missing' && index === 1) return route.fulfill({ status: 404 });
+        return route.fulfill({ body: mode === 'corrupt' && index === 1 ? Buffer.from([9, 9]) : buffers[index] });
+      });
+      await page.route('**/*.loader.js', route => route.fulfill({ contentType: 'text/javascript', body: `
+        window.createUnityInstance = async (canvas, config, progress) => {
+          window.started = true;
+          window.bytes = Array.from(new Uint8Array(await (await fetch(config.dataUrl)).arrayBuffer()));
+          window.blobPolicy = config.cacheControl(config.dataUrl); progress(1); return {};
+        };` }));
+      await page.goto(base + '/play/line-boundary/');
+      await page.waitForFunction(() => ['ready', 'error'].includes(document.getElementById('player-stage').dataset.state));
+      if (mode === 'success') {
+        assert.deepEqual(await page.evaluate(() => window.bytes), [1, 2, 3, 4, 5]);
+        assert.equal(await page.evaluate(() => window.blobPolicy), 'no-store');
+        assert.equal(await page.evaluate(() => window.revoked.length), 1);
+      } else {
+        assert.equal(await page.locator('#player-stage').getAttribute('data-state'), 'error');
+        assert.equal(await page.evaluate(() => Boolean(window.started)), false);
+        assert.equal(await page.locator('#retry').isVisible(), true);
+      }
+    } finally { await page.close(); }
+  });
+}
 
 test('test server does not expose other portfolio files', async () => {
   for (const route of ['/', '/index.html', '/tools/WEB-GAMES.md', '/play/%2e%2e%5cindex.html']) {

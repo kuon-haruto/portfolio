@@ -107,7 +107,7 @@ class PortfolioTests(unittest.TestCase):
             with self.subTest(section=section):
                 self.assertEqual(len(links), 1)
                 self.assertEqual(links[0]["href"], "https://kuon-haruto.github.io/portfolio/play/")
-                self.assertIn("Web版4作品", source)
+                self.assertIn("Web版5作品", source)
                 self.assertIn("PC", source)
                 self.assertIn("ブラウザーでプレイ", source)
 
@@ -134,7 +134,7 @@ class PortfolioTests(unittest.TestCase):
                     self.assertIn(description, ids)
         self.assertIn("未署名のアプリ", self.html)
 
-    def test_four_games_have_direct_browser_links(self):
+    def test_five_games_have_direct_browser_links(self):
         self.assertNotIn("unityroom.com/games/", self.html)
         self.assertNotIn("プレイURL", self.html)
         links = [
@@ -143,21 +143,23 @@ class PortfolioTests(unittest.TestCase):
         ]
         self.assertEqual(set(links), {
             f"https://kuon-haruto.github.io/portfolio/play/{game}/" for game in
-            ("line-boundary", "hanten-assassination", "teruteru-wars", "futago")
+            ("line-boundary", "hanten-assassination", "teruteru-wars", "futago", "v-link-battle")
         })
         for file in ("index.html", "scripts/main.js", "scripts/profile-data.js"):
             with self.subTest(file=file):
                 source = (ROOT / file).read_text(encoding="utf-8")
                 self.assertNotIn("ゲームを遊ぶ", source)
 
-    def test_gallery_contains_four_distinct_games_and_no_hero_screenshot(self):
+    def test_gallery_contains_five_distinct_games_and_no_hero_screenshot(self):
         hero = (ROOT / "src/sections/hero.html").read_text(encoding="utf-8")
         document = Document(hero)
         links = [
             attrs["href"] for tag, attrs in document.elements
             if tag == "a" and attrs.get("class") == "game-icon-link"
         ]
-        self.assertEqual(len(set(links)), 4)
+        self.assertEqual(len(set(links)), 5)
+        self.assertIn("#featured-works", links)
+        self.assertIn("files/game-icons/v-link-battle.png", hero)
         self.assertNotIn("hero-scene", hero)
         self.assertNotIn("v-link-battle.jpg", hero)
 

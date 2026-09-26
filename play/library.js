@@ -7,6 +7,25 @@
   let failed = false;
   const url = relative => new URL(relative, base).href;
 
+  async function assembleData(parts) {
+    const buffers = [];
+    const total = parts.reduce((sum, part) => sum + part.bytes, 0);
+    let downloaded = 0;
+    for (const part of parts) {
+      const response = await fetch(url(part.url));
+      if (!response.ok) throw new Error('ゲームデータの取得に失敗しました。再試行してください。');
+      const buffer = await response.arrayBuffer();
+      const digest = await crypto.subtle.digest('SHA-256', buffer);
+      const checksum = Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, '0')).join('');
+      if (buffer.byteLength !== part.bytes || checksum !== part.sha256) throw new Error('ゲームデータを確認できませんでした。再試行してください。');
+      buffers.push(buffer);
+      downloaded += buffer.byteLength;
+      $('loading-progress').value = .45 * downloaded / total;
+      $('loading-message').textContent = 'ゲームデータを読み込んでいます ' + Math.round(downloaded / 1024 ** 2) + ' / ' + Math.ceil(total / 1024 ** 2) + ' MB';
+    }
+    return URL.createObjectURL(new Blob(buffers, { type: 'application/octet-stream' }));
+  }
+
   function fail(error) {
     failed = true;
     $('player-stage').dataset.state = 'error';
@@ -57,8 +76,8 @@
     $('loading-size').textContent = '読み込み容量：約' + Math.ceil(game.downloadBytes / 1024 ** 2) + ' MB';
     $('game-description').textContent = game.description;
     $('game-meta').textContent = game.teamSize + '人制作 / ' + game.duration;
-    if (game.build.simplifiedEffects > 0) {
-      $('player-notice').textContent = 'Web版では一部のエフェクトを簡易表示しています。';
+    if (game.browserNotice || game.build.simplifiedEffects > 0) {
+      $('player-notice').textContent = game.browserNotice || 'Web版では一部のエフェクトを簡易表示しています。';
       $('player-notice').hidden = false;
     }
     $('objective').textContent = game.objective;
@@ -73,25 +92,30 @@
       document.body.append(script);
     });
     const build = game.build;
-    unity = await window.createUnityInstance($('game-canvas'), {
-      dataUrl: url(build.dataUrl), frameworkUrl: url(build.frameworkUrl), codeUrl: url(build.codeUrl),
-      streamingAssetsUrl: url(build.streamingAssetsUrl), companyName: build.companyName,
-      productName: build.productName, productVersion: build.productVersion,
-      // The original games use a fixed 1920x1080 UI; CSS scales that surface.
-      matchWebGLToCanvasSize: false,
-      devicePixelRatio: 1,
-      showBanner(message, type) {
-        if (type === 'error') fail(message);
-        else if (type === 'warning') {
-          $('player-notice').textContent = message;
-          $('player-notice').hidden = false;
-        }
-      },
-    }, progress => {
-      if (failed) return;
-      $('loading-progress').value = progress;
-      $('loading-message').textContent = progress >= .9 ? 'ゲームを起動しています' : 'ゲームを読み込んでいます ' + Math.round(progress * 100) + '%';
-    });
+    let dataBlob;
+    try {
+      if (build.dataParts) dataBlob = await assembleData(build.dataParts);
+      unity = await window.createUnityInstance($('game-canvas'), {
+        dataUrl: dataBlob || url(build.dataUrl), frameworkUrl: url(build.frameworkUrl), codeUrl: url(build.codeUrl),
+        ...(dataBlob ? { cacheControl: () => 'no-store' } : {}),
+        streamingAssetsUrl: url(build.streamingAssetsUrl), companyName: build.companyName,
+        productName: build.productName, productVersion: build.productVersion,
+        // The original games use a fixed 1920x1080 UI; CSS scales that surface.
+        matchWebGLToCanvasSize: false,
+        devicePixelRatio: 1,
+        showBanner(message, type) {
+          if (type === 'error') fail(message);
+          else if (type === 'warning') {
+            $('player-notice').textContent = message;
+            $('player-notice').hidden = false;
+          }
+        },
+      }, progress => {
+        if (failed) return;
+        $('loading-progress').value = build.dataParts ? .45 + .55 * progress : progress;
+        $('loading-message').textContent = build.dataParts || progress >= .9 ? 'ゲームを起動しています' : 'ゲームを読み込んでいます ' + Math.round(progress * 100) + '%';
+      });
+    } finally { if (dataBlob) URL.revokeObjectURL(dataBlob); }
     if (failed) return;
     $('game-state').hidden = true;
     $('player-stage').dataset.state = 'ready';

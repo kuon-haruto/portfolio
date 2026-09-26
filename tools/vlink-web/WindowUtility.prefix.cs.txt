@@ -1,0 +1,53 @@
+using System;
+using UnityEngine;
+using Cysharp.Threading.Tasks;
+using Windows.Win32.Foundation;
+using Windows.Win32.UI.WindowsAndMessaging;
+
+namespace TechC.VBattle.Core.Window
+{
+    // Web windows use canvas coordinates while retaining the original game API.
+    public static class WindowUtility
+    {
+        public static HWND GetUnityWindowHandle() => HWND.Null;
+        public static RECT GetUnityGameViewRect() => new RECT { right = Screen.width, bottom = Screen.height };
+        public static HWND FindWindowWithTitleSubstring(string value) => HWND.Null;
+        public static HWND GetWindowByProcessId(int id, string name = null) => HWND.Null;
+        public static void GetClientRect(HWND hwnd, out RECT rect) => rect = GetUnityGameViewRect();
+        public static RECT GetWindowRect(HWND hwnd) => BrowserWindowSurface.Find((IntPtr)hwnd)?.Bounds ?? default;
+        public static bool GetWindowRect(HWND hwnd, out RECT rect) { rect = GetWindowRect(hwnd); return IsValidWindow(hwnd); }
+        public static bool IsValidWindow(HWND hwnd) => BrowserWindowSurface.Find((IntPtr)hwnd) != null;
+        public static bool IsWindowVisible(HWND hwnd) => BrowserWindowSurface.Find((IntPtr)hwnd)?.Visible == true;
+        public static bool MoveWindow(HWND hwnd, int x, int y)
+        {
+            var item = BrowserWindowSurface.Find((IntPtr)hwnd);
+            if (item == null) return false;
+            int width = item.Bounds.Width, height = item.Bounds.Height;
+            item.Bounds = new RECT { left = x, top = y, right = x + width, bottom = y + height };
+            return true;
+        }
+        public static bool ResizeWindow(HWND hwnd, int width, int height)
+        {
+            var item = BrowserWindowSurface.Find((IntPtr)hwnd);
+            if (item == null) return false;
+            item.Bounds.right = item.Bounds.left + Math.Max(0, width);
+            item.Bounds.bottom = item.Bounds.top + Math.Max(0, height);
+            return true;
+        }
+        public static bool SetWindowVisibility(IntPtr hwnd, int command)
+        {
+            var item = BrowserWindowSurface.Find(hwnd);
+            if (item == null) return false;
+            item.Visible = command != 0;
+            return true;
+        }
+        public static bool SetWindowPos(HWND hwnd, HWND after, int x, int y, int width, int height, SET_WINDOW_POS_FLAGS flags)
+        {
+            if ((flags & SET_WINDOW_POS_FLAGS.SWP_NOMOVE) == 0) MoveWindow(hwnd, x, y);
+            if ((flags & SET_WINDOW_POS_FLAGS.SWP_NOSIZE) == 0) ResizeWindow(hwnd, width, height);
+            return IsValidWindow(hwnd);
+        }
+        public static bool DestroyWindowHandle(IntPtr hwnd) => BrowserWindowSurface.Remove(hwnd);
+        public static void InvalidateWindow(HWND hwnd) { }
+        public static void SetRedraw(IntPtr hwnd, bool redraw) { }
+        public static void SetWindowTheme(HWND hwnd, string theme, string sub = null) { }

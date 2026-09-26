@@ -109,7 +109,7 @@
         "W / A / S / D で移動、J で弱攻撃、K で強攻撃、U でガードします。",
         "ゲームパッドにも対応しています。左スティックまたは方向キーで移動し、下ボタンで弱攻撃、左ボタンで強攻撃、右ボタンでガードします。"
       ],
-      "icon": "v-link-battle.jpg",
+      "icon": "v-link-battle.png",
       "package": {
         "version": "1.0.0",
         "executable": "V-LinkBattle.exe",

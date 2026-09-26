@@ -21,21 +21,29 @@ foreach ($game in $config.games) {
     $project = Join-Path $sourceRoot $game.id
     if (!(Test-Path -LiteralPath $project)) {
         $localSource = Join-Path $root "launcher/game-sources/$($game.id)"
-        & git -c "safe.directory=$($localSource.Replace('\', '/'))" clone --no-hardlinks --no-checkout $localSource $project
+        if (Test-Path -LiteralPath $localSource) {
+            & git -c "safe.directory=$($localSource.Replace('\', '/'))" clone --no-hardlinks --no-checkout $localSource $project
+        } else {
+            & git -c http.sslBackend=openssl clone --no-checkout $game.repository $project
+        }
         if ($LASTEXITCODE) { throw "Clone failed: $($game.id)" }
         & git -C $project checkout --detach $game.commit
         if ($LASTEXITCODE) { throw "Checkout failed: $($game.id)" }
     }
     $commit = & git -C $project rev-parse HEAD
     if ($LASTEXITCODE -or $commit -ne $game.commit) { throw "Unexpected source commit: $project" }
-    if (& git -C $project diff --name-only HEAD -- Assets Packages) { throw "Review source changes before building: $project" }
+    if ($game.id -eq 'v-link-battle') {
+        & node (Join-Path $PSScriptRoot 'prepare-vlink-web.cjs') $project
+        if ($LASTEXITCODE) { throw 'V-Link Web adaptation failed.' }
+    } elseif (& git -C $project diff --name-only HEAD -- Assets Packages) { throw "Review source changes before building: $project" }
     $editorFolder = Join-Path $project 'Assets/Editor'
     New-Item -ItemType Directory -Force -Path $editorFolder | Out-Null
     Get-ChildItem -LiteralPath (Join-Path $PSScriptRoot 'unity') -Filter '*.cs' | Copy-Item -Destination $editorFolder
     $output = Join-Path $outputRoot $game.id
     $log = Join-Path $logs "$($game.id)-web-build.log"
     $env:PORTFOLIO_WEB_OUTPUT = $output
-    $env:PORTFOLIO_WEB_SIMPLE_EFFECTS = if ($game.id -in @('teruteru-wars', 'futago')) { '1' } else { '0' }
+    $env:PORTFOLIO_WEB_SIMPLE_EFFECTS = if ($game.id -in @('teruteru-wars', 'futago', 'v-link-battle')) { '1' } else { '0' }
+    $env:PORTFOLIO_WEB_VLINK = if ($game.id -eq 'v-link-battle') { '1' } else { '0' }
     $buildFolder = [IO.Path]::GetFullPath((Join-Path $output 'Build'))
     $expectedFolder = [IO.Path]::GetFullPath((Join-Path $outputRoot "$($game.id)/Build"))
     if ($buildFolder -ne $expectedFolder -or !$buildFolder.StartsWith($outputRoot + [IO.Path]::DirectorySeparatorChar)) { throw 'Unsafe build output path.' }

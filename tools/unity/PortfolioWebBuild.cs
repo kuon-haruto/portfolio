@@ -31,6 +31,9 @@ public static class PortfolioWebBuild
         PlayerSettings.WebGL.nameFilesAsHashes = true;
         PlayerSettings.WebGL.template = "APPLICATION:Minimal";
         PlayerSettings.runInBackground = false;
+        // lilToon's build optimizer restores the current scene after scanning assets.
+        if (Environment.GetEnvironmentVariable("PORTFOLIO_WEB_VLINK") == "1")
+            UnityEditor.SceneManagement.EditorSceneManager.OpenScene(scenes[0]);
         using var effects = new PortfolioWebEffects();
         effects.Prepare();
         var report = BuildPipeline.BuildPlayer(new BuildPlayerOptions

@@ -1,14 +1,15 @@
 # Browser Games
 
-The portfolio links to `play/`. Four Unity games run in the browser without
+The portfolio links to `play/`. Five Unity games run in the browser without
 installing the Windows app or manually downloading an archive. Browsers still
 download and cache the selected game's assets. The library does not preload all
-four games. These games are designed for a PC with a keyboard and mouse.
+five games. These games are designed for a PC with a keyboard and mouse.
 Portfolio play links use the published HTTPS URLs, including when the portfolio
 itself is opened as a local HTML file from a USB drive.
 
-V-Link Battle remains available in the Windows release because its Unity source
-project is not present in this workspace.
+V-Link Battle uses the user's current `D:/Vlink` project in an isolated build copy.
+Its native Windows effects are adapted to the game canvas. Details and provenance
+are recorded in [vlink-web/README.md](vlink-web/README.md).
 
 ## Build
 
@@ -19,7 +20,7 @@ project is not present in this workspace.
 3. Run `./tools/build-web-games.ps1`. Sources and intermediate outputs are isolated
    under `%TEMP%/portfolio-web-builds/` to avoid Unicode toolchain path issues.
    Logs are written to `launcher/test-output/*-web-build.log`.
-4. Run `node tools/prepare-web-games.cjs`. This copies the four builds to `play/`,
+4. Run `node tools/prepare-web-games.cjs`. This copies the five builds to `play/`,
    records their checksums, and generates the library and individual game pages.
    `--ready` is for local incremental testing only; it includes completed builds.
 5. Run `python build.py`, `python -m unittest discover -s tests`,
@@ -27,6 +28,8 @@ project is not present in this workspace.
    and `node tests/web-games-smoke.cjs`.
    Browser tests require the launcher's Playwright dependency and Microsoft Edge.
    Set `PLAYWRIGHT_CHANNEL` to test another installed Chromium browser.
+   Set `WEB_TEST_GPU=hardware` to use the installed GPU for V-Link's 3D scenes;
+   software rendering can exceed screenshot timeouts on those scenes.
 
 ## Hosting
 
@@ -38,15 +41,19 @@ and its images for local testing, using a free port printed at startup.
 Unity's gzip decompression fallback is enabled because GitHub Pages cannot add
 custom Content-Encoding headers. The `.unityweb` files therefore load without
 special server configuration. Each file must stay below GitHub's 100 MiB limit.
+Data payloads exceeding that limit are split into 48 MiB parts without recompressing
+or changing game assets. The player verifies each part's size and SHA-256, assembles
+a temporary blob URL, and releases it after Unity loads. Other games retain their
+original single-file loading and Unity cache behavior.
 Different game URL directories isolate Unity's browser save-data paths.
 The player uses a fixed 1920x1080 drawing buffer and scales it with CSS, including
 fullscreen mode. This preserves the fixed-pixel UI in the original Unity scenes;
 automatically resizing Unity's drawing buffer clips those menus on small screens.
 
-Teruteru Wars and Futago use VFX Graph, which requires compute shaders and does
+Teruteru Wars, Futago and V-Link use VFX Graph, which requires compute shaders and does
 not support OpenGL ES. Their Web builds replace those effect components with
-small, colored CPU particle effects. Gameplay scripts and original source clones
-are unchanged. The editor helper restores the temporary prefab bytes after the
+small, colored CPU particle effects. Original source checkouts are unchanged.
+The editor helper restores the temporary prefab bytes after the
 build, and the player displays a simplified-effects notice. This adaptation is
 recorded as `simplifiedEffects` in the build metadata.
 
@@ -62,8 +69,9 @@ Do not silently replace a published build with a different source revision.
 The smoke test checks desktop/mobile page layout (1440x1080 and 390x844), actual
 WebGL startup, nonblank canvas pixels, fullscreen, and that browsing the library
 does not load game payloads. Recorded actions cover stage selection and movement
-in Line Boundary and Hanten, unit placement in Teruteru, and battle commands in
-Futago. The wrapper tests also cover failed requests, retry, runtime errors and
+in Line Boundary and Hanten, unit placement in Teruteru, battle commands in
+Futago, and character selection, battle startup, movement, attack and guard input
+in V-Link. The wrapper tests also cover failed requests, retry, runtime errors and
 image containment at widths of 320, 390, 900 and 1440 pixels.
 Screenshots and logs are saved under `launcher/test-output/web/` (not published).
 This is not a full playthrough or a guarantee of touch-only/mobile gameplay.

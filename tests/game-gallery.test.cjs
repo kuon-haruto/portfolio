@@ -23,8 +23,8 @@ function element() {
 }
 
 function setup(reduced = false) {
-  const links = Array.from({ length: 4 }, element);
-  const copies = Array.from({ length: 4 }, element);
+  const links = Array.from({ length: 5 }, element);
+  const copies = Array.from({ length: 5 }, element);
   const copy = { ...element(), querySelectorAll: () => copies };
   const group = { ...element(), cloneNode: () => copy, contains: target => links.includes(target) };
   const track = { ...element(), appendChild: child => { track.child = child; } };
@@ -49,6 +49,7 @@ test('starts the loop and excludes duplicate links from keyboard navigation', ()
   assert.equal(state.toggle.hidden, false);
   assert.equal(state.viewport.scrollLeft, 0);
   assert.equal(state.track.child.attrs['aria-hidden'], 'true');
+  assert.equal(state.copies.length, 5);
   assert.ok(state.copies.every(link => link.attrs.tabindex === '-1'));
 });
 

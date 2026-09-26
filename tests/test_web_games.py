@@ -15,15 +15,18 @@ class WebGameTests(unittest.TestCase):
     def setUpClass(cls):
         cls.games = json.loads((PLAY / "games.json").read_text(encoding="utf-8"))["games"]
 
-    def test_four_pinned_games(self):
+    def test_five_pinned_games(self):
         sources = json.loads((ROOT / "launcher/data/game-sources.json").read_text(encoding="utf-8"))["games"]
-        self.assertEqual(len(self.games), 4)
+        self.assertEqual(len(self.games), 5)
         self.assertEqual({g["id"]: g["sourceCommit"] for g in self.games},
                          {g["id"]: g["commit"] for g in sources})
         self.assertTrue((ROOT / ".nojekyll").is_file())
         for game in self.games:
-            if game["id"] in ("teruteru-wars", "futago"):
+            if game["id"] in ("teruteru-wars", "futago", "v-link-battle"):
                 self.assertGreater(game["build"].get("simplifiedEffects", 0), 0)
+            if game["id"] == "v-link-battle":
+                self.assertIn("ウィンドウ", game["browserNotice"])
+                self.assertEqual(game["icon"], "../files/game-icons/v-link-battle.png")
 
     def test_build_integrity_and_github_file_limits(self):
         for game in self.games:
@@ -37,7 +40,17 @@ class WebGameTests(unittest.TestCase):
                     self.assertLess(len(data), 100 * 1024 ** 2)
                     self.assertEqual(hashlib.sha256(data).hexdigest(), asset["sha256"])
                 for key in ("dataUrl", "frameworkUrl", "codeUrl"):
-                    data = (PLAY / game["build"][key]).read_bytes()
+                    if key == "dataUrl" and game["build"].get("dataParts"):
+                        parts = game["build"]["dataParts"]
+                        self.assertEqual(len({part["url"] for part in parts}), len(parts))
+                        self.assertGreater(len(parts), 1)
+                        for part in parts:
+                            data = (PLAY / part["url"]).read_bytes()
+                            self.assertEqual(len(data), part["bytes"])
+                            self.assertEqual(hashlib.sha256(data).hexdigest(), part["sha256"])
+                        data = (PLAY / parts[0]["url"]).read_bytes()
+                    else:
+                        data = (PLAY / game["build"][key]).read_bytes()
                     self.assertEqual(data[:2], b"\x1f\x8b")
                 self.assertTrue((PLAY / game["icon"]).is_file())
 

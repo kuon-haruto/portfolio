@@ -1,4 +1,14 @@
 {
+  "v-link-battle": [
+    { "name": "character-select", "key": "Enter", "milliseconds": 150, "wait": 5000 },
+    { "name": "choose-player", "x": 0.541, "y": 0.833 },
+    { "name": "choose-opponent", "x": 0.541, "y": 0.833, "wait": 10000 },
+    { "name": "start-battle", "x": 0.5, "y": 0.4, "wait": 15000 },
+    { "name": "move-right", "key": "d", "milliseconds": 750, "wait": 250 },
+    { "name": "weak-attack", "key": "j", "milliseconds": 150, "wait": 250 },
+    { "name": "guard", "key": "u", "milliseconds": 1000, "wait": 250 },
+    { "name": "strong-attack", "key": "k", "milliseconds": 150, "wait": 8000 }
+  ],
   "line-boundary": [
     { "name": "stage-select", "x": 0.325, "y": 0.585 },
     { "name": "stage-one", "x": 0.25, "y": 0.26 },
