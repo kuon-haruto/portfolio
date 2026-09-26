@@ -1,0 +1,81 @@
+{
+  "name": "zenta-game-library",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Zenta Shimamoto game library for Windows",
+  "author": "Zenta Shimamoto",
+  "main": "src/main.cjs",
+  "scripts": {
+    "postinstall": "node node_modules/electron/install.js",
+    "start": "electron .",
+    "test": "node --test tests/*.test.cjs",
+    "test:ui": "node tests/ui-smoke.cjs",
+    "test:install": "node tests/install-smoke.cjs",
+    "test:update": "node tests/update-smoke.cjs",
+    "dist": "electron-builder --win nsis --publish never",
+    "dist:dir": "electron-builder --win --dir",
+    "pack:game": "node tools/pack-game.cjs",
+    "prepare:release": "node tools/prepare-release.cjs",
+    "fetch:games": "node tools/fetch-games.cjs"
+  },
+  "dependencies": {
+    "electron-updater": "6.8.9",
+    "lucide": "0.468.0",
+    "yauzl": "3.2.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.56.1",
+    "electron": "44.4.5",
+    "electron-builder": "26.15.3",
+    "yazl": "3.3.1"
+  },
+  "packageManager": "pnpm@11.25.0",
+  "build": {
+    "appId": "jp.zentashimamoto.gamelibrary",
+    "productName": "Zenta Game Library",
+    "asar": true,
+    "beforePack": "./tools/verify-bundles.cjs",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*",
+      "assets/**/*",
+      "data/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "bundled",
+        "to": "bundled",
+        "filter": [
+          "**/*"
+        ]
+      }
+    ],
+    "win": {
+      "icon": "assets/line-boundary.png",
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "ZentaGameLibrary-Setup-${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "deleteAppDataOnUninstall": false
+    },
+    "publish": {
+      "provider": "generic",
+      "url": "https://github.com/kuon-haruto/portfolio/releases/latest/download/"
+    }
+  }
+}

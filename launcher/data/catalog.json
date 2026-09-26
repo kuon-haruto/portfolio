@@ -1,0 +1,123 @@
+{
+  "schemaVersion": 1,
+  "games": [
+    {
+      "id": "line-boundary",
+      "title": "線のこちら側 / 向こう側",
+      "genre": "パズルアクション",
+      "description": "2つの点を結ぶ境界線で世界を分け、重力の異なる空間を行き来するパズルアクション。線の配置を工夫してゴールへの道を作ります。",
+      "objective": "重力の違いを利用し、各ステージのゴールへ到達する。",
+      "engine": "Unity",
+      "duration": "約3日間",
+      "teamSize": 4,
+      "howToPlay": [
+        "A / D キーで左右に移動します。",
+        "画面上の2つの点を順にクリックし、境界線を引きます。空間ごとの効果を選び、重力の違いを利用して進みます。",
+        "R キーでリスタートします。"
+      ],
+      "icon": "line-boundary.png",
+      "package": {
+        "version": "1.0.0",
+        "executable": "LineBoundary.exe",
+        "sha256": "b584d2c1933e38b4a7b1410fe173e30dd1ef15300778ed531c45c169980453f2",
+        "size": 53548837,
+        "url": "https://github.com/kuon-haruto/portfolio/releases/download/launcher-v0.1.0/line-boundary-1.0.0.zip",
+        "bundled": "line-boundary-1.0.0.zip"
+      }
+    },
+    {
+      "id": "hanten-assassination",
+      "title": "反転暗殺",
+      "genre": "2Dステルス",
+      "description": "盤面を反転させて敵の視界を避け、ルートとタイミングを考えて標的を仕留めるステルスゲーム。",
+      "objective": "敵に見つからないように、標的の暗殺を達成する。",
+      "engine": "Unity",
+      "duration": "約3日間",
+      "teamSize": 4,
+      "howToPlay": [
+        "マウスで「移動」「反転」「待機」のアクションを選びます。",
+        "敵の視界を確認し、盤面を反転させて安全なルートを作ります。",
+        "行動が終わったら「ターン終了」で次のターンへ進めます。"
+      ],
+      "icon": "hanten-assassination.jpeg",
+      "package": {
+        "version": "1.0.0",
+        "executable": "HantenAssassination.exe",
+        "sha256": "07a05828adeacddf3be901843f691e3b0891bb5851839884e4d0c5d298d423ef",
+        "size": 98668006,
+        "url": "https://github.com/kuon-haruto/portfolio/releases/download/launcher-v0.1.0/hanten-assassination-1.0.0.zip",
+        "bundled": "hanten-assassination-1.0.0.zip"
+      }
+    },
+    {
+      "id": "teruteru-wars",
+      "title": "てるてるウォーズ",
+      "genre": "タワーディフェンス",
+      "description": "てるてる坊主を配置して雨雲から拠点を守るタワーディフェンス。通常・反転のモードを使い分け、スロー・毒・スタンなどの能力を組み合わせます。",
+      "objective": "制限時間まで拠点を守り抜く。",
+      "engine": "Unity",
+      "duration": "約3日間",
+      "teamSize": 4,
+      "howToPlay": [
+        "画面のてるてる坊主を選び、詳細画面で配置を決定してから置きたいマスをクリックします。",
+        "配置したてるてる坊主の能力と通常・反転モードを使い分けて敵を迎え撃ちます。"
+      ],
+      "icon": "teruteru-wars.png",
+      "package": {
+        "version": "1.0.0",
+        "executable": "TeruteruWars.exe",
+        "sha256": "f57b155c518aa331ac4fa50292be76f0c09df6842280412e40a84e648bacc0e9",
+        "size": 63274408,
+        "url": "https://github.com/kuon-haruto/portfolio/releases/download/launcher-v0.1.0/teruteru-wars-1.0.0.zip",
+        "bundled": "teruteru-wars-1.0.0.zip"
+      }
+    },
+    {
+      "id": "futago",
+      "title": "双子",
+      "genre": "戦略コマンドバトル",
+      "description": "兄と弟を操作し、敵や味方を線でつなぐリンクシステムを使うコマンドバトル。ダメージとバフの共有、リンクの順番を組み合わせて戦います。",
+      "objective": "敵を全滅させ、次の階層へ進む。",
+      "engine": "Unity",
+      "duration": "約3日間",
+      "teamSize": 6,
+      "howToPlay": [
+        "マウスでコマンドとリンク先を選びます。",
+        "リンクゲージと設置回数を管理し、ダメージ・バフのリンクを組み合わせます。"
+      ],
+      "icon": "futago.png",
+      "package": {
+        "version": "1.0.0",
+        "executable": "Futago.exe",
+        "sha256": "0c82ad9e2cf2ea869671b378e55e36883abf576a3ed7c2e64b0e88a6ba1a28b0",
+        "size": 60318210,
+        "url": "https://github.com/kuon-haruto/portfolio/releases/download/launcher-v0.1.0/futago-1.0.0.zip",
+        "bundled": "futago-1.0.0.zip"
+      }
+    },
+    {
+      "id": "v-link-battle",
+      "title": "V-Link Battle",
+      "genre": "3D対戦アクション",
+      "description": "VTuberの配信を題材に、攻撃とガードで駆け引きを繰り広げる対戦アクション。コメントや通知など、配信の盛り上がりを表現した演出が特徴です。",
+      "objective": "攻撃とガードを使い分け、対戦相手に勝利する。",
+      "engine": "Unity",
+      "duration": "約半年〜1年",
+      "teamSize": 8,
+      "howToPlay": [
+        "キャラクターを選択して対戦を開始します。",
+        "W / A / S / D で移動、J で弱攻撃、K で強攻撃、U でガードします。",
+        "ゲームパッドにも対応しています。左スティックまたは方向キーで移動し、下ボタンで弱攻撃、左ボタンで強攻撃、右ボタンでガードします。"
+      ],
+      "icon": "v-link-battle.jpg",
+      "package": {
+        "version": "1.0.0",
+        "executable": "V-LinkBattle.exe",
+        "sha256": "a3e6666029d6579b8494ce0a0a89fac03399c5fa727460118638e8370bc1f331",
+        "size": 723897760,
+        "url": "https://github.com/kuon-haruto/portfolio/releases/download/launcher-v0.1.0/v-link-battle-1.0.0.zip",
+        "bundled": "v-link-battle-1.0.0.zip"
+      }
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+name: Build Windows Game Library
+
+on:
+  workflow_dispatch:
+    inputs:
+      create_draft_release:
+        description: Create a draft GitHub Release after the build
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: launcher
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - uses: pnpm/action-setup@v4
+        with:
+          version: '11.25.0'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm test
+      - run: pnpm fetch:games
+      - run: pnpm prepare:release
+      - run: pnpm dist
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-release
+          compression-level: 0
+          path: |
+            launcher/dist/*.exe
+            launcher/dist/*.blockmap
+            launcher/dist/latest.yml
+            launcher/artifacts/launcher-v*/*
+  draft:
+    if: inputs.create_draft_release
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: windows-release
+          path: release-files
+      - name: Create draft only
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          version=$(node -p "require('./launcher/package.json').version")
+          tag="launcher-v$version"
+          mapfile -d '' files < <(find release-files -type f -print0)
+          gh release create "$tag" "${files[@]}" --target "$GITHUB_SHA" --draft --title "Zenta Game Library $version" --notes "Windows installer and verified game packages. Review and publish this draft to enable in-app updates."

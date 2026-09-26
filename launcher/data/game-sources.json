@@ -1,0 +1,8 @@
+{
+  "games": [
+    { "id": "line-boundary", "repository": "https://github.com/wine-5/Fibonacci.git", "commit": "dd43efd176c7248e705a6d921f53e37135337cbd", "unity": "6000.3.1f1", "executable": "LineBoundary.exe" },
+    { "id": "hanten-assassination", "repository": "https://github.com/wine-5/unity-room-202603.git", "commit": "f67aaebec39a4d1414f81f2052658ac0b109a7dc", "unity": "6000.3.1f1", "executable": "HantenAssassination.exe" },
+    { "id": "teruteru-wars", "repository": "https://github.com/kuon-haruto/imo-game-jam-202603.git", "commit": "a4997236292cf18a861c68dec26bc2b92352e716", "unity": "6000.3.1f1", "executable": "TeruteruWars.exe" },
+    { "id": "futago", "repository": "https://github.com/wine-5/futago.git", "commit": "e6af21a9e128d1a44948b180bd744a98e9959ba5", "unity": "6000.4.3f1", "executable": "Futago.exe" }
+  ]
+}

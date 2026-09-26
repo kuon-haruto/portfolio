@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>Zenta Game Library</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <aside class="sidebar">
+    <div class="brand"><strong>ZENTA</strong><span>GAME LIBRARY</span></div>
+    <label class="search-label" for="search">ゲームを検索</label>
+    <input id="search" type="search" placeholder="タイトルで検索">
+    <label class="search-label" for="filter">表示</label>
+    <select id="filter"><option value="all">すべてのゲーム</option><option value="installed">インストール済み</option><option value="updates">更新あり</option></select>
+    <nav id="games" aria-label="ゲームライブラリ"></nav>
+    <div class="sidebar-bottom"><button id="updates" type="button"><i data-lucide="refresh-cw" aria-hidden="true"></i>更新を確認</button><span id="version"></span></div>
+  </aside>
+  <main>
+    <header class="topbar"><span>ライブラリ</span><span id="total"></span></header>
+    <div id="notice" role="status" hidden></div>
+    <div id="empty" hidden>該当するゲームはありません。</div>
+    <article id="detail" hidden>
+      <div class="game-heading">
+        <img id="art" src="../assets/line-boundary.png" alt="" width="180" height="180">
+        <div><span id="genre" class="eyebrow"></span><h1 id="title"></h1><p id="description"></p><span id="status" class="status"></span></div>
+      </div>
+      <div class="actionbar">
+        <button id="play" class="primary" type="button"><i data-lucide="play" aria-hidden="true"></i><span id="play-label">プレイ</span></button>
+        <button id="install" type="button"><i data-lucide="download" aria-hidden="true"></i><span id="install-label">インストール</span></button>
+        <button id="folder" type="button" aria-label="保存フォルダーを開く" title="保存フォルダーを開く"><i data-lucide="folder-open" aria-hidden="true"></i></button>
+        <button id="cancel" type="button" hidden>キャンセル</button>
+        <span id="installed-version"></span>
+      </div>
+      <div id="progress-area" hidden><label id="progress-label" for="progress"></label><progress id="progress" max="100"></progress></div>
+      <dl class="facts">
+        <div><dt>開発エンジン</dt><dd id="engine"></dd></div>
+        <div><dt>制作人数</dt><dd id="team"></dd></div>
+        <div><dt>制作期間</dt><dd id="duration"></dd></div>
+      </dl>
+      <div class="tabs" role="tablist" aria-label="作品情報">
+        <button id="tab-play" role="tab" aria-selected="true" aria-controls="panel-play">遊び方・目的</button>
+        <button id="tab-version" role="tab" aria-selected="false" aria-controls="panel-version" tabindex="-1">バージョン情報</button>
+      </div>
+      <div id="panel-play" role="tabpanel" aria-labelledby="tab-play">
+        <h2>ゲームの目的</h2><p id="objective"></p>
+        <h2>操作方法</h2><ol id="instructions"></ol>
+      </div>
+      <div id="panel-version" role="tabpanel" aria-labelledby="tab-version" hidden><dl class="version-list" id="versions"></dl></div>
+    </article>
+  </main>
+  <dialog id="update-dialog">
+    <h2>アップデート</h2>
+    <div class="update-row"><div><strong>ゲーム・作品情報</strong><p id="game-update-status">未確認</p></div><button id="check-games">確認</button></div>
+    <div class="update-row"><div><strong>ランチャー本体</strong><p id="app-update-status">未確認</p></div><div class="update-buttons"><button id="check-app">確認</button><button id="download-app">更新を取得</button><button id="restart-app" hidden>再起動して更新</button></div></div>
+    <button id="close-updates">閉じる</button>
+  </dialog>
+  <script src="../node_modules/lucide/dist/umd/lucide.js"></script>
+  <script src="renderer.js"></script>
+</body>
+</html>

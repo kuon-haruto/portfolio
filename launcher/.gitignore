@@ -1,0 +1,9 @@
+node_modules/
+dist/
+artifacts/
+bundled/*.zip
+*.log
+.cache/
+game-sources/
+game-builds/
+test-output/

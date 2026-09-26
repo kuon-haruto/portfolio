@@ -1,0 +1,5 @@
+{
+  "catalogUrl": "https://github.com/kuon-haruto/portfolio/releases/latest/download/games.json",
+  "downloadHosts": ["github.com", "release-assets.githubusercontent.com", "objects.githubusercontent.com"],
+  "appUpdateFeed": { "provider": "generic", "url": "https://github.com/kuon-haruto/portfolio/releases/latest/download/" }
+}
