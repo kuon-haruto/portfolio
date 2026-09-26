@@ -134,6 +134,9 @@ h1, h2, h3 { text-wrap: pretty; }
 .launcher-download-actions { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; min-width: 0; }
 .launcher-download-link { min-height: 48px; max-width: 100%; text-align: center; }
 .launcher-download-link svg { flex: 0 0 20px; }
+.browser-play-link { min-height: 48px; gap: 10px; max-width: 100%; }
+.browser-play-link svg { flex: 0 0 20px; }
+.work-play-link { margin-bottom: 18px; max-width: 100%; text-wrap: balance; text-align: center; }
 .launcher-download-link > span { min-width: 0; word-break: normal; overflow-wrap: anywhere; text-wrap: balance; }
 .launcher-release-link { font-size: 0.85rem; }
 .launcher-download-notice { grid-column: 1 / -1; margin: 0; font-size: 0.8rem; color: var(--muted); }

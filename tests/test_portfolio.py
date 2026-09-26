@@ -97,24 +97,19 @@ class PortfolioTests(unittest.TestCase):
         self.assertIn("<span>Excel</span></span><small>2年</small>", skills)
         self.assertIn("<span>Googleスプレッドシート</span></span><small>2年</small>", skills)
 
-    def test_launcher_downloads_work_without_javascript(self):
-        expected_url = (
-            "https://github.com/kuon-haruto/portfolio/releases/download/"
-            "launcher-v0.2.0/AppInstaller-Portable-0.2.0.zip"
-        )
+    def test_browser_library_is_primary_action(self):
         for section in ("hero", "works"):
             source = (ROOT / f"src/sections/{section}.html").read_text(encoding="utf-8")
             links = [
                 attrs for tag, attrs in Document(source).elements
-                if tag == "a" and "launcher-download-link" in attrs.get("class", "").split()
+                if tag == "a" and "browser-play-link" in attrs.get("class", "").split()
             ]
             with self.subTest(section=section):
                 self.assertEqual(len(links), 1)
-                self.assertEqual(links[0]["href"], expected_url)
-                self.assertIn("Windows 10 / 11（64bit）専用", source)
-                self.assertIn("5作品収録", source)
-                self.assertIn("約1.13 GB", source)
-                self.assertIn("インストール不要", source)
+                self.assertEqual(links[0]["href"], "https://kuon-haruto.github.io/portfolio/play/")
+                self.assertIn("Web版4作品", source)
+                self.assertIn("PC", source)
+                self.assertIn("ブラウザーでプレイ", source)
 
     def test_installer_is_still_available_as_an_alternative(self):
         links = [
@@ -139,13 +134,21 @@ class PortfolioTests(unittest.TestCase):
                     self.assertIn(description, ids)
         self.assertIn("未署名のアプリ", self.html)
 
-    def test_browser_game_links_are_replaced(self):
+    def test_four_games_have_direct_browser_links(self):
         self.assertNotIn("unityroom.com/games/", self.html)
         self.assertNotIn("プレイURL", self.html)
+        links = [
+            attrs["href"] for tag, attrs in self.document.elements
+            if tag == "a" and "work-play-link" in attrs.get("class", "").split()
+        ]
+        self.assertEqual(set(links), {
+            f"https://kuon-haruto.github.io/portfolio/play/{game}/" for game in
+            ("line-boundary", "hanten-assassination", "teruteru-wars", "futago")
+        })
         for file in ("index.html", "scripts/main.js", "scripts/profile-data.js"):
             with self.subTest(file=file):
                 source = (ROOT / file).read_text(encoding="utf-8")
-                self.assertNotIn("ゲームをプレイ", source)
+                self.assertNotIn("ゲームを遊ぶ", source)
 
     def test_gallery_contains_four_distinct_games_and_no_hero_screenshot(self):
         hero = (ROOT / "src/sections/hero.html").read_text(encoding="utf-8")

@@ -1,0 +1,204 @@
+{
+  "games": [
+    {
+      "id": "line-boundary",
+      "title": "線のこちら側 / 向こう側",
+      "genre": "パズルアクション",
+      "description": "2つの点を結ぶ境界線で世界を分け、重力の異なる空間を行き来するパズルアクション。線の配置を工夫してゴールへの道を作ります。",
+      "objective": "重力の違いを利用し、各ステージのゴールへ到達する。",
+      "duration": "約3日間",
+      "teamSize": 4,
+      "howToPlay": [
+        "画面上の2つの赤い点を順にクリックし、境界線を引きます。左右の空間に効果を1つずつ選ぶと、アクションが始まります。",
+        "A / D キーで左右に移動し、空間ごとの重力の違いを利用して進みます。",
+        "R キーでリスタートします。"
+      ],
+      "icon": "../files/game-icons/line-boundary.png",
+      "build": {
+        "loaderUrl": "builds/line-boundary/v1/Build/88deceb329891f38c569fb28c6f3ed8f.loader.js",
+        "dataUrl": "builds/line-boundary/v1/Build/09c875f51196a5524d947061dc0ed40a.data.unityweb",
+        "frameworkUrl": "builds/line-boundary/v1/Build/9a51bf75495d395c29e838734d4cd4cb.framework.js.unityweb",
+        "codeUrl": "builds/line-boundary/v1/Build/78ed32197b330c310d6d6a9249754e1f.wasm.unityweb",
+        "streamingAssetsUrl": "builds/line-boundary/v1/StreamingAssets",
+        "companyName": "Fibonacci",
+        "productName": "ImoGameJam",
+        "productVersion": "0.1.0",
+        "unityVersion": "6000.3.1f1"
+      },
+      "sourceCommit": "dd43efd176c7248e705a6d921f53e37135337cbd",
+      "downloadBytes": 33175610,
+      "integrity": [
+        {
+          "file": "09c875f51196a5524d947061dc0ed40a.data.unityweb",
+          "bytes": 20545684,
+          "sha256": "d542ee0a5433f06c134b675b6c54d700e68e9fc4b57e36fb10834b9aacf73b40"
+        },
+        {
+          "file": "78ed32197b330c310d6d6a9249754e1f.wasm.unityweb",
+          "bytes": 12492491,
+          "sha256": "d3fb6da7770b9a512b8cc0d930fee32dc018d685f11aac349ea9424aac1ee152"
+        },
+        {
+          "file": "88deceb329891f38c569fb28c6f3ed8f.loader.js",
+          "bytes": 47866,
+          "sha256": "f2a654ec4e0446c1052435cfacf0042df9ead2fd0d9971e5c9194ad974ce2142"
+        },
+        {
+          "file": "9a51bf75495d395c29e838734d4cd4cb.framework.js.unityweb",
+          "bytes": 89569,
+          "sha256": "077ed8f1c7f04b74ec9a1bd2ce8e9b5d35f2efc34494ca1a317f35ed92dcbe0f"
+        }
+      ]
+    },
+    {
+      "id": "hanten-assassination",
+      "title": "反転暗殺",
+      "genre": "2Dステルス",
+      "description": "盤面を反転させて敵の視界を避け、ルートとタイミングを考えて標的を仕留めるステルスゲーム。",
+      "objective": "敵に見つからないように、標的の暗殺を達成する。",
+      "duration": "約3日間",
+      "teamSize": 4,
+      "howToPlay": [
+        "マウスで「動かす」「裏返す」「待機」のアクションを選びます。",
+        "敵の視界を確認し、盤面を反転させて安全なルートを作ります。",
+        "「待機」または「ターン終了」で次のターンへ進めます。"
+      ],
+      "icon": "../files/game-icons/hanten-assassination.jpeg",
+      "build": {
+        "loaderUrl": "builds/hanten-assassination/v1/Build/951731029ec65a59f97bed683519091e.loader.js",
+        "dataUrl": "builds/hanten-assassination/v1/Build/3827a4571e645f90abfbd023be0358b3.data.unityweb",
+        "frameworkUrl": "builds/hanten-assassination/v1/Build/6c37e4561cc910662d7b936e72f2dd79.framework.js.unityweb",
+        "codeUrl": "builds/hanten-assassination/v1/Build/2711ba94d76c8e9a72f4a90ad6195e79.wasm.unityweb",
+        "streamingAssetsUrl": "builds/hanten-assassination/v1/StreamingAssets",
+        "companyName": "DefaultCompany",
+        "productName": "HannrannAnsatu",
+        "productVersion": "0.1.0",
+        "unityVersion": "6000.3.1f1"
+      },
+      "sourceCommit": "f67aaebec39a4d1414f81f2052658ac0b109a7dc",
+      "downloadBytes": 82671559,
+      "integrity": [
+        {
+          "file": "2711ba94d76c8e9a72f4a90ad6195e79.wasm.unityweb",
+          "bytes": 12421217,
+          "sha256": "ef60a3664912d2ff2a98d79c255751d1f2d9fd8a309795b4273666482cf0a29a"
+        },
+        {
+          "file": "3827a4571e645f90abfbd023be0358b3.data.unityweb",
+          "bytes": 70112779,
+          "sha256": "16aad69ce0375b344f6ac8acdbfe8d9f7b9739faab26c898503aaff405736b53"
+        },
+        {
+          "file": "6c37e4561cc910662d7b936e72f2dd79.framework.js.unityweb",
+          "bytes": 89560,
+          "sha256": "80c3859feb1b48f9872bc6f8732bbdce1b944ac43d5bf640872d80de9aeeb09f"
+        },
+        {
+          "file": "951731029ec65a59f97bed683519091e.loader.js",
+          "bytes": 48003,
+          "sha256": "6f0f55ee7ed255d4e1a2277d3d634cb1d1138b920173b1c07d57184d23c2a75e"
+        }
+      ]
+    },
+    {
+      "id": "teruteru-wars",
+      "title": "てるてるウォーズ",
+      "genre": "タワーディフェンス",
+      "description": "てるてる坊主を配置して雨雲から拠点を守るタワーディフェンス。通常・反転のモードを使い分け、スロー・毒・スタンなどの能力を組み合わせます。",
+      "objective": "制限時間まで拠点を守り抜く。",
+      "duration": "約3日間",
+      "teamSize": 4,
+      "howToPlay": [
+        "画面のてるてる坊主を選び、詳細画面で「決定」を押します。",
+        "置きたいマスをクリックし、「通常」または「逆さ」を選んで配置します。能力とモードを使い分けて敵を迎え撃ちます。"
+      ],
+      "icon": "../files/game-icons/teruteru-wars.png",
+      "build": {
+        "loaderUrl": "builds/teruteru-wars/v1/Build/c5f834d5fcedd6993b5533748c7e4aae.loader.js",
+        "dataUrl": "builds/teruteru-wars/v1/Build/e810b7abdb370461cc22003e0cc0d162.data.unityweb",
+        "frameworkUrl": "builds/teruteru-wars/v1/Build/c0c8b19412aac56cd438af135d5fc907.framework.js.unityweb",
+        "codeUrl": "builds/teruteru-wars/v1/Build/64e64d3cbf6fe9b5623a969a2d900715.wasm.unityweb",
+        "streamingAssetsUrl": "builds/teruteru-wars/v1/StreamingAssets",
+        "companyName": "Fibonacci",
+        "productName": "imojam",
+        "productVersion": "0.1.0",
+        "unityVersion": "6000.3.1f1",
+        "simplifiedEffects": 10
+      },
+      "sourceCommit": "a4997236292cf18a861c68dec26bc2b92352e716",
+      "downloadBytes": 40903864,
+      "integrity": [
+        {
+          "file": "64e64d3cbf6fe9b5623a969a2d900715.wasm.unityweb",
+          "bytes": 12244376,
+          "sha256": "654f9a1f2919fa6a74a8186184dee418ae258b0abd09eabf8b41fe770d635085"
+        },
+        {
+          "file": "c0c8b19412aac56cd438af135d5fc907.framework.js.unityweb",
+          "bytes": 88820,
+          "sha256": "b807d53d7e8592e7dd1b033642ea0bb285fe471ba9f60a1ca1bbce8decaf14de"
+        },
+        {
+          "file": "c5f834d5fcedd6993b5533748c7e4aae.loader.js",
+          "bytes": 48003,
+          "sha256": "1aa369b02360c5ca2c9680f9f50204e46f32974f4e9a046e91f2df460e2f840a"
+        },
+        {
+          "file": "e810b7abdb370461cc22003e0cc0d162.data.unityweb",
+          "bytes": 28522665,
+          "sha256": "589ea0340ad78b1b1fe669737ef64eff5974af3e1fdbb44e5192ccc5ae9b73c7"
+        }
+      ]
+    },
+    {
+      "id": "futago",
+      "title": "双子",
+      "genre": "戦略コマンドバトル",
+      "description": "兄と弟を操作し、敵や味方を線でつなぐリンクシステムを使うコマンドバトル。ダメージとバフの共有、リンクの順番を組み合わせて戦います。",
+      "objective": "敵を全滅させ、次の階層へ進む。",
+      "duration": "約3日間",
+      "teamSize": 6,
+      "howToPlay": [
+        "マウスでコマンドとリンク先を選びます。",
+        "リンクゲージと設置回数を管理し、ダメージ・バフのリンクを組み合わせます。"
+      ],
+      "icon": "../files/game-icons/futago.png",
+      "build": {
+        "loaderUrl": "builds/futago/v1/Build/1f83eec0f282717769f1f41f1f4d3da9.loader.js",
+        "dataUrl": "builds/futago/v1/Build/8b753808a8f4bc6a776c4973f61488d3.data.unityweb",
+        "frameworkUrl": "builds/futago/v1/Build/bfd90a88823c5319f188db3bb6ebe697.framework.js.unityweb",
+        "codeUrl": "builds/futago/v1/Build/218bf3be0cb735afdebacb7fbd8ee551.wasm.unityweb",
+        "streamingAssetsUrl": "builds/futago/v1/StreamingAssets",
+        "companyName": "DefaultCompany",
+        "productName": "ImoGameJam202606",
+        "productVersion": "0.1.0",
+        "unityVersion": "6000.4.3f1",
+        "simplifiedEffects": 11
+      },
+      "sourceCommit": "e6af21a9e128d1a44948b180bd744a98e9959ba5",
+      "downloadBytes": 41411221,
+      "integrity": [
+        {
+          "file": "1f83eec0f282717769f1f41f1f4d3da9.loader.js",
+          "bytes": 48003,
+          "sha256": "f22e5933b0bcfbe6123066244e0ed2748b4e1fda2e4b39a033ebc56ab81f5533"
+        },
+        {
+          "file": "218bf3be0cb735afdebacb7fbd8ee551.wasm.unityweb",
+          "bytes": 13210766,
+          "sha256": "8db2aa5a55724b3d629afa06e0f7e70aacccb8fcccd95f46164b1a74a1e13031"
+        },
+        {
+          "file": "8b753808a8f4bc6a776c4973f61488d3.data.unityweb",
+          "bytes": 28061087,
+          "sha256": "87345a618f398d6752c75a48153d88eff4bd4268db4f2cf8a7d870551c6a64b3"
+        },
+        {
+          "file": "bfd90a88823c5319f188db3bb6ebe697.framework.js.unityweb",
+          "bytes": 91365,
+          "sha256": "88961ab29bb4e563eeecb0c31eb6bc0c1c5f80ed39058c46bccf62dc84733131"
+        }
+      ]
+    }
+  ]
+}

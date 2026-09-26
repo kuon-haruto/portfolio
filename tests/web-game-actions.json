@@ -1,0 +1,33 @@
+{
+  "line-boundary": [
+    { "name": "stage-select", "x": 0.325, "y": 0.585 },
+    { "name": "stage-one", "x": 0.25, "y": 0.26 },
+    { "name": "first-point", "x": 0.25, "y": 0.02 },
+    { "name": "draw-line", "x": 0.5, "y": 0.98 },
+    { "name": "left-effect", "x": 0.13, "y": 0.35 },
+    { "name": "start-action", "x": 0.76, "y": 0.26 },
+    { "name": "move-right", "key": "d", "milliseconds": 500 }
+  ],
+  "hanten-assassination": [
+    { "name": "stage-select", "x": 0.47, "y": 0.72 },
+    { "name": "stage-one", "x": 0.31, "y": 0.51 },
+    { "name": "choose-move", "x": 0.376, "y": 0.888 },
+    { "name": "move-tile", "x": 0.464, "y": 0.726 }
+  ],
+  "teruteru-wars": [
+    { "name": "stage-select", "x": 0.47, "y": 0.843, "capture": false },
+    { "name": "stage-one", "x": 0.34, "y": 0.843, "capture": false },
+    { "name": "choose-unit", "x": 0.533, "y": 0.86, "wait": 500, "capture": false },
+    { "name": "confirm-unit", "x": 0.42, "y": 0.86, "wait": 500, "capture": false },
+    { "name": "place-unit", "x": 0.742, "y": 0.56, "wait": 500, "capture": false },
+    { "name": "normal-mode", "x": 0.718, "y": 0.388, "wait": 15000 }
+  ],
+  "futago": [
+    { "name": "start-battle", "x": 0.5, "y": 0.715, "wait": 10000 },
+    { "name": "choose-attack", "x": 0.082, "y": 0.718 },
+    { "name": "second-attack", "x": 0.082, "y": 0.718 },
+    { "name": "confirm-link", "x": 0.83, "y": 0.86 },
+    { "name": "attack-target", "x": 0.82, "y": 0.12, "wait": 8000 },
+    { "name": "second-target", "x": 0.82, "y": 0.12, "wait": 8000 }
+  ]
+}

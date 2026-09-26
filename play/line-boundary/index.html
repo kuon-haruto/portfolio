@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#151819">
+  <meta name="description" content="島本善太の制作ゲームをブラウザーでプレイ。">
+  <title>線のこちら側 / 向こう側 | 島本善太</title>
+  <link rel="stylesheet" href="../styles.css">
+  <link rel="icon" href="../../files/icons/app-installer.png">
+  <script src="../library.js" defer></script>
+</head>
+<body data-game="line-boundary">
+  <svg class="icon-definitions" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
+    <symbol id="icon-back" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></symbol>
+    <symbol id="icon-play" viewBox="0 0 24 24"><path d="M5 5a2 2 0 0 1 3.008-1.728l11.997 6.998a2 2 0 0 1 .003 3.458l-12 7A2 2 0 0 1 5 19z"></path></symbol>
+    <symbol id="icon-fullscreen" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3"></path><path d="M21 8V5a2 2 0 0 0-2-2h-3"></path><path d="M3 16v3a2 2 0 0 0 2 2h3"></path><path d="M16 21h3a2 2 0 0 0 2-2v-3"></path></symbol>
+    <symbol id="icon-reload" viewBox="0 0 24 24"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path></symbol>
+  </defs></svg>
+  <header class="site-header">
+    <a class="brand" href="../"><img src="../../files/icons/app-installer.png" alt="" width="40" height="40"><span>ゲームライブラリ<small>ZENTA SHIMAMOTO</small></span></a>
+    <a class="portfolio-link" href="../../#works"><svg class="icon" aria-hidden="true"><use href="#icon-back"></use></svg>ポートフォリオ</a>
+  </header>
+  <main>
+    <section id="library" class="library" aria-labelledby="library-title">
+      <div class="section-heading"><h1 id="library-title">制作したゲーム</h1><p>ブラウザー版 / PC・キーボード・マウス推奨</p></div>
+      <p id="catalog-status" role="status">作品を読み込んでいます</p>
+      <div id="game-grid" class="game-grid"></div>
+      <p class="windows-note">V-Link Battleは<a href="https://github.com/kuon-haruto/portfolio/releases/tag/launcher-v0.2.0">Windows版</a>に収録しています。</p>
+    </section>
+    <section id="player" class="player" aria-labelledby="game-title" hidden>
+      <div class="player-toolbar">
+        <a class="icon-button" href="../" aria-label="作品一覧へ戻る" title="作品一覧へ戻る"><svg class="icon" aria-hidden="true"><use href="#icon-back"></use></svg></a>
+        <h1 id="game-title">線のこちら側 / 向こう側</h1>
+        <div class="player-actions">
+          <button id="reload" class="icon-button" type="button" aria-label="ゲームを再読み込み" title="ゲームを再読み込み"><svg class="icon" aria-hidden="true"><use href="#icon-reload"></use></svg></button>
+          <button id="fullscreen" class="icon-button" type="button" aria-label="全画面でプレイ" title="全画面でプレイ" disabled><svg class="icon" aria-hidden="true"><use href="#icon-fullscreen"></use></svg></button>
+        </div>
+      </div>
+      <div id="player-stage" class="player-stage" data-state="loading">
+        <canvas id="game-canvas" width="1920" height="1080" tabindex="0" aria-label="ゲーム画面"></canvas>
+        <div id="game-state" class="game-state" role="status">
+          <img id="loading-icon" alt="" width="72" height="72">
+          <label id="loading-message" for="loading-progress">ゲームを読み込んでいます</label>
+          <progress id="loading-progress" max="1" value="0"></progress>
+          <p id="loading-size"></p>
+          <p id="game-error" hidden></p>
+          <button id="retry" type="button" hidden><svg class="icon" aria-hidden="true"><use href="#icon-reload"></use></svg>再試行</button>
+        </div>
+      </div>
+      <p id="player-notice" class="player-notice" role="status" hidden></p>
+      <div class="game-description"><p id="game-description"></p><p id="game-meta" class="game-meta"></p></div>
+      <details class="game-info" open><summary>ゲームの目的・操作方法</summary><div class="game-info-grid"><div><h2>目的</h2><p id="objective"></p></div><div><h2>操作方法</h2><ul id="controls"></ul></div></div></details>
+    </section>
+    <noscript><p class="noscript">ゲームをプレイするにはJavaScriptを有効にしてください。</p></noscript>
+  </main>
+</body>
+</html>
