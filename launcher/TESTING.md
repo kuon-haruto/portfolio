@@ -11,6 +11,8 @@ Local verification on Windows x64, 2026-09-26.
 - The extracted ZIP app passed renderer checks at 1220px and 880px widths and installed/launched Futago from its bundled archive using isolated test data.
 - Portfolio regression checks: 12 Python tests and 7 JavaScript tests passed. Its download buttons now prefer the ZIP edition; unrelated existing portfolio changes are not part of the launcher release commit.
 - The ZIP edition keeps game updates in-app but deliberately uses manual ZIP replacement for application updates. This avoids silently installing the normal edition.
+- Public release: https://github.com/kuon-haruto/portfolio/releases/tag/launcher-v0.2.0 . All 11 assets were uploaded and verified against their local SHA-256 digests. The ZIP is 1,128,999,635 bytes and the installer is 1,058,043,551 bytes; both public download URLs returned HTTP 200.
+- The final normal-edition packaged app fetched the public game catalog and `latest.yml` through `live-release-smoke.cjs`, reporting that version 0.2.0 is current. The final packaged UI and game-update success/failure smoke checks also passed.
 - Upgrade of an existing 0.1.0 installation through its automatic updater remains unverified. Builds remain unsigned.
 
 The following sections record the earlier 0.1.0 verification.
