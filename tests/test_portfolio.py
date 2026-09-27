@@ -150,16 +150,18 @@ class PortfolioTests(unittest.TestCase):
                 source = (ROOT / file).read_text(encoding="utf-8")
                 self.assertNotIn("ゲームを遊ぶ", source)
 
-    def test_gallery_contains_five_distinct_games_and_no_hero_screenshot(self):
+    def test_gallery_contains_five_games_and_one_prototype(self):
         hero = (ROOT / "src/sections/hero.html").read_text(encoding="utf-8")
         document = Document(hero)
         links = [
             attrs["href"] for tag, attrs in document.elements
             if tag == "a" and attrs.get("class") == "game-icon-link"
         ]
-        self.assertEqual(len(set(links)), 5)
+        self.assertEqual(len(set(links)), 6)
         self.assertIn("#featured-works", links)
         self.assertIn("files/game-icons/v-link-battle.png", hero)
+        self.assertIn("#game-bug-hunter", links)
+        self.assertIn("files/game-icons/bug-hunter.png", hero)
         self.assertNotIn("hero-scene", hero)
         self.assertNotIn("v-link-battle.jpg", hero)
 

@@ -1,3 +1,13 @@
 .claude/
 __pycache__/
 *.py[cod]
+
+# Unity's editable source is games/bug-hunter; generated caches are not versions.
+games/bug-hunter/[Ll]ibrary/
+games/bug-hunter/[Tt]emp/
+games/bug-hunter/[Oo]bj/
+games/bug-hunter/[Ll]ogs/
+games/bug-hunter/[Uu]serSettings/
+games/bug-hunter/Builds/
+games/bug-hunter/*.csproj
+games/bug-hunter/*.sln

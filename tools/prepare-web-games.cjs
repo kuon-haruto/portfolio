@@ -9,7 +9,9 @@ async function prepare() {
   const outputRoot = path.resolve(args.find(arg => !arg.startsWith('--')) || path.join(os.tmpdir(), 'portfolio-web-builds', 'output'));
   const sources = require('../launcher/data/game-sources.json').games;
   const catalog = require('../launcher/data/catalog.json').games;
-  const games = [];
+  const previous = JSON.parse(await fs.readFile(path.join(root, 'play', 'games.json'), 'utf8').catch(() => '{"games":[]}'));
+  // In-repository Unity games have their own build pipeline, separate from the five Windows imports.
+  const games = previous.games.filter(game => game.sourceKind === 'workspace-unity');
   for (const source of sources) {
     if (!/^[a-z0-9-]+$/.test(source.id)) throw new Error('Invalid game id.');
     const original = catalog.find(game => game.id === source.id);

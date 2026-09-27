@@ -75,7 +75,8 @@
     $('loading-icon').src = url(game.icon);
     $('loading-size').textContent = '読み込み容量：約' + Math.ceil(game.downloadBytes / 1024 ** 2) + ' MB';
     $('game-description').textContent = game.description;
-    $('game-meta').textContent = game.teamSize + '人制作 / ' + game.duration;
+    $('game-meta').textContent = game.metadataLabel || game.teamSize + '人制作 / ' + game.duration;
+    $('player-stage').classList.toggle('responsive-game', Boolean(game.responsiveCanvas));
     if (game.browserNotice || game.build.simplifiedEffects > 0) {
       $('player-notice').textContent = game.browserNotice || 'Web版では一部のエフェクトを簡易表示しています。';
       $('player-notice').hidden = false;
@@ -101,7 +102,7 @@
         streamingAssetsUrl: url(build.streamingAssetsUrl), companyName: build.companyName,
         productName: build.productName, productVersion: build.productVersion,
         // The original games use a fixed 1920x1080 UI; CSS scales that surface.
-        matchWebGLToCanvasSize: false,
+        matchWebGLToCanvasSize: Boolean(game.responsiveCanvas),
         devicePixelRatio: 1,
         showBanner(message, type) {
           if (type === 'error') fail(message);

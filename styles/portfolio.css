@@ -322,3 +322,6 @@ a[data-missing] { color: var(--muted); text-decoration-style: dotted; }
   .hero-caption { padding-block: 16px; }
   .hero-statement { font-size: 1.05rem; margin-top: 12px; }
 }
+
+.proposal-game-heading { display: flex; align-items: center; gap: 14px; }
+.proposal-game-heading img { flex: 0 0 64px; width: 64px; height: 64px; object-fit: contain; border-radius: 8px; }

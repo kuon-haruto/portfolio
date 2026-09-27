@@ -17,8 +17,8 @@ class WebGameTests(unittest.TestCase):
 
     def test_five_pinned_games(self):
         sources = json.loads((ROOT / "launcher/data/game-sources.json").read_text(encoding="utf-8"))["games"]
-        self.assertEqual(len(self.games), 5)
-        self.assertEqual({g["id"]: g["sourceCommit"] for g in self.games},
+        self.assertEqual(len(self.games), 6)
+        self.assertEqual({g["id"]: g["sourceCommit"] for g in self.games if g.get("sourceKind") != "workspace-unity"},
                          {g["id"]: g["commit"] for g in sources})
         self.assertTrue((ROOT / ".nojekyll").is_file())
         for game in self.games:
@@ -27,6 +27,16 @@ class WebGameTests(unittest.TestCase):
             if game["id"] == "v-link-battle":
                 self.assertIn("ウィンドウ", game["browserNotice"])
                 self.assertEqual(game["icon"], "../files/game-icons/v-link-battle.png")
+
+    def test_bug_hunter_is_separate_from_windows_catalog(self):
+        game = next(g for g in self.games if g["id"] == "bug-hunter")
+        self.assertEqual(game["sourceKind"], "workspace-unity")
+        self.assertTrue(game["responsiveCanvas"])
+        self.assertIn("プロトタイプ", game["metadataLabel"])
+        self.assertTrue((ROOT / game["sourcePath"] / "Assets/BugHunter/Scenes/Woodland.unity").is_file())
+        self.assertLess(game["downloadBytes"], 20 * 1024 ** 2)
+        windows = json.loads((ROOT / "launcher/data/catalog.json").read_text(encoding="utf-8"))["games"]
+        self.assertNotIn("bug-hunter", [g["id"] for g in windows])
 
     def test_build_integrity_and_github_file_limits(self):
         for game in self.games:

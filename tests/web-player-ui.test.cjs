@@ -85,6 +85,23 @@ test('failed loader offers retry; retry starts only the selected game', async ()
   } finally { await page.close(); }
 });
 
+test('Bug Hunter uses responsive portrait rendering and honest prototype metadata', async () => {
+  const page = await browser.newPage({ viewport: { width: 390, height: 900 } });
+  try {
+    await page.route('**/*.loader.js', route => route.fulfill({ contentType: 'text/javascript', body: `
+      window.createUnityInstance = async (canvas, config, onProgress) => {
+        window.testConfig = config; onProgress(1); return {};
+      };` }));
+    await page.goto(base + '/play/bug-hunter/');
+    await page.waitForFunction(() => document.getElementById('player-stage').dataset.state === 'ready');
+    assert.equal(await page.evaluate(() => window.testConfig.matchWebGLToCanvasSize), true);
+    const stage = await page.locator('#player-stage').boundingBox();
+    assert(stage.height > stage.width);
+    assert.match(await page.locator('#game-meta').textContent(), /プロトタイプ/);
+    assert.doesNotMatch(await page.locator('#game-meta').textContent(), /undefined/);
+  } finally { await page.close(); }
+});
+
 test('runtime errors do not become false successful loads', async () => {
   const page = await browser.newPage();
   try {
