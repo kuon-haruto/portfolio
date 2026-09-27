@@ -134,16 +134,18 @@ class PortfolioTests(unittest.TestCase):
                     self.assertIn(description, ids)
         self.assertIn("未署名のアプリ", self.html)
 
-    def test_five_games_have_direct_browser_links(self):
+    def test_six_games_have_direct_browser_links(self):
         self.assertNotIn("unityroom.com/games/", self.html)
         self.assertNotIn("プレイURL", self.html)
         links = [
             attrs["href"] for tag, attrs in self.document.elements
-            if tag == "a" and "work-play-link" in attrs.get("class", "").split()
+            if tag == "a" and {"work-play-link", "prototype-play-link"}.intersection(
+                attrs.get("class", "").split()
+            )
         ]
         self.assertEqual(set(links), {
             f"https://kuon-haruto.github.io/portfolio/play/{game}/" for game in
-            ("line-boundary", "hanten-assassination", "teruteru-wars", "futago", "v-link-battle")
+            ("line-boundary", "hanten-assassination", "teruteru-wars", "futago", "v-link-battle", "bug-hunter")
         })
         for file in ("index.html", "scripts/main.js", "scripts/profile-data.js"):
             with self.subTest(file=file):

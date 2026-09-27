@@ -5,7 +5,55 @@
   const selectedId = document.body.dataset.game;
   let unity = null;
   let failed = false;
+  let started = false;
+  let fullscreenPending = false;
+  let exitTimer;
   const url = relative => new URL(relative, base).href;
+
+  function startPlaying() {
+    started = true;
+    $('play-prompt').hidden = true;
+    $('game-canvas').focus({ preventScroll: true });
+  }
+
+  async function enterFullscreen() {
+    if (fullscreenPending) return;
+    fullscreenPending = true;
+    let timeout;
+    try {
+      // Call directly from the click: awaiting game loading would lose user activation.
+      const request = $('player-stage').requestFullscreen({ navigationUI: 'hide' });
+      await Promise.race([request, new Promise((_, reject) => {
+        timeout = setTimeout(() => reject(new Error('Fullscreen response timed out')), 4000);
+      })]);
+      if (document.fullscreenElement !== $('player-stage')) throw new Error('Fullscreen was not entered');
+      startPlaying();
+      $('fullscreen-notice').hidden = true;
+      $('launch-error').hidden = true;
+    } catch {
+      const message = '全画面表示が許可されていません。Edge / Chromeでこのページを開き直すか、ブラウザーの全画面表示（F11）をご利用ください。';
+      for (const id of ['fullscreen-notice', 'launch-error']) {
+        $(id).textContent = message;
+        $(id).hidden = id === 'launch-error' ? $('play-prompt').hidden : !$('play-prompt').hidden;
+      }
+    } finally { clearTimeout(timeout); fullscreenPending = false; }
+  }
+
+  function syncFullscreen() {
+    const active = document.fullscreenElement === $('player-stage');
+    $('exit-fullscreen').hidden = !active;
+    $('player-stage').classList.remove('show-fullscreen-exit');
+    clearTimeout(exitTimer);
+    if (active) {
+      startPlaying();
+      $('fullscreen-notice').hidden = true;
+      $('launch-error').hidden = true;
+    }
+    else if (started) {
+      if (document.pointerLockElement === $('game-canvas')) document.exitPointerLock();
+      $('fullscreen').focus({ preventScroll: true });
+    }
+  }
 
   async function assembleData(parts) {
     const buffers = [];
@@ -37,6 +85,7 @@
     $('game-error').hidden = false;
     $('retry').hidden = false;
     $('fullscreen').disabled = true;
+    $('play-prompt').hidden = true;
   }
 
   function renderLibrary(games) {
@@ -77,6 +126,7 @@
     $('game-description').textContent = game.description;
     $('game-meta').textContent = game.metadataLabel || game.teamSize + '人制作 / ' + game.duration;
     $('player-stage').classList.toggle('responsive-game', Boolean(game.responsiveCanvas));
+    $('fullscreen').disabled = false;
     if (game.browserNotice || game.build.simplifiedEffects > 0) {
       $('player-notice').textContent = game.browserNotice || 'Web版では一部のエフェクトを簡易表示しています。';
       $('player-notice').hidden = false;
@@ -120,21 +170,34 @@
     if (failed) return;
     $('game-state').hidden = true;
     $('player-stage').dataset.state = 'ready';
-    $('fullscreen').disabled = !document.fullscreenEnabled;
-    $('game-canvas').focus({ preventScroll: true });
+    $('play-prompt').hidden = started;
+    if (started) $('game-canvas').focus({ preventScroll: true });
   }
 
   for (const id of ['reload', 'retry']) $(id).addEventListener('click', () => window.location.reload());
   $('fullscreen').addEventListener('click', async () => {
-    try {
-      if (document.fullscreenElement) await document.exitFullscreen();
-      else await $('player-stage').requestFullscreen();
-    } catch {
-      $('player-notice').textContent = 'この環境では全画面表示を利用できません。';
-      $('player-notice').hidden = false;
-    }
+    if (document.fullscreenElement) await document.exitFullscreen().catch(() => {});
+    else await enterFullscreen();
   });
-  document.addEventListener('fullscreenchange', () => $('game-canvas').focus({ preventScroll: true }));
+  $('start-fullscreen').addEventListener('click', enterFullscreen);
+  $('start-windowed').addEventListener('click', startPlaying);
+  $('exit-fullscreen').addEventListener('click', () => document.exitFullscreen().catch(() => {}));
+  document.addEventListener('fullscreenchange', syncFullscreen);
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && document.fullscreenElement === $('player-stage')) {
+      if (document.pointerLockElement === $('game-canvas')) document.exitPointerLock();
+      document.exitFullscreen().catch(() => {});
+    }
+  }, true);
+  $('player-stage').addEventListener('pointermove', event => {
+    if (document.fullscreenElement !== $('player-stage') || document.pointerLockElement || event.clientY > 48) return;
+    $('player-stage').classList.add('show-fullscreen-exit');
+    clearTimeout(exitTimer);
+    exitTimer = setTimeout(() => $('player-stage').classList.remove('show-fullscreen-exit'), 1800);
+  });
+  document.addEventListener('pointerlockchange', () => {
+    if (document.pointerLockElement) $('player-stage').classList.remove('show-fullscreen-exit');
+  });
   $('game-canvas').addEventListener('pointerdown', () => $('game-canvas').focus({ preventScroll: true }));
   $('game-canvas').addEventListener('keydown', event => {
     if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(event.key)) event.preventDefault();

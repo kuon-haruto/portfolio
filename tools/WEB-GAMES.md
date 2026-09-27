@@ -1,9 +1,9 @@
 # Browser Games
 
-The portfolio links to `play/`. Five Unity games run in the browser without
+The portfolio links to `play/`. Six Unity games run in the browser without
 installing the Windows app or manually downloading an archive. Browsers still
 download and cache the selected game's assets. The library does not preload all
-five games. These games are designed for a PC with a keyboard and mouse.
+six games. These games are designed for a PC with a keyboard and mouse.
 Portfolio play links use the published HTTPS URLs, including when the portfolio
 itself is opened as a local HTML file from a USB drive.
 
@@ -33,6 +33,17 @@ are recorded in [vlink-web/README.md](vlink-web/README.md).
 
 ## Hosting
 
+All six player pages offer a primary fullscreen play command after loading.
+The click calls `requestFullscreen({ navigationUI: 'hide' })` directly, preserving
+the browser's required user gesture. Windowed play remains an explicit alternative.
+Esc exits fullscreen and releases pointer lock; a minimize control also appears
+when the pointer is at the screen's top edge. It stays hidden during mouse look.
+Fullscreen denial is reported without silently pretending the page is fullscreen.
+Embedded browsers that deny fullscreen need a regular Edge/Chrome window.
+
+Run `node tools/render-web-pages.cjs` to regenerate all seven HTML pages from the
+shared template without rebuilding or copying any Unity payloads.
+
 Commit the generated `play/` assets and `.nojekyll` with the portfolio changes.
 GitHub Pages publishes the `main` branch. Use an HTTP(S) server, not `file://`,
 to run Web games. `node tools/web-test-server.cjs` serves just the Web player
@@ -49,6 +60,7 @@ Different game URL directories isolate Unity's browser save-data paths.
 The player uses a fixed 1920x1080 drawing buffer and scales it with CSS, including
 fullscreen mode. This preserves the fixed-pixel UI in the original Unity scenes;
 automatically resizing Unity's drawing buffer clips those menus on small screens.
+Bug Hunter uses its own responsive canvas/UI instead of the fixed drawing buffer.
 
 Teruteru Wars, Futago and V-Link use VFX Graph, which requires compute shaders and does
 not support OpenGL ES. Their Web builds replace those effect components with
@@ -80,3 +92,13 @@ Screenshots and logs are saved under `launcher/test-output/web/` (not published)
 `node tests/vlink-selection-mask.cjs` checks V-Link's selection mask separately,
 including actual WebGL stencil operations and reference-based image regions.
 This is not a full playthrough or a guarantee of touch-only/mobile gameplay.
+
+`node tests/web-fullscreen-native.cjs` checks all six actual Unity builds in a
+headed Edge window, including startup, exit control, re-entry and Esc. A raw CDP
+target avoids Playwright's focus emulation, which deliberately keeps native
+windows out of fullscreen. The test does not force window bounds or use kiosk
+mode: only the page's play button requests fullscreen. It checks the native
+window state and that the viewport equals the monitor, not its taskbar-reduced
+work area. On the verification PC these are 1920x1080 versus 1920x1032.
+The fullscreen, canvas-containment and input tests run separately at desktop,
+ultrawide, 4:3 and portrait sizes. Artifacts reuse `launcher/test-output/web/`.

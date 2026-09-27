@@ -145,6 +145,94 @@ test('responsive fullscreen canvas fits short, ultrawide and portrait viewports 
   } finally { await page.close(); }
 });
 
+test('all six games offer genuine fullscreen startup and windowed fallback', async () => {
+  const page = await browser.newPage();
+  try {
+    const manifest = structuredClone(require('../play/games.json'));
+    for (const game of manifest.games) delete game.build.dataParts;
+    await page.route('**/games.json', route => route.fulfill({ json: manifest }));
+    await page.route('**/*.loader.js', route => route.fulfill({ contentType: 'text/javascript', body: 'window.createUnityInstance = async () => ({});' }));
+    await page.addInitScript(() => {
+      const request = Element.prototype.requestFullscreen;
+      Element.prototype.requestFullscreen = function(options) { window.fullscreenOptions = options; return request.call(this, options); };
+    });
+    for (const game of manifest.games) {
+      await page.goto(base + '/play/' + game.id + '/');
+      await page.locator('#start-fullscreen').waitFor();
+      assert.equal(await page.evaluate(() => document.fullscreenElement), null, 'Never request fullscreen without a user gesture');
+      await page.locator('#start-fullscreen').click();
+      await page.waitForFunction(() => document.fullscreenElement?.id === 'player-stage');
+      assert.deepEqual(await page.evaluate(() => window.fullscreenOptions), { navigationUI: 'hide' });
+      assert.equal(await page.locator('#play-prompt').isVisible(), false);
+      for (const [width, height] of [[2560,1080], [1024,768], [390,844]]) {
+        await page.setViewportSize({ width, height });
+        const box = await page.locator('canvas').boundingBox();
+        assert(box.x>=-.1 && box.y>=-.1 && box.x+box.width<=width+.1 && box.y+box.height<=height+.1, game.id+' cropped');
+        if (!game.responsiveCanvas) assert(Math.abs(box.width/box.height-16/9)<.01);
+      }
+      await page.mouse.move(195, 12);
+      await page.locator('#exit-fullscreen').click();
+      await page.waitForFunction(() => !document.fullscreenElement);
+      assert.equal(await page.locator('#play-prompt').isVisible(), false, 'Exiting must not block gameplay again');
+      await page.reload();
+      await page.locator('#start-windowed').click();
+      assert.equal(await page.evaluate(() => document.fullscreenElement), null);
+      assert.equal(await page.locator('#play-prompt').isVisible(), false);
+    }
+  } finally { await page.close(); }
+});
+
+test('denied fullscreen is reported, and windowed play still works', async () => {
+  const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+  try {
+    await page.addInitScript(() => { Element.prototype.requestFullscreen = () => Promise.reject(new TypeError('Denied')); });
+    await page.route('**/*.loader.js', route => route.fulfill({ contentType: 'text/javascript', body: 'window.createUnityInstance = async () => ({});' }));
+    await page.goto(base + '/play/line-boundary/');
+    await page.locator('#start-fullscreen').click();
+    await page.locator('#launch-error').waitFor();
+    assert.match(await page.locator('#launch-error').textContent(), /Edge.*Chrome/);
+    assert.equal(await page.evaluate(() => document.fullscreenElement), null);
+    await page.locator('#start-windowed').click();
+    assert.equal(await page.locator('#play-prompt').isVisible(), false);
+    await page.locator('#fullscreen').click();
+    await page.locator('#fullscreen-notice').waitFor();
+  } finally { await page.close(); }
+});
+
+test('Escape releases fullscreen and mouse lock so the toolbar works again', async () => {
+  const page = await browser.newPage();
+  try {
+    await page.route('**/*.loader.js', route => route.fulfill({ contentType: 'text/javascript', body: `
+      window.createUnityInstance = async canvas => {
+        canvas.addEventListener('click', () => canvas.requestPointerLock()); return {};
+      };` }));
+    await page.goto(base + '/play/line-boundary/');
+    await page.locator('#start-fullscreen').click();
+    await page.waitForFunction(() => document.fullscreenElement);
+    await page.locator('canvas').click();
+    await page.waitForFunction(() => document.pointerLockElement);
+    await page.keyboard.press('Escape');
+    await page.waitForFunction(() => !document.fullscreenElement && !document.pointerLockElement);
+    await page.locator('#fullscreen').click();
+    await page.waitForFunction(() => document.fullscreenElement);
+    await page.keyboard.press('Escape');
+    await page.waitForFunction(() => !document.fullscreenElement);
+  } finally { await page.close(); }
+});
+
+test('embedded hosts that never complete fullscreen still offer windowed play', async () => {
+  const page = await browser.newPage();
+  try {
+    await page.addInitScript(() => { Element.prototype.requestFullscreen = () => new Promise(() => {}); });
+    await page.route('**/*.loader.js', route => route.fulfill({ contentType: 'text/javascript', body: 'window.createUnityInstance = async () => ({});' }));
+    await page.goto(base + '/play/line-boundary/');
+    await page.locator('#start-fullscreen').click();
+    await page.locator('#launch-error').waitFor({timeout:6000});
+    await page.locator('#start-windowed').click();
+    assert.equal(await page.locator('#play-prompt').isVisible(), false);
+  } finally { await page.close(); }
+});
+
 for (const mode of ['success', 'missing', 'corrupt']) {
   test(`split data: ${mode}, with verified parts and temporary URL cleanup`, async () => {
     const page = await browser.newPage();

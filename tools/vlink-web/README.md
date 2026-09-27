@@ -50,3 +50,51 @@ the actions in `tests/web-game-actions.json`; it is not an exhaustive playthroug
 and reader draws, hidden legs, visible heads and held panels at desktop/mobile
 sizes and desktop fullscreen. Its image regions come from the user's native
 selection-screen reference. The unpatched build fails this regression check.
+
+## Ice Effects And Native Windows Audit (2026-09-27)
+
+The local source still uses Unity 2022.3.50f1, URP 14.0.11 and VFX Graph 14.0.11,
+at the same pinned commit as the published build. No Unity upgrade or upstream
+source edits were made for this audit.
+
+- `IceWall`, `Ame_IceSlash`, `Ame_IceExplosion`, `Ame_FlyingSlash` and `BladeStorm`
+  contain VisualEffect components. The shared `PortfolioWebEffects` build helper
+  removes those components and adds generic CPU particles. The build log and
+  published manifest both record 14 replacements in total (not 14 distinct moves).
+- The fallback does not inspect the graph's mesh, texture, emission shape or
+  exposed properties. It emits up to 48 small particles, fading after 0.3-0.7s.
+  Ice has no dedicated color/shape rule. Consequently the original ice wall,
+  slash and explosion silhouettes are not reproduced. This is a fidelity gap in
+  our Web adaptation, not proof that an older Unity version alone is responsible.
+- The mesh-based ice guard is visible in actual Web battle screenshots. Not
+  every ice object is missing; a blanket shader/version diagnosis is inaccurate.
+- `WindowClassManager` originally calls Win32 `CreateWindowEx`. The Web adapter
+  replaces handles with `BrowserWindowSurface` entries and draws their textures
+  and text through `OnGUI`. Position, visibility, pooling and the original
+  animation methods are retained. These are in-canvas imitations, not Windows
+  desktop windows; OS taskbar entries, native chrome and external-window behavior
+  cannot be preserved by that implementation.
+- The source battle prefab (`Prefabs/InGame/InGame.prefab`, component
+  `7102736807134503929`) already has `BattleGimmickManager.m_Enabled: 0`.
+  `WorkScene_A` instantiates it without an enable override; `GameStartUp.Init`
+  initializes the manager but neither it nor `Singleton.Init` enables it.
+  In addition `BattleGimmickManager.cs` comments out registration of the moving
+  window-wall gimmick. Thus periodic notifications/window walls cannot simply
+  be assumed active even in the native source. This is distinct from Web API
+  compatibility. Do not re-enable disabled gameplay features without confirming
+  the intended source behavior.
+- Countdown and special-attack popup code use the same adapted window factory.
+  The ordinary battle smoke test does not verify every notification, countdown
+  or ultimate popup; source adaptation is not evidence that all those cases
+  rendered correctly. An exact native/Web comparison remains necessary for
+  those sequences before claiming complete visual equivalence.
+
+Recommended repair: retain the current Unity version initially and create
+per-effect Web-compatible mesh/ParticleSystem replacements using the original
+ice materials/textures, preserving attack lifetimes and colliders. A version
+upgrade alone does not remove this WebGL rendering limit, and the currently
+published CPU fallback would still replace the graphs until changed.
+
+References: [VFX Graph 14 requirements](https://docs.unity3d.com/Packages/com.unity.visualeffectgraph@14.0/manual/System-Requirements.html),
+[Unity 6 WebGL graphics](https://docs.unity3d.com/6000.0/Documentation/Manual/webgl-graphics.html),
+[Web native plug-ins](https://docs.unity3d.com/2022.3/Documentation/Manual/webgl-native-plugins-with-emscripten.html).

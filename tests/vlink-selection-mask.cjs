@@ -82,6 +82,7 @@ async function main() {
         await page.goto(new URL('v-link-battle/', base).href);
         await page.waitForFunction(() => ['ready', 'error'].includes(document.querySelector('#player-stage').dataset.state), null, { timeout: 180000 });
         assert.equal(await page.locator('#player-stage').getAttribute('data-state'), 'ready');
+        await page.locator('#start-windowed').click();
         await page.waitForTimeout(6500);
         const canvas = page.locator('canvas');
         await canvas.focus();

@@ -54,7 +54,7 @@ const output = path.resolve(__dirname,'../launcher/test-output/bug-hunter');
     console.log(name,JSON.stringify({fps:s.fps,memory:s.memory,heap:s.wasmHeapBytes,trees:s.trees,rocks:s.rocks,triangles:s.terrainTriangles,luminance:record.luminance,dark:record.dark,light:record.light}));
   }
   try{
-    await page.goto(process.env.BUG_HUNTER_URL||`http://127.0.0.1:${server.address().port}/play/bug-hunter/`);await state('forest');await page.waitForTimeout(4000);
+    await page.goto(process.env.BUG_HUNTER_URL||`http://127.0.0.1:${server.address().port}/play/bug-hunter/`);await state('forest');await page.locator('#start-windowed').click();await page.waitForTimeout(4000);
     assert(!(await stats()).ui.some(c=>c.name==='Capture'),'desktop text capture button is removed');
     await shot('quality-forest');
     await lock();const start=await stats();await delta(80,0);const baseline=((await stats()).viewYaw-start.viewYaw+360)%360;await delta(-80,0);
@@ -64,7 +64,7 @@ const output = path.resolve(__dirname,'../launcher/test-output/bug-hunter');
     const configured=await stats();assert(configured.sensitivity>2&&configured.volume>.1&&configured.volume<.3,'sliders change actual values');
     await control('ApplySettings');await lock();const before=await stats();await delta(80,0);const changed=((await stats()).viewYaw-before.viewYaw+360)%360;
     assert(Math.abs(changed/baseline-configured.sensitivity)<.12,'sensitivity changes measured camera rotation');await delta(-80,0);
-    await page.reload();await state('forest');await fresh();let restored=await stats();
+    await page.reload();await state('forest');await page.locator('#start-windowed').click();await fresh();let restored=await stats();
     assert(Math.abs(restored.sensitivity-configured.sensitivity)<.01&&Math.abs(restored.volume-configured.volume)<.01,'preferences survive reload');
     await control('Settings');await control('Volume',0);assert.equal((await stats()).volume,0,'volume can mute completely');await control('TestSound');
     await control('ResetSettings');assert.equal((await stats()).sensitivity,1);assert.equal((await stats()).volume,.75);await control('CloseSettings');

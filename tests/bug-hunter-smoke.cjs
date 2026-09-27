@@ -29,6 +29,7 @@ async function main() {
     await tap(button.x + button.width / 2, button.y + button.height / 2, 1, 1);
   };
   async function shot(name) {
+    if (name.includes('fullscreen')) assert.equal(await page.evaluate(() => document.fullscreenElement?.id), 'player-stage', 'Fullscreen evidence must be captured in fullscreen');
     if (await page.evaluate(() => Boolean(document.fullscreenElement))) {
       const bounds = await page.locator('canvas').evaluate(canvas => {
         const r=canvas.getBoundingClientRect();return {left:r.left,top:r.top,right:r.right,bottom:r.bottom,w:innerWidth,h:innerHeight};
@@ -68,6 +69,7 @@ async function main() {
   try {
     await page.goto(url);
     await waitState('forest');
+    await page.locator('#start-windowed').click();
     await page.waitForTimeout(3000);
     await shot('forest-desktop');
     const forest = await stats();
@@ -189,7 +191,7 @@ async function main() {
       assert(champion, 'tournament can be completed through normal controls');
     }
     const beforeReload = await stats();
-    await page.reload(); await waitState('forest');
+    await page.reload(); await waitState('forest'); await page.locator('#start-windowed').click();
     assert.equal((await stats()).count, beforeReload.count, 'captured insects persist after reload');
     // The old grid grew to 1440px inside a 1080px-tall ultrawide screen.
     await page.setViewportSize({width:2560,height:1080});
@@ -199,14 +201,14 @@ async function main() {
     await shot('forest-fullscreen');
     await click('Collection');await waitState('collection');await shot('collection-fullscreen');
     await click('Practice');await waitState('battle');await shot('battle-fullscreen');
-    await page.keyboard.press('Escape');await page.waitForFunction(()=>window.__bugHunterStats?.paused);
+    await click('Pause');await page.waitForFunction(()=>window.__bugHunterStats?.paused);
     await click('Retreat');await waitState('collection');await click('Explore');await waitState('forest');
     for(const [width,height] of [[1920,1080],[1366,768],[1920,800],[1024,768],[390,960]]) {
       await page.setViewportSize({width,height});await page.waitForTimeout(2200);
       await shot(`forest-fullscreen-${width}x${height}`);
       await click('Collection');await waitState('collection');await shot(`collection-fullscreen-${width}x${height}`);
       await click('Practice');await waitState('battle');await shot(`battle-fullscreen-${width}x${height}`);
-      await page.keyboard.press('Escape');await page.waitForFunction(()=>window.__bugHunterStats?.paused);
+      await click('Pause');await page.waitForFunction(()=>window.__bugHunterStats?.paused);
       await click('Retreat');await waitState('collection');await click('Explore');await waitState('forest');
     }
     await page.evaluate(() => document.exitFullscreen());
