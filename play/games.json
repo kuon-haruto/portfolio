@@ -313,11 +313,11 @@
       "id": "bug-hunter",
       "title": "バグハンター",
       "genre": "3D昆虫探索・育成 / 指示式バトル",
-      "description": "こもれびの森で6種類の虫を探して捕獲。個体ごとに違う能力と成長を見比べ、パートナーを育てて森の大会へ。体勢・疲労・転倒が勝負を左右するUnity製プロトタイプです。",
+      "description": "樹皮・草むら・水辺に暮らす6種類の虫を探して捕獲。個体差を見比べて育て、接近・回り込み・後退が交差する森の大会へ。体勢・疲労・転倒が勝負を左右するUnity製プロトタイプです。",
       "objective": "虫を捕まえ、パートナーを選んで育成し、3連戦の森の大会で優勝する。",
       "metadataLabel": "Unity 6 / プレイ可能なプロトタイプ",
       "howToPlay": [
-        "探索：W / A / S / Dで移動、右ドラッグで見回します。画面の方向ボタンでも操作できます。",
+        "探索：W / A / S / Dで移動、右ドラッグで見回します。縦画面では方向ボタンでも操作できます。木の幹や草の葉、水辺を探してみてください。",
         "近くの虫に狙いを合わせると捕獲ゲージがたまります。Spaceまたは「捕まえる」で捕獲します。",
         "「虫かご・育成」で個体を比較し、パートナーを選びます。樹液8で育成でき、同種でも成長量が異なります。",
         "戦闘：1＝攻撃、2＝防御、3＝技。選んだ指示を繰り返し、移動・接近は虫が自動で行います。",
@@ -329,38 +329,38 @@
       "sourcePath": "games/bug-hunter",
       "responsiveCanvas": true,
       "build": {
-        "loaderUrl": "builds/bug-hunter/v1/Build/015dd22bb09c5cc631becba4f4f492e2.loader.js",
-        "dataUrl": "builds/bug-hunter/v1/Build/5a35d14c63195e797064cfd45adecc19.data.unityweb",
-        "frameworkUrl": "builds/bug-hunter/v1/Build/cb4ff2ffd0dc20775dd9ff6479a63338.framework.js.unityweb",
-        "codeUrl": "builds/bug-hunter/v1/Build/1adea61ecf8d499d94e3eb6d0f92e712.wasm.unityweb",
+        "loaderUrl": "builds/bug-hunter/v1/Build/5a0a7b16043a04c71629a416c6906fe9.loader.js",
+        "dataUrl": "builds/bug-hunter/v1/Build/431f83a241e5e87f53df7024064b3120.data.unityweb",
+        "frameworkUrl": "builds/bug-hunter/v1/Build/6774d1d51c8d8e1c13ee9bc993b350c8.framework.js.unityweb",
+        "codeUrl": "builds/bug-hunter/v1/Build/c6c58b382cc664bf4a8a5604f4855a61.wasm.unityweb",
         "streamingAssetsUrl": "builds/bug-hunter/v1/StreamingAssets",
         "companyName": "Zenta Shimamoto",
         "productName": "Bug Hunter",
-        "productVersion": "0.1.0",
+        "productVersion": "0.2.0",
         "unityVersion": "6000.0.54f1",
         "simplifiedEffects": 0
       },
-      "downloadBytes": 12864253,
+      "downloadBytes": 15708172,
       "integrity": [
         {
-          "file": "015dd22bb09c5cc631becba4f4f492e2.loader.js",
+          "file": "431f83a241e5e87f53df7024064b3120.data.unityweb",
+          "bytes": 8253714,
+          "sha256": "13d3e2694eae8e7b683f3b552e3b19d40d041653848cb94749d11d969ee254bf"
+        },
+        {
+          "file": "5a0a7b16043a04c71629a416c6906fe9.loader.js",
           "bytes": 47338,
-          "sha256": "8550b7e964b3f8b0747e2218495bee44d3bad934f19351bda12b5d2a189fbe74"
+          "sha256": "a5c96ca85daf0f819101b48a8a590e74c639a397ce71db92d3cd54578e6448d1"
         },
         {
-          "file": "1adea61ecf8d499d94e3eb6d0f92e712.wasm.unityweb",
-          "bytes": 7133495,
-          "sha256": "59447afd5c6a9990faabb8a1deb18f32a3d95d285dfda63111ae3805764f1ba0"
+          "file": "6774d1d51c8d8e1c13ee9bc993b350c8.framework.js.unityweb",
+          "bytes": 85875,
+          "sha256": "8c17898b630bee4006f054165c44b992af0764f68e0973f071f2b26ddec71ec2"
         },
         {
-          "file": "5a35d14c63195e797064cfd45adecc19.data.unityweb",
-          "bytes": 5597575,
-          "sha256": "04380a99b998d4f505a3448db90964c8944324381d7372ed0c814329dd27fc9d"
-        },
-        {
-          "file": "cb4ff2ffd0dc20775dd9ff6479a63338.framework.js.unityweb",
-          "bytes": 85845,
-          "sha256": "bc5976f02f1c207a6d9d4fdea7e3950b8e92bd8086a847b986fa1ba143130e15"
+          "file": "c6c58b382cc664bf4a8a5604f4855a61.wasm.unityweb",
+          "bytes": 7321245,
+          "sha256": "01b4576fe90dac6a1668e4b9ea9986377401a3326e0790bb7316c343ac448546"
         }
       ]
     }

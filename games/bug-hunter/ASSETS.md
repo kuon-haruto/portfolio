@@ -22,8 +22,45 @@ Final prompt:
 
 ## 3D and audio
 
-Original procedural low-poly insect meshes, forest meshes, and short synthesized notice tone.
-No external model packages, scanned textures or music recordings.
+Original procedural anime insect meshes, terrain, rooted trees, ferns, and short synthesized notice tone.
+No assets, characters, UI or code were copied from The Ants; it is a visual-quality reference only.
+
+## Environment textures
+
+Poly Haven CC0 photographs, original 1K JPEGs; Unity imports as compressed mipmapped textures.
+
+- Forest Floor: https://polyhaven.com/a/forest_floor
+  - eye-candy.xyz.
+  - `Resources/Environment/Ground.jpg`, MD5 `d67f308e4b8be6a65989e8dc76ec40fe`.
+- Forest Ground 04 (trail and stones): https://polyhaven.com/a/forest_ground_04
+  - Rob Tuytel (photography/processing), Rico Cilliers (adjustment).
+  - `Resources/Environment/Trail.jpg`, MD5 `6ad9df4d731a238299806f739a26af83`.
+- Bark Brown 01: https://polyhaven.com/a/bark_brown_01
+  - Rob Tuytel.
+  - `Resources/Environment/Bark.jpg`, MD5 `b6d5dcde10b7cd1b36d70cd33a34724a`.
+- License and redistribution permission: https://polyhaven.com/license
+- Reproducible asset import: `../../tools/prepare-bug-hunter-art.cjs`.
+
+## Generated foliage
+
+- Built-in OpenAI image generation; genuinely transparent PNG, alpha retained.
+- Canonical asset: `Assets/BugHunter/Resources/Environment/OakLeaves.png`.
+- Final prompt: Use case: photorealistic-natural. Asset type: transparent foliage texture for cards on branches in a realtime 3D Japanese woodland game. Create one isolated natural spray of Japanese oak (Quercus acutissima) foliage, about 35 slender serrated green leaves connected by fine brown twigs, fanning organically outward from a short central branch. Botanical photographic realism with detailed veins, irregular natural leaf angles, rich medium and deep greens, several yellow-green new leaves, subtle mottling. Broad horizontal fan fills a square texture with comfortable transparent margin, branch base near bottom center. Flat diffuse daylight, neutral white balance, no cast shadow outside subject, no rim glow. Transparent background including real empty gaps between leaves. Entire twig and all leaf tips in frame, crisp anti-aliased cutout. No tree trunk, no pot, no insects, no ground, no scenery, no text, no border, no watermark. Not illustrated, not polygonal, not stylized, no clumps of triangles.
+- Used on crossed 3D leaf cards with cutout shadows and slight wind displacement.
+- Matching ground asset: `Assets/BugHunter/Resources/Environment/Fern.png`, also built-in image generation with alpha retained; imported at 512px.
+- Fern final prompt: Use case: photorealistic-natural. Asset type: alpha-cutout fern texture for a realtime 3D woodland floor. One isolated realistic young Japanese woodland fern clump seen straight on at low eye level. Seven to nine arching delicate fronds radiate from a small base centered at the bottom, fine pinnate leaflets clearly visible, irregular organic silhouette, some fresh yellow-green tips and darker mature greens, detailed veins and natural variation. Photographic botanical realism, soft neutral diffuse daylight, no dramatic highlights or hard cast shadows. Whole plant entirely within square frame, compact mound about as wide as tall. Actual fully transparent background with transparent gaps between small leaflets. No pot, no ground, no soil, no scene, no insects, no text or watermark. Crisp cutout edges, no glow, no illustration, no triangular stylized leaves. The base rests just above the bottom transparent margin. Intended for crossed foliage cards in a 3D game, not an environment image.
+
+## Interface icons
+
+Lucide 0.468.0, from the repository's existing shared dependency.
+128px white PNG rasterizations of the original SVG paths; no new icon library or runtime installed.
+License: `Assets/BugHunter/Resources/UI/LICENSE.txt`.
+
+## Navigation
+
+Unity's built-in AI module supplies NavMesh building, pathfinding and local avoidance.
+The battle simulation only applies an attack when its actor has reached and faced the opponent.
+https://docs.unity3d.com/6000.0/Documentation/ScriptReference/AI.NavMeshBuilder.BuildNavMeshData.html
 
 ## Memory setting reference
 

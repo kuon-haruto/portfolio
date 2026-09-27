@@ -23,6 +23,11 @@ async function main() {
     const box = await page.locator('canvas').boundingBox();
     await page.mouse.click(box.x + box.width * x / w, box.y + box.height * y / h);
   };
+  const click = async name => {
+    await page.waitForFunction(name => window.__bugHunterStats?.ui?.some(b => b.name === name && b.enabled), name);
+    const button = (await stats()).ui.find(b => b.name === name);
+    await tap(button.x + button.width / 2, button.y + button.height / 2, 1, 1);
+  };
   async function shot(name) {
     const bytes = await page.locator('canvas').screenshot({ path: path.join(output, name + '.png') });
     const png = PNG.sync.read(bytes), colors = new Set();
@@ -30,7 +35,27 @@ async function main() {
       let i = (y * png.width + x) * 4; colors.add(`${png.data[i] >> 3},${png.data[i + 1] >> 3},${png.data[i + 2] >> 3}`);
     }
     assert(colors.size > 25, `${name}: canvas appears blank (${colors.size} colors)`);
-    console.log(name, await stats(), 'colors=' + colors.size);
+    const current=await stats();
+    for(const control of current.ui) {
+      assert(control.x>=-.001 && control.y>=-.001 && control.x+control.width<=1.001 && control.y+control.height<=1.001, `${name}: control stays in canvas: ${control.name}`);
+    }
+    for(let a=0;a<current.ui.length;a++)for(let b=a+1;b<current.ui.length;b++) {
+      const x=current.ui[a],y=current.ui[b];
+      const overlapX=Math.min(x.x+x.width,y.x+y.width)-Math.max(x.x,y.x);
+      const overlapY=Math.min(x.y+x.height,y.y+y.height)-Math.max(x.y,y.y);
+      assert(overlapX<.001 || overlapY<.001, `${name}: overlapping controls ${x.name} / ${y.name}`);
+    }
+    if(name==='battle-moving-desktop'||name==='battle-mobile'||name==='battle-fullscreen') {
+      let purple=0,cyan=0;
+      for(let y=Math.floor(png.height*.31);y<png.height*.70;y++)for(let x=0;x<png.width;x++) {
+        const i=(y*png.width+x)*4,r=png.data[i],g=png.data[i+1],b=png.data[i+2];
+        if(r>g*1.25&&b>r*1.1&&b>70)purple++;
+        if(g>r*1.6&&b>r*1.8&&g>150&&b>180)cyan++;
+      }
+      assert(purple>60 && cyan>8, `${name}: partner and team marker must be visible, not hidden behind scenery (${purple}/${cyan})`);
+    }
+    const {screen,count,fps,memory,wasmHeapBytes,navigation,travelA,travelB} = await stats();
+    console.log(name, {screen,count,fps,memory,wasmHeapBytes,navigation,travelA,travelB}, 'colors=' + colors.size);
     measurements.push({ name, ...(await stats()), colors: colors.size });
   }
   try {
@@ -38,19 +63,27 @@ async function main() {
     await waitState('forest');
     await page.waitForTimeout(3000);
     await shot('forest-desktop');
+    const forest = await stats();
+    assert.equal(forest.wildCount, 8, 'sparse habitat population');
+    assert(forest.visibleWild <= 3, 'initial view is not crowded with insects');
+    assert.equal(forest.habitats.filter(h => h.normal.y === 0).length, 3, 'three insects cling to tree sides');
+    assert(forest.habitats.every(h => h.scale < .3), 'wild insects use a small environmental scale');
+    assert(forest.habitats.every(h => Math.abs(h.position.x-h.home.x)+Math.abs(h.position.y-h.home.y)+Math.abs(h.position.z-h.home.z)<.1), 'crawl remains attached to habitat');
     assert((await stats()).fps < 80, 'high-refresh displays do not cause unnecessary rendering');
     await page.locator('canvas').focus();
-    await page.keyboard.down('w'); await page.waitForTimeout(650); await page.keyboard.up('w');
+    await page.keyboard.down('w'); await page.waitForTimeout(850); await page.keyboard.up('w');
     await page.waitForFunction(() => window.__bugHunterStats?.target && window.__bugHunterStats?.focus > .9);
+    await shot('tree-capture-desktop');
+    assert.equal((await stats()).targetHabitat, 'クヌギの幹');
     for (let attempt = 0; attempt < 5 && (await stats()).count === 0; attempt++) {
       await page.keyboard.press('Space'); await page.waitForTimeout(1500);
     }
     assert((await stats()).count > 0, 'capture must add an individual');
     await page.keyboard.press('Tab'); await waitState('collection');
     await shot('collection-desktop');
-    await tap(800, 572); await page.waitForTimeout(1300);
+    await click('Train'); await page.waitForTimeout(1300);
     assert((await stats()).level >= 2, 'training levels up the captured insect');
-    await tap(150, 673); await waitState('battle');
+    await click('Practice'); await waitState('battle');
     await shot('battle-desktop');
     await page.keyboard.press('Escape');
     await page.waitForFunction(() => window.__bugHunterStats?.paused === true);
@@ -59,29 +92,45 @@ async function main() {
     assert.equal((await stats()).hp, pausedHp, 'pause freezes battle');
     await page.keyboard.press('Escape');
     await page.waitForFunction(() => window.__bugHunterStats?.paused === false);
+    assert((await stats()).navigation, 'both fighters are on the navigation mesh');
+    const movement = [];
+    for (let i=0; i<10 && (await stats()).screen==='battle'; i++) {
+      await page.keyboard.press(i<3 ? '2' : '1');
+      await page.waitForTimeout(1000);
+      movement.push(await stats());
+      if(i===2)await shot('battle-moving-desktop');
+    }
+    assert(movement.at(-1).travelA > 4 && movement.at(-1).travelB > 4, 'both insects navigate real distances');
+    for (const side of ['positionA','positionB']) {
+      const xs=movement.map(s=>s[side].x),zs=movement.map(s=>s[side].z);
+      assert(Math.max(...xs)-Math.min(...xs)>.5 && Math.max(...zs)-Math.min(...zs)>.5, 'movement is two-dimensional: '+side);
+      assert(movement.every(s=>Math.hypot(s[side].x-260,s[side].z)<6.5), 'fighters stay in arena');
+    }
     await page.keyboard.press('3');
     let downSeen = false;
     const deadline = Date.now() + 180000;
     while (Date.now() < deadline && (await stats()).screen === 'battle') {
       const status = await stats();
-      if (!downSeen && status.falls > 0) { downSeen = true; await shot('knockdown-desktop'); }
-      await page.waitForTimeout(2000);
+      if (!downSeen && (status.down > 1.5 || status.enemyDown > 1.5)) { downSeen = true; await shot('knockdown-desktop'); }
+      await page.waitForTimeout(1000);
     }
     await waitState('result'); await shot('result-desktop');
-    await tap(640, 442); await waitState('collection');
+    assert((await stats()).maxHitDistance>0 && (await stats()).maxHitDistance<=1.96, 'hits occur only within contact range');
+    await click('Camp'); await waitState('collection');
     // A real UI-only tournament, including rewards and the next-round transition.
     if (!process.env.BUG_HUNTER_QUICK) {
       let champion = false;
       for (let attempt = 0; attempt < 5 && !champion; attempt++) {
         while ((await stats()).nectar >= 8 && (await stats()).level < 5) {
-          await tap(800, 572); await page.waitForTimeout(1100);
+          await click('Train'); await page.waitForTimeout(1100);
         }
-        await tap(450, 673); await waitState('battle');
+        await click('Tournament'); await waitState('battle');
         let resting = false;
         for (let round = 1; round <= 3; round++) {
           const deadline = Date.now() + 165000;
           while (Date.now() < deadline && (await stats()).screen === 'battle') {
             const state = await stats();
+            if(!downSeen && (state.down>1.5 || state.enemyDown>1.5)){downSeen=true;await shot('knockdown-desktop');}
             if (state.energy < 26 || state.balance < 24) resting = true;
             if (state.energy > 78 && state.balance > 78) resting = false;
             await page.keyboard.press(resting ? '2' : state.enemyDown > 0 || state.energy > 75 ? '3' : '1');
@@ -90,12 +139,12 @@ async function main() {
           await waitState('result');
           const result = await stats();
           console.log('Tournament', attempt + 1, 'round', result.round, result.victory ? 'win' : 'loss');
-          if (!result.victory) { await tap(640, 442); await waitState('collection'); break; }
+          if (!result.victory) { await click('Camp'); await waitState('collection'); break; }
           if (round === 3) {
             assert(result.trophies > 0, 'championship awards a trophy');
             await shot('tournament-champion'); champion = true;
-            await tap(640, 442); await waitState('collection');
-          } else { await tap(640, 442); await waitState('battle'); }
+            await click('Camp'); await waitState('collection');
+          } else { await click('NextRound'); await waitState('battle'); }
         }
       }
       assert(champion, 'tournament can be completed through normal controls');
@@ -105,13 +154,18 @@ async function main() {
     assert.equal((await stats()).count, beforeReload.count, 'captured insects persist after reload');
     await page.locator('#fullscreen').click();
     await page.waitForFunction(() => document.fullscreenElement?.id === 'player-stage');
+    await page.waitForTimeout(2500);
     await shot('forest-fullscreen');
+    await click('Collection');await waitState('collection');await shot('collection-fullscreen');
+    await click('Practice');await waitState('battle');await shot('battle-fullscreen');
+    await page.keyboard.press('Escape');await page.waitForFunction(()=>window.__bugHunterStats?.paused);
+    await click('Retreat');await waitState('collection');await click('Explore');await waitState('forest');
     await page.evaluate(() => document.exitFullscreen());
     await page.setViewportSize({ width: 390, height: 960 });
     await page.waitForTimeout(2000); await shot('forest-mobile');
     assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false, 'no horizontal overflow');
-    await tap(600, 1220, 720, 1280); await waitState('collection'); await shot('collection-mobile');
-    await tap(150, 1230, 720, 1280); await waitState('battle'); await shot('battle-mobile');
+    await click('Collection'); await waitState('collection'); await shot('collection-mobile');
+    await click('Practice'); await waitState('battle'); await shot('battle-mobile');
     assert(measurements.every(item => item.memory < 64 * 1024 ** 2), 'Unity allocated memory stays under 64 MiB in sampled scenes');
     assert(measurements.every(item => item.wasmHeapBytes <= 128 * 1024 ** 2), 'WASM heap stays under 128 MiB in sampled scenes');
     assert.equal(errors.length, 0, errors.join('\n'));

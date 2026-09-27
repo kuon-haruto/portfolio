@@ -37,4 +37,5 @@ Shader "BugHunter/Woodland"
             ENDCG
         }
     }
+    FallBack "Diffuse"
 }

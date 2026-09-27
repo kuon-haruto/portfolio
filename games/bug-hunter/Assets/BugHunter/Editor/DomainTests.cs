@@ -31,6 +31,13 @@ public static class DomainTests
         tired.player.energy=0;tired.player.order=Order.Skill;tired.player.clock=0;tired.Tick(.05f);
         Check(tired.player.order==Order.Skill,"fatigue preserves requested order");
         Check(tired.player.hits==0,"no attack without stamina");
+        var distant=new Battle(Individual.Create(s,1),s,Individual.Create(s,2),s,44);
+        distant.canStrike=_=>false;float startingHp=distant.enemy.hp;
+        for(int i=0;i<240;i++)distant.Tick(1f/60);
+        Check(distant.player.hits==0&&distant.enemy.hits==0,"out of range fighters cannot attack");
+        Check(distant.enemy.hp==startingHp&&distant.player.energy==100,"approach consumes neither HP nor attack stamina");
+        distant.canStrike=_=>true;distant.Tick(.2f);
+        Check(distant.player.hits>0,"contact enables the pending attack");
         int wins=0,falls=0;
         for(int seed=0;seed<120;seed++)
         {

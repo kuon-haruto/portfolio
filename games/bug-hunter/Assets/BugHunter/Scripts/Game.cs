@@ -15,6 +15,7 @@ namespace BugHunter
         public Forest forest;
         public Hud hud;
         public Battle battle;
+        public Arena arena;
         public string screen = "forest", toast = "";
         public float toastTime;
         public int selected, round;
@@ -22,7 +23,7 @@ namespace BugHunter
         public bool paused;
         public BugView preview, fighterA, fighterB;
         readonly System.Random random = new System.Random();
-        float captureCooldown, uiClock, resultDelay = -1, kickA, kickB;
+        float captureCooldown, uiClock, resultDelay = -1;
         float diagnosticClock;
         int frameCount;
         float frameTime, fps;
@@ -35,11 +36,15 @@ namespace BugHunter
         void Awake()
         {
             Application.targetFrameRate=60; QualitySettings.vSyncCount=0;QualitySettings.antiAliasing=2;
-            RenderSettings.fog=true;RenderSettings.fogMode=FogMode.Linear;RenderSettings.fogStartDistance=25;RenderSettings.fogEndDistance=70;RenderSettings.fogColor=new Color(.64f,.87f,.94f);
-            RenderSettings.ambientLight=Color.white;
-            var sun=new GameObject("Sun",typeof(Light)).GetComponent<Light>();sun.type=LightType.Directional;sun.transform.rotation=Quaternion.Euler(55,-28,0);sun.intensity=1;
+            RenderSettings.fog=true;RenderSettings.fogMode=FogMode.Linear;RenderSettings.fogStartDistance=22;RenderSettings.fogEndDistance=57;RenderSettings.fogColor=new Color(.53f,.64f,.61f);
+            RenderSettings.ambientMode=UnityEngine.Rendering.AmbientMode.Trilight;
+            RenderSettings.ambientSkyColor=new Color(.63f,.7f,.73f);RenderSettings.ambientEquatorColor=new Color(.45f,.5f,.37f);RenderSettings.ambientGroundColor=new Color(.25f,.3f,.23f);
+            RenderSettings.skybox=Resources.Load<Material>("Environment/Sky");
+            QualitySettings.shadows=ShadowQuality.HardOnly;QualitySettings.shadowDistance=22;QualitySettings.shadowResolution=ShadowResolution.Medium;
+            var sun=new GameObject("Sun",typeof(Light)).GetComponent<Light>();sun.type=LightType.Directional;sun.transform.rotation=Quaternion.Euler(48,-32,0);sun.intensity=1.15f;sun.color=new Color(1,.96f,.85f);sun.shadows=LightShadows.Hard;sun.shadowStrength=.65f;
             Load();
             forest=new GameObject("Woodland",typeof(Forest)).GetComponent<Forest>();forest.Initialize(catalog,woodland);
+            arena=new GameObject("Arena navigation",typeof(Arena)).GetComponent<Arena>();arena.Initialize();
             hud=new GameObject("HUD",typeof(Hud)).GetComponent<Hud>();hud.Initialize(this,font);
             sound=gameObject.AddComponent<AudioSource>();sound.volume=.16f;sound.spatialBlend=0;
             var samples=new float[4410];for(int i=0;i<samples.Length;i++)samples[i]=Mathf.Sin(i*2*Mathf.PI*720/44100f)*(1-i/(float)samples.Length);
@@ -86,14 +91,14 @@ namespace BugHunter
             captureCooldown=1.1f;
             float chance=catalog[w.bug.species].capture*.65f+forest.focus*.48f;
             if(random.NextDouble()>Mathf.Min(.97f,chance))
-            { forest.focus=0;w.home+=new Vector3(1.3f,0,1);Notify("逃げられた！");return; }
+            { forest.Startle(w);Notify("警戒している……");return; }
             save.bugs.Add(w.bug);save.captures++;save.nectar+=4;
             if(string.IsNullOrEmpty(save.partner))save.partner=w.bug.id;
             Notify(Data(w.bug).displayName+"を捕まえた！  樹液 +4");forest.Catch(w);Save();hud.Refresh();
         }
         void ClearActors()
         {
-            if(preview)Destroy(preview.gameObject);if(fighterA)Destroy(fighterA.gameObject);if(fighterB)Destroy(fighterB.gameObject);
+            if(preview)Destroy(preview.gameObject);if(arena)arena.Clear();
             preview=fighterA=fighterB=null;
         }
         public void Explore()
@@ -108,7 +113,7 @@ namespace BugHunter
         }
         public void CollectionCamera(bool portrait)
         {
-            forest.View(portrait?new Vector3(60,3,10):new Vector3(57.6f,2.5f,5),portrait?new Vector3(60,-2.8f,0):new Vector3(57.6f,.6f,0));
+            forest.View(portrait?new Vector3(160,3,10):new Vector3(159.25f,2.8f,6),portrait?new Vector3(160,-2.1f,0):new Vector3(159.25f,.65f,0));
         }
         public void Select(int index)
         {
@@ -118,8 +123,9 @@ namespace BugHunter
         {
             if(preview)Destroy(preview.gameObject);
             if(Selected==null)return;
-            preview=Instantiate(Data(Selected).model).GetComponent<BugView>();preview.transform.position=new Vector3(60,0,0);
+            preview=Instantiate(Data(Selected).model).GetComponent<BugView>();preview.transform.position=new Vector3(160,0,0);
             preview.transform.localScale=Vector3.one*1.6f*Selected.size;preview.transform.rotation=Quaternion.Euler(0,-28,0);
+            foreach(var renderer in preview.GetComponentsInChildren<Renderer>())renderer.shadowCastingMode=UnityEngine.Rendering.ShadowCastingMode.On;
         }
         public void Partner()
         { if(Selected==null)return;save.partner=Selected.id;Notify("パートナーに選んだ");Save();hud.Collection(); }
@@ -142,13 +148,10 @@ namespace BugHunter
             int enemyId=tournament?(round+1)%catalog.Length:random.Next(catalog.Length);
             var other=Individual.Create(catalog[enemyId],random.Next());other.level=Mathf.Clamp(bug.level+(tournament?round-2:0),1,20);
             battle=new Battle(bug,Data(bug),other,Data(other),random.Next());
-            battle.impact=(side,heavy)=>{if(side==0)kickA=1;else kickB=1;sound.pitch=heavy?.65f:1.25f;sound.PlayOneShot(note);};
-            ClearActors();fighterA=Instantiate(Data(bug).model).GetComponent<BugView>();fighterB=Instantiate(Data(other).model).GetComponent<BugView>();
-            fighterA.transform.localScale=Vector3.one*1.35f*bug.size;fighterB.transform.localScale=Vector3.one*1.35f*other.size;
-            fighterA.transform.position=new Vector3(78.75f,0,0);fighterB.transform.position=new Vector3(81.25f,0,0);
-            fighterA.transform.rotation=Quaternion.Euler(0,90,0);fighterB.transform.rotation=Quaternion.Euler(0,-90,0);
+            battle.impact=(side,heavy)=>{arena.Impact(side,heavy);sound.pitch=heavy?.65f:1.25f;sound.PlayOneShot(note);};
+            ClearActors();arena.StartFight(battle,forest.cameraView,woodland);fighterA=arena.View(0);fighterB=arena.View(1);
             screen="battle";rewarded=false;resultDelay=-1;
-            forest.View(new Vector3(80,5.4f,9.2f),new Vector3(80,.4f,0));hud.Battle();
+            forest.View(new Vector3(260,8,11),new Vector3(260,.4f,0));arena.FrameCamera(10);hud.Battle();
         }
         public void Command(int command)
         {
@@ -184,23 +187,12 @@ namespace BugHunter
                 battle.Tick(dt);
                 if(battle.ended){if(resultDelay<0)resultDelay=1.2f;resultDelay-=dt;if(resultDelay<=0)Finish();}
             }
-            if(battle!=null && fighterA && fighterB && !paused)
-            {
-                kickA=Mathf.MoveTowards(kickA,0,dt*2.6f);kickB=Mathf.MoveTowards(kickB,0,dt*2.6f);
-                Pose(fighterA,battle.player,-1,kickA);Pose(fighterB,battle.enemy,1,kickB);
-            }
+            if(battle!=null && fighterA && fighterB)arena.Tick(dt,paused);
             if(preview)preview.transform.rotation=Quaternion.Euler(0,-28+Mathf.Sin(Time.time*.35f)*16,0);
             uiClock-=dt;if(uiClock<=0){uiClock=.1f;hud.Refresh();}
             #if UNITY_WEBGL && !UNITY_EDITOR
             diagnosticClock-=dt;if(diagnosticClock<=0){diagnosticClock=1;ReportStats(Snapshot());}
             #endif
-        }
-        void Pose(BugView view,Battle.Fighter f,int side,float kick)
-        {
-            float x=side*(f.order==Order.Guard?1.85f:1.25f)-side*kick*.65f;
-            view.transform.position=Vector3.Lerp(view.transform.position,new Vector3(80+x,f.IsDown?.45f:0,0),Time.deltaTime*12);
-            var angle=Quaternion.Euler(0,-side*90,f.IsDown?170:0);
-            view.transform.rotation=Quaternion.Slerp(view.transform.rotation,angle,Time.deltaTime*9);view.movement=f.IsDown?1:.25f+kick;
         }
         // Read-only diagnostics used by the browser smoke test; no save or battle mutations.
         public string Snapshot()
@@ -210,8 +202,12 @@ namespace BugHunter
                 falls=battle?.player.falls??0, level=Selected?.level??0,
                 energy=battle?.player.energy??0,balance=battle?.player.balance??0,down=battle?.player.down??0,enemyDown=battle?.enemy.down??0,
                 victory=battle?.Victory??false,paused=paused,trophies=save.trophies,nectar=save.nectar,fps=fps,
-                memory=UnityEngine.Profiling.Profiler.GetTotalAllocatedMemoryLong() });
+                memory=UnityEngine.Profiling.Profiler.GetTotalAllocatedMemoryLong(),visibleWild=forest.VisibleCount,wildCount=forest.wildlife.Count,
+                targetHabitat=forest.target?.habitat??"",playerPosition=forest.player.position,
+                navigation=arena.Navigating,positionA=arena.Position(0),positionB=arena.Position(1),travelA=arena.Travel(0),travelB=arena.Travel(1),maxHitDistance=arena.maxHitDistance,
+                ui=hud.Controls(),habitats=forest.wildlife.ConvertAll(w=>new HabitatDiagnostic {species=w.bug.species,position=w.view.transform.position,normal=w.normal,home=w.home,scale=w.view.transform.localScale.x,habitat=w.habitat}).ToArray() });
         }
-        [Serializable] public class Diagnostic { public string screen; public int count,round,falls,level,trophies,nectar;public bool target,victory,paused;public float focus,hp,enemyHp,energy,balance,down,enemyDown,fps;public long memory; }
+        [Serializable] public class HabitatDiagnostic { public int species;public Vector3 position,normal,home;public float scale;public string habitat; }
+        [Serializable] public class Diagnostic { public string screen,targetHabitat; public int count,round,falls,level,trophies,nectar,visibleWild,wildCount;public bool target,victory,paused,navigation;public float focus,hp,enemyHp,energy,balance,down,enemyDown,fps,travelA,travelB,maxHitDistance;public long memory;public Vector3 playerPosition,positionA,positionB;public Hud.ControlDiagnostic[] ui;public HabitatDiagnostic[] habitats; }
     }
 }

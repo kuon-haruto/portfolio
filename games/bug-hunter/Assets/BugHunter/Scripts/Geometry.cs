@@ -9,11 +9,21 @@ namespace BugHunter
         readonly List<Vector3> vertices = new List<Vector3>();
         readonly List<int> indices = new List<int>();
         readonly List<Color> colors = new List<Color>();
+        readonly List<Vector2> uvs = new List<Vector2>();
         void Face(Vector3 a, Vector3 b, Vector3 c, Color color)
         {
             int i = vertices.Count; vertices.Add(a); vertices.Add(b); vertices.Add(c);
             colors.Add(color); colors.Add(color); colors.Add(color);
+            uvs.Add(Vector2.zero);uvs.Add(Vector2.zero);uvs.Add(Vector2.zero);
             indices.Add(i); indices.Add(i + 1); indices.Add(i + 2);
+        }
+        public void FoliageCard(Vector3 center,float size,Quaternion rotation,Color color)
+        {
+            int i=vertices.Count;
+            foreach(var p in new[]{new Vector3(-.5f,-.5f,0),new Vector3(.5f,-.5f,0),new Vector3(.5f,.5f,0),new Vector3(-.5f,.5f,0)})
+            {vertices.Add(center+rotation*p*size);colors.Add(color);}
+            uvs.Add(new Vector2(0,0));uvs.Add(new Vector2(1,0));uvs.Add(new Vector2(1,1));uvs.Add(new Vector2(0,1));
+            indices.Add(i);indices.Add(i+1);indices.Add(i+2);indices.Add(i);indices.Add(i+2);indices.Add(i+3);
         }
         public void Oval(Vector3 position, Vector3 size, Color color, int sides = 10, int rows = 6, Quaternion? rotation = null)
         {
@@ -26,14 +36,22 @@ namespace BugHunter
             for (int y = 0; y < rows; y++) for (int x = 0; x < sides; x++)
             { Face(Point(x,y), Point(x+1,y), Point(x+1,y+1), color); Face(Point(x,y), Point(x+1,y+1), Point(x,y+1), color); }
         }
-        public void Stem(Vector3 a, Vector3 b, float radiusA, float radiusB, Color color, int sides = 7)
+        public void Stem(Vector3 a, Vector3 b, float radiusA, float radiusB, Color color, int sides = 7,bool caps=true)
         {
             Quaternion r = Quaternion.FromToRotation(Vector3.up, (b - a).normalized);
             Vector3 Ring(Vector3 p, float radius, int k) => p + r * new Vector3(Mathf.Cos(k * 2 * Mathf.PI / sides) * radius, 0, Mathf.Sin(k * 2 * Mathf.PI / sides) * radius);
+            int start=vertices.Count;
             for (int i = 0; i < sides; i++)
             {
-                var p = Ring(a, radiusA, i); var q = Ring(a, radiusA, i+1); var s = Ring(b, radiusB, i); var t = Ring(b, radiusB, i+1);
-                Face(p, s, t, color); Face(p, t, q, color); Face(a, p, q, color); Face(b, t, s, color);
+                vertices.Add(Ring(a,radiusA,i));vertices.Add(Ring(b,radiusB,i));
+                colors.Add(color);colors.Add(color);uvs.Add(new Vector2(i/(float)sides,0));uvs.Add(new Vector2(i/(float)sides,1));
+            }
+            int bottom=vertices.Count;vertices.Add(a);vertices.Add(b);colors.Add(color);colors.Add(color);uvs.Add(Vector2.zero);uvs.Add(Vector2.one);
+            for(int i=0;i<sides;i++)
+            {
+                int p=start+i*2,q=start+((i+1)%sides)*2,s=p+1,t=q+1;
+                indices.Add(p);indices.Add(s);indices.Add(t);indices.Add(p);indices.Add(t);indices.Add(q);
+                if(caps){indices.Add(bottom);indices.Add(p);indices.Add(q);indices.Add(bottom+1);indices.Add(t);indices.Add(s);}
             }
         }
         public void Leaf(Vector3 p, float length, float width, Color color, Quaternion rotation)
@@ -41,13 +59,16 @@ namespace BugHunter
             var a = p; var b = p + rotation * new Vector3(-width, .08f, length * .45f);
             var c = p + rotation * new Vector3(0, .2f, length); var d = p + rotation * new Vector3(width, .08f, length * .45f);
             var e = p + rotation * new Vector3(0, .18f, length * .45f);
-            Face(a, e, b, color); Face(b, e, c, color); Face(c, e, d, color * .86f); Face(d, e, a, color * .86f);
-            Face(a, b, c, color); Face(a, c, d, color);
+            int start=vertices.Count;
+            vertices.Add(a);vertices.Add(b);vertices.Add(c);vertices.Add(d);vertices.Add(e);
+            colors.Add(color);colors.Add(color);colors.Add(color);colors.Add(color*.9f);colors.Add(color);
+            uvs.Add(new Vector2(.5f,0));uvs.Add(new Vector2(0,.45f));uvs.Add(new Vector2(.5f,1));uvs.Add(new Vector2(1,.45f));uvs.Add(new Vector2(.5f,.45f));
+            for(int i=0;i<4;i++){indices.Add(start+i);indices.Add(start+4);indices.Add(start+(i+1)%4);}
         }
         public Mesh Mesh(string name)
         {
             var mesh = new Mesh { name = name, indexFormat = vertices.Count > 65535 ? UnityEngine.Rendering.IndexFormat.UInt32 : UnityEngine.Rendering.IndexFormat.UInt16 };
-            mesh.SetVertices(vertices); mesh.SetTriangles(indices, 0); mesh.SetColors(colors); mesh.RecalculateNormals(); mesh.RecalculateBounds();
+            mesh.SetVertices(vertices); mesh.SetTriangles(indices, 0); mesh.SetColors(colors);mesh.SetUVs(0,uvs); mesh.RecalculateNormals(); mesh.RecalculateBounds();
             return mesh;
         }
         public static GameObject Object(string name, Mesh mesh, Material material, Transform parent)

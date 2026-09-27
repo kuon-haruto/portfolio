@@ -68,8 +68,60 @@ public static class BuildGame
     }
     public static void Validate()
     {
-        Setup();var data=Enumerable.Range(0,6).Select(i=>AssetDatabase.LoadAssetAtPath<Species>(Root+"/Species/"+i+".asset")).ToArray();
+        Setup();EnvironmentAssets();var data=Enumerable.Range(0,6).Select(i=>AssetDatabase.LoadAssetAtPath<Species>(Root+"/Species/"+i+".asset")).ToArray();
         DomainTests.Run(data);Debug.Log("BUG_HUNTER_VALIDATION_OK");
+    }
+    static void EnvironmentAssets()
+    {
+        AssetDatabase.Refresh();
+        foreach(string name in new[]{"Ground","Trail","Bark"})
+        {
+            var importer=(TextureImporter)AssetImporter.GetAtPath(Root+"/Resources/Environment/"+name+".jpg");
+            if(importer==null)throw new Exception("Run tools/prepare-bug-hunter-art.cjs first");
+            importer.maxTextureSize=1024;importer.mipmapEnabled=true;importer.wrapMode=TextureWrapMode.Repeat;
+            importer.textureCompression=TextureImporterCompression.Compressed;importer.anisoLevel=4;importer.SaveAndReimport();
+        }
+        foreach(string path in Directory.GetFiles(Root+"/Resources/UI","*.png"))
+        {
+            var importer=(TextureImporter)AssetImporter.GetAtPath(path.Replace('\\','/'));
+            importer.textureType=TextureImporterType.Sprite;importer.spriteImportMode=SpriteImportMode.Single;importer.mipmapEnabled=false;
+            importer.alphaIsTransparency=true;importer.maxTextureSize=128;importer.textureCompression=TextureImporterCompression.Uncompressed;importer.SaveAndReimport();
+        }
+        Surface("Soil","Ground",.45f,.04f);
+        var soil=AssetDatabase.LoadAssetAtPath<Material>(Root+"/Resources/Environment/Soil.mat");soil.SetTexture("_PathTex",AssetDatabase.LoadAssetAtPath<Texture2D>(Root+"/Resources/Environment/Trail.jpg"));soil.SetFloat("_UsePath",1);EditorUtility.SetDirty(soil);
+        Surface("Trunk","Bark",.7f,.08f);
+        Surface("Rock","Trail",.7f,.04f);
+        Surface("Foliage",null,1,.12f);
+        Surface("Water",null,1,.82f);
+        var leavesImport=(TextureImporter)AssetImporter.GetAtPath(Root+"/Resources/Environment/OakLeaves.png");
+        leavesImport.maxTextureSize=1024;leavesImport.alphaIsTransparency=true;leavesImport.mipmapEnabled=true;leavesImport.mipMapsPreserveCoverage=true;leavesImport.alphaTestReferenceValue=.45f;
+        leavesImport.textureCompression=TextureImporterCompression.Compressed;leavesImport.SaveAndReimport();
+        string leafPath=Root+"/Resources/Environment/Leaves.mat";var leaves=AssetDatabase.LoadAssetAtPath<Material>(leafPath);
+        if(!leaves){leaves=new Material(Shader.Find("BugHunter/Leaves"));AssetDatabase.CreateAsset(leaves,leafPath);}
+        leaves.mainTexture=AssetDatabase.LoadAssetAtPath<Texture2D>(Root+"/Resources/Environment/OakLeaves.png");EditorUtility.SetDirty(leaves);
+        var fernImport=(TextureImporter)AssetImporter.GetAtPath(Root+"/Resources/Environment/Fern.png");
+        fernImport.maxTextureSize=512;fernImport.alphaIsTransparency=true;fernImport.mipmapEnabled=true;fernImport.mipMapsPreserveCoverage=true;fernImport.alphaTestReferenceValue=.45f;
+        fernImport.textureCompression=TextureImporterCompression.Compressed;fernImport.SaveAndReimport();
+        string fernPath=Root+"/Resources/Environment/Ferns.mat";var fern=AssetDatabase.LoadAssetAtPath<Material>(fernPath);
+        if(!fern){fern=new Material(Shader.Find("BugHunter/Leaves"));AssetDatabase.CreateAsset(fern,fernPath);}
+        fern.mainTexture=AssetDatabase.LoadAssetAtPath<Texture2D>(Root+"/Resources/Environment/Fern.png");EditorUtility.SetDirty(fern);
+        string skyPath=Root+"/Resources/Environment/Sky.mat";
+        var sky=AssetDatabase.LoadAssetAtPath<Material>(skyPath);
+        if(!sky){sky=new Material(Shader.Find("Skybox/Procedural"));AssetDatabase.CreateAsset(sky,skyPath);}
+        sky.SetColor("_SkyTint",new Color(.61f,.69f,.72f));sky.SetFloat("_AtmosphereThickness",.9f);sky.SetFloat("_Exposure",1.1f);
+        sky.SetColor("_GroundColor",new Color(.53f,.64f,.61f));
+        EditorUtility.SetDirty(sky);PlayerSettings.bundleVersion="0.2.0";
+        QualitySettings.shadows=ShadowQuality.HardOnly;QualitySettings.shadowResolution=ShadowResolution.Medium;
+        QualitySettings.shadowDistance=22;QualitySettings.shadowCascades=0;
+        AssetDatabase.SaveAssets();
+    }
+    static void Surface(string name,string texture,float scale,float gloss)
+    {
+        string path=Root+"/Resources/Environment/"+name+".mat";
+        var mat=AssetDatabase.LoadAssetAtPath<Material>(path);
+        if(!mat){mat=new Material(Shader.Find("BugHunter/ForestSurface"));AssetDatabase.CreateAsset(mat,path);}
+        if(texture!=null)mat.mainTexture=AssetDatabase.LoadAssetAtPath<Texture2D>(Root+"/Resources/Environment/"+texture+".jpg");
+        mat.SetFloat("_Scale",scale);mat.SetFloat("_Glossiness",gloss);EditorUtility.SetDirty(mat);
     }
     [MenuItem("Bug Hunter/Build Web")]
     public static void Web()

@@ -25,11 +25,11 @@ async function prepare() {
   }
   const game = {
     id: 'bug-hunter', title: 'バグハンター', genre: '3D昆虫探索・育成 / 指示式バトル',
-    description: 'こもれびの森で6種類の虫を探して捕獲。個体ごとに違う能力と成長を見比べ、パートナーを育てて森の大会へ。体勢・疲労・転倒が勝負を左右するUnity製プロトタイプです。',
+    description: '樹皮・草むら・水辺に暮らす6種類の虫を探して捕獲。個体差を見比べて育て、接近・回り込み・後退が交差する森の大会へ。体勢・疲労・転倒が勝負を左右するUnity製プロトタイプです。',
     objective: '虫を捕まえ、パートナーを選んで育成し、3連戦の森の大会で優勝する。',
     metadataLabel: 'Unity 6 / プレイ可能なプロトタイプ',
     howToPlay: [
-      '探索：W / A / S / Dで移動、右ドラッグで見回します。画面の方向ボタンでも操作できます。',
+      '探索：W / A / S / Dで移動、右ドラッグで見回します。縦画面では方向ボタンでも操作できます。木の幹や草の葉、水辺を探してみてください。',
       '近くの虫に狙いを合わせると捕獲ゲージがたまります。Spaceまたは「捕まえる」で捕獲します。',
       '「虫かご・育成」で個体を比較し、パートナーを選びます。樹液8で育成でき、同種でも成長量が異なります。',
       '戦闘：1＝攻撃、2＝防御、3＝技。選んだ指示を繰り返し、移動・接近は虫が自動で行います。',
@@ -44,7 +44,7 @@ async function prepare() {
       frameworkUrl: `${folder}/Build/${find('.framework.js.unityweb')}`,
       codeUrl: `${folder}/Build/${find('.wasm.unityweb')}`,
       streamingAssetsUrl: `${folder}/StreamingAssets`,
-      companyName: 'Zenta Shimamoto', productName: 'Bug Hunter', productVersion: '0.1.0', unityVersion: '6000.0.54f1', simplifiedEffects: 0
+      companyName: 'Zenta Shimamoto', productName: 'Bug Hunter', productVersion: '0.2.0', unityVersion: '6000.0.54f1', simplifiedEffects: 0
     },
     downloadBytes: integrity.reduce((sum, file) => sum + file.bytes, 0), integrity
   };

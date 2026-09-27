@@ -19,16 +19,17 @@ namespace BugHunter
         }
         public readonly Fighter player, enemy;
         readonly Random random;
-        float accumulator, elapsed;
+        float accumulator, elapsed, decisionClock;
         public bool ended;
         public bool Victory => ended && player.hp > 0;
         public string message = "試合開始";
         public int eventId;
         public Action<int, bool> impact;
+        public Func<int, bool> canStrike;
         public Battle(Individual a, Species sa, Individual b, Species sb, int seed)
         {
             player = new Fighter(a, sa); enemy = new Fighter(b, sb); random = new Random(seed);
-            player.clock = .4f; enemy.clock = .9f;
+            player.clock = .4f; enemy.clock = .9f; decisionClock=1.8f;
         }
         public static float Advantage(BugType a, BugType b) => a == b ? 1 : ((int)a + 1) % 3 == (int)b ? 1.16f : .9f;
         public static float FallChance(float balance, float energy, bool heavy, bool guarding)
@@ -52,6 +53,13 @@ namespace BugHunter
         {
             elapsed += dt;
             Recover(player, dt); Recover(enemy, dt);
+            decisionClock-=dt;
+            if(decisionClock<=0 && !enemy.IsDown)
+            {
+                decisionClock=1.8f;
+                double decision=random.NextDouble();
+                enemy.order=enemy.energy<27||enemy.balance<27?Order.Guard:decision<.2?Order.Guard:decision<.53?Order.Skill:Order.Attack;
+            }
             Act(player, enemy, dt, 0);
             if (!ended) Act(enemy, player, dt, 1);
             if (elapsed > 150 && !ended)
@@ -79,13 +87,10 @@ namespace BugHunter
             if (a.IsDown) return;
             a.clock -= dt;
             if (a.clock > 0) return;
-            if (side == 1)
-            {
-                double decision = random.NextDouble();
-                a.order = a.energy < 27 || a.balance < 27 ? Order.Guard : decision < .28 ? Order.Guard : decision < .56 ? Order.Skill : Order.Attack;
-            }
-            a.clock = Math.Max(.95f, 2.2f - a.bug.Stat(a.species, 3) * .014f);
             if (a.order == Order.Guard) return;
+            // Reaching the opponent is a prerequisite, not a visual-only animation.
+            if (canStrike!=null && !canStrike(side)) { a.clock=.08f; return; }
+            a.clock = Math.Max(.95f, 2.2f - a.bug.Stat(a.species, 3) * .014f);
             bool heavy = a.order == Order.Skill;
             float cost = heavy ? 33 : 13;
             if (a.energy < cost) { a.clock = .6f; Say(a.bug.Name(a.species) + "は息を整えている"); return; }
