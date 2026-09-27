@@ -318,7 +318,7 @@
       "metadataLabel": "Unity 6 / プレイ可能なプロトタイプ",
       "howToPlay": [
         "探索：ゲーム画面をクリックすると視点操作を開始します。W / A / S / Dで移動、マウス移動だけで見回します。右クリックは不要です。Escでカーソルを戻し、Tabで虫かごを開閉します。縦画面では方向ボタンでも操作できます。",
-        "近くの虫に狙いを合わせると捕獲ゲージがたまります。視点操作中に左クリックで捕獲します。Spaceや「捕まえる」ボタンも使えます。",
+        "近くの虫に狙いを合わせると捕獲ゲージがたまります。視点操作中に左クリックで捕獲します。Space、縦画面の照準アイコンも使えます。歯車アイコンから視点感度・音量を変更できます。設定は自動保存されます。",
         "「虫かご・育成」で個体を比較し、パートナーを選びます。樹液8で育成でき、同種でも成長量が異なります。",
         "戦闘：1＝攻撃、2＝防御、3＝技。選んだ指示を繰り返し、移動・接近は虫が自動で行います。",
         "防御で体勢とスタミナを回復します。転倒中は無防備になり、復帰に約3.4〜4.6秒かかります。復帰後3秒は再転倒しません。",
@@ -329,38 +329,38 @@
       "sourcePath": "games/bug-hunter",
       "responsiveCanvas": true,
       "build": {
-        "loaderUrl": "builds/bug-hunter/v1/Build/58deba846b01d824a733b2fb3ceea0ad.loader.js",
-        "dataUrl": "builds/bug-hunter/v1/Build/85615556f98d38754957027ef359f10a.data.unityweb",
-        "frameworkUrl": "builds/bug-hunter/v1/Build/6774d1d51c8d8e1c13ee9bc993b350c8.framework.js.unityweb",
-        "codeUrl": "builds/bug-hunter/v1/Build/6f43bf5961c5833eb2a63362dc03cb8b.wasm.unityweb",
+        "loaderUrl": "builds/bug-hunter/v1/Build/eb4447337f792504f7095843eb7ec132.loader.js",
+        "dataUrl": "builds/bug-hunter/v1/Build/bdf7bd37341f4504db874e87e9aad5b1.data.unityweb",
+        "frameworkUrl": "builds/bug-hunter/v1/Build/cea522300c2eba978285d6514435a00c.framework.js.unityweb",
+        "codeUrl": "builds/bug-hunter/v1/Build/e6648fb7979caed7919dc9db2b8062e6.wasm.unityweb",
         "streamingAssetsUrl": "builds/bug-hunter/v1/StreamingAssets",
         "companyName": "Zenta Shimamoto",
         "productName": "Bug Hunter",
-        "productVersion": "0.2.1",
+        "productVersion": "0.3.0",
         "unityVersion": "6000.0.54f1",
         "simplifiedEffects": 0
       },
-      "downloadBytes": 15711278,
+      "downloadBytes": 19013288,
       "integrity": [
         {
-          "file": "58deba846b01d824a733b2fb3ceea0ad.loader.js",
+          "file": "bdf7bd37341f4504db874e87e9aad5b1.data.unityweb",
+          "bytes": 11542325,
+          "sha256": "4dfdd87820dcc2ce70fba50c65d6ab2128b72745cd78633a969f73a9d468a0be"
+        },
+        {
+          "file": "cea522300c2eba978285d6514435a00c.framework.js.unityweb",
+          "bytes": 85925,
+          "sha256": "2187038e890df63cc9db2c270ca29f7b1f2e74f61ecef9aef4817f388526837b"
+        },
+        {
+          "file": "e6648fb7979caed7919dc9db2b8062e6.wasm.unityweb",
+          "bytes": 7337700,
+          "sha256": "50d64217e0cf63a5ce2c42025af2e1430f3f8de0edffdbfaba1cc5d5ac56e261"
+        },
+        {
+          "file": "eb4447337f792504f7095843eb7ec132.loader.js",
           "bytes": 47338,
-          "sha256": "9b8631667d69e5d5f94e19badd167d6ea62044c93957e016552d4f408b05b343"
-        },
-        {
-          "file": "6774d1d51c8d8e1c13ee9bc993b350c8.framework.js.unityweb",
-          "bytes": 85875,
-          "sha256": "656b8927653e92c41b3281c456d5211f5df0cf480019172979200ea9dd395d12"
-        },
-        {
-          "file": "6f43bf5961c5833eb2a63362dc03cb8b.wasm.unityweb",
-          "bytes": 7323456,
-          "sha256": "765beb94df513f37287a1d077b3d0f37bf20aeacbb20355f8437316ba4ed9689"
-        },
-        {
-          "file": "85615556f98d38754957027ef359f10a.data.unityweb",
-          "bytes": 8254609,
-          "sha256": "f53aa0fab34ee106dea56c6dfb655af2f2f71f9e9f921c0b81a77168a7673136"
+          "sha256": "e2a182109475351d3e6a9b66b71ef985b624ac1325e5d9cdc1c2234acdb01c02"
         }
       ]
     }

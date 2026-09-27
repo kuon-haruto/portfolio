@@ -11,10 +11,11 @@ namespace BugHunter
         Game game;Font font;
         RectTransform root,page;
         Text notice,nectarCount,bugCount,trophyCount,target,habitat,detail,battleLog,playerState,enemyState,tooltip;
-        Image captureFill,playerHp,enemyHp,playerEnergy,enemyEnergy,playerBalance,enemyBalance;
+        Image captureFill,captureTrack,playerHp,enemyHp,playerEnergy,enemyEnergy,playerBalance,enemyBalance;
         Image[] selectedOrders;
         Button capture,attack,guard,skill;
         readonly Dictionary<string,Button> buttons=new Dictionary<string,Button>();
+        readonly Dictionary<string,Slider> sliders=new Dictionary<string,Slider>();
         readonly Color ink=new Color(.075f,.095f,.1f,.96f),surface=new Color(.12f,.15f,.15f,.95f),line=new Color(.29f,.34f,.33f,.8f);
         readonly Color white=new Color(.96f,.97f,.94f),muted=new Color(.66f,.73f,.7f),mint=new Color(.35f,.78f,.63f),cyan=new Color(.27f,.76f,.87f),coral=new Color(.97f,.43f,.34f),gold=new Color(.94f,.77f,.4f);
         bool portrait;int viewportWidth,viewportHeight;
@@ -74,8 +75,8 @@ namespace BugHunter
         static void Fill(Image bar,float value,float width){if(bar)bar.rectTransform.sizeDelta=new Vector2(width*Mathf.Clamp01(value),bar.rectTransform.sizeDelta.y);}
         void Begin(string section)
         {
-            if(page){page.gameObject.SetActive(false);Destroy(page.gameObject);}buttons.Clear();
-            target=habitat=detail=battleLog=playerState=enemyState=null;captureFill=playerHp=enemyHp=playerEnergy=enemyEnergy=playerBalance=enemyBalance=null;
+            if(page){page.gameObject.SetActive(false);Destroy(page.gameObject);}buttons.Clear();sliders.Clear();
+            target=habitat=detail=battleLog=playerState=enemyState=null;captureFill=captureTrack=playerHp=enemyHp=playerEnergy=enemyEnergy=playerBalance=enemyBalance=null;
             capture=attack=guard=skill=null;selectedOrders=null;
             game.forest.touchMove=game.forest.touchLook=Vector2.zero;
             page=Rect("Page "+section,root,0,0,W,H);
@@ -83,10 +84,11 @@ namespace BugHunter
             var brand=Rect("Game icon",page,20,14,46,46).gameObject.AddComponent<RawImage>();brand.texture=game.icon;brand.raycastTarget=false;
             Label("Brand","BUG HUNTER",78,3,250,39,24);
             Label("Location",section,79,40,portrait?300:500,27,15,muted);
-            Icon("Leaf",W-270,24,26,mint);Icon("Backpack",W-156,24,26,cyan);Icon("Trophy",W-69,24,26,gold);
-            nectarCount=Label("Nectar","",W-242,18,78,40,18);
-            bugCount=Label("Bug count","",W-128,18,55,40,18);
-            trophyCount=Label("Trophies","",W-42,18,38,40,18);
+            Icon("Leaf",W-336,24,26,mint);Icon("Backpack",W-222,24,26,cyan);Icon("Trophy",W-135,24,26,gold);
+            nectarCount=Label("Nectar","",W-308,18,78,40,18);
+            bugCount=Label("Bug count","",W-194,18,55,40,18);
+            trophyCount=Label("Trophies","",W-108,18,38,40,18);
+            if(!game.settingsOpen)Tip(Button("Settings","","Settings",W-60,16,42,42,game.OpenSettings),"設定");
             notice=Label("Notice","",portrait?32:320,84,portrait?656:640,43,20,gold,TextAnchor.MiddleCenter);
             tooltip=Label("Tooltip","",W/2-220,H-35,440,30,16,white,TextAnchor.MiddleCenter);
         }
@@ -100,8 +102,8 @@ namespace BugHunter
             float y=H-213;
             habitat=Label("Habitat","",W/2-190,y,380,28,16,gold,TextAnchor.MiddleCenter);
             target=Label("Target","",W/2-190,y+28,380,43,26,white,TextAnchor.MiddleCenter);
-            captureFill=Bar("Capture focus",W/2-100,y+81,200,4,gold);
-            capture=Button("Capture","捕まえる","Crosshair",W/2-108,H-116,216,58,game.Capture,new Color(.14f,.39f,.32f,.97f));
+            captureTrack=Box("Capture focus track",W/2-100,y+81,200,4,line);captureFill=Box("Capture focus",W/2-100,y+81,200,4,gold);
+            if(portrait)capture=Button("Capture","","Crosshair",W/2-34,H-114,68,68,game.Capture,new Color(.14f,.39f,.32f,.97f));
             Button("Collection",portrait?"虫かご":"虫かご・育成","Backpack",W-(portrait?178:221),portrait?94:H-86,portrait?154:197,54,game.Collection);
             if(portrait)
             {
@@ -172,6 +174,35 @@ namespace BugHunter
             Refresh();
         }
         int SpeciesCount(){var set=new HashSet<int>();foreach(var bug in game.save.bugs)set.Add(bug.species);return set.Count;}
+        void SettingSlider(string name,string title,float x,float y,float width,float min,float max,float value,Action<float> change,Func<float,string> format)
+        {
+            Label(name+" title",title,x,y,width-100,40,23);
+            var label=Label(name+" value",format(value),x+width-100,y,100,40,23,gold,TextAnchor.MiddleRight);
+            var r=Rect(name,page,x,y+53,width,46);var slider=r.gameObject.AddComponent<Slider>();
+            var track=Rect("Track",r,0,19,width,8).gameObject.AddComponent<Image>();track.color=line;
+            var fillArea=Rect("Fill area",r,12,19,width-24,8);var fill=Rect("Fill",fillArea,0,0,width-24,8).gameObject.AddComponent<Image>();fill.color=mint;slider.fillRect=fill.rectTransform;
+            fill.rectTransform.sizeDelta=Vector2.zero;
+            var handleArea=Rect("Handle area",r,12,7,width-24,32);var handle=Rect("Handle",handleArea,0,0,24,0).gameObject.AddComponent<Image>();handle.color=white;
+            slider.handleRect=handle.rectTransform;slider.targetGraphic=handle;slider.minValue=min;slider.maxValue=max;slider.SetValueWithoutNotify(value);
+            slider.onValueChanged.AddListener(v=>{change(v);label.text=format(v);game.PreferencesChanged();});sliders[name]=slider;
+        }
+        public void Settings()
+        {
+            Begin("設定");Box("Settings dimmer",0,74,W,H-74,new Color(.025f,.04f,.035f,.8f));
+            float x=W/2-282,y=H/2-252;
+            Box("Settings dialog",x,y,564,504,ink);Box("Settings accent",x,y,564,3,mint);
+            Icon("Settings",x+28,y+28,32,mint);Label("Settings title","設定",x+76,y+23,330,48,30);
+            Tip(Button("CloseSettings","","X",x+486,y+24,48,48,game.CloseSettings),"閉じる");
+            SettingSlider("Sensitivity","視点の感度",x+34,y+99,496,.2f,3,game.preferences.sensitivity,v=>game.preferences.sensitivity=v,v=>v.ToString("F1")+" x");
+            SettingSlider("Volume","音量",x+34,y+233,496,0,1,game.preferences.volume,v=>game.preferences.volume=v,v=>Mathf.RoundToInt(v*100)+" %");
+            Tip(Button("TestSound","","Volume2",x+34,y+359,54,48,game.PreviewSound),"音を確認");
+            Button("ResetSettings","初期設定","RotateCcw",x+34,y+426,220,50,game.ResetPreferences);
+            Button("ApplySettings","閉じる","Check",x+270,y+426,260,50,game.CloseSettings,new Color(.15f,.4f,.32f));Refresh();
+        }
+        public void ShowCurrent()
+        {
+            if(game.settingsOpen)Settings();else if(game.screen=="forest")Forest();else if(game.screen=="collection")Collection();else if(game.paused)Pause();else if(game.screen=="battle")Battle();else Result();
+        }
         public void Battle()
         {
             Begin(game.tournament?"森の大会 / 第 "+game.round+" 試合":"森のアリーナ / 練習試合");
@@ -229,7 +260,7 @@ namespace BugHunter
             if(target)
             {
                 var w=game.forest.target;target.text=w!=null?game.Data(w.bug).displayName:"";habitat.text=w!=null?w.habitat+"   "+Mathf.RoundToInt(game.forest.focus*100)+"%":"";
-                Fill(captureFill,game.forest.focus,200);capture.interactable=w!=null;
+                Fill(captureFill,game.forest.focus,200);captureFill.enabled=captureTrack.enabled=w!=null;if(capture)capture.interactable=w!=null;
             }
             if(playerState&&game.battle!=null)
             {
@@ -251,6 +282,20 @@ namespace BugHunter
                 if(button&&RectTransformUtility.RectangleContainsScreenPoint((RectTransform)button.transform,Input.mousePosition))return true;
             return false;
         }
+        public bool SliderGeometryValid()
+        {
+            var outer=new Vector3[4];var inner=new Vector3[4];
+            foreach(var slider in sliders.Values)
+            {
+                ((RectTransform)slider.transform).GetWorldCorners(outer);
+                foreach(var graphic in slider.GetComponentsInChildren<Graphic>())
+                {
+                    graphic.rectTransform.GetWorldCorners(inner);
+                    if(inner[0].x<outer[0].x-.5f||inner[0].y<outer[0].y-.5f||inner[2].x>outer[2].x+.5f||inner[2].y>outer[2].y+.5f)return false;
+                }
+            }
+            return true;
+        }
         [Serializable]public class ControlDiagnostic {public string name;public float x,y,width,height;public bool enabled;}
         public ControlDiagnostic[] Controls()
         {
@@ -260,6 +305,11 @@ namespace BugHunter
                 if(!pair.Value)continue;((RectTransform)pair.Value.transform).GetWorldCorners(corners);
                 list.Add(new ControlDiagnostic {name=pair.Key,x=corners[0].x/Screen.width,y=1-corners[1].y/Screen.height,width=(corners[2].x-corners[0].x)/Screen.width,height=(corners[1].y-corners[0].y)/Screen.height,enabled=pair.Value.interactable});
             }
+            foreach(var pair in sliders)
+            {
+                ((RectTransform)pair.Value.transform).GetWorldCorners(corners);
+                list.Add(new ControlDiagnostic {name=pair.Key,x=corners[0].x/Screen.width,y=1-corners[1].y/Screen.height,width=(corners[2].x-corners[0].x)/Screen.width,height=(corners[1].y-corners[0].y)/Screen.height,enabled=pair.Value.interactable});
+            }
             return list.ToArray();
         }
         void Update()
@@ -267,7 +317,7 @@ namespace BugHunter
             if(Screen.width==viewportWidth&&Screen.height==viewportHeight)return;
             viewportWidth=Screen.width;viewportHeight=Screen.height;portrait=Screen.height>Screen.width;
             GetComponent<CanvasScaler>().referenceResolution=new Vector2(W,H);
-            if(game.screen=="forest")Forest();else if(game.screen=="collection")Collection();else if(game.paused)Pause();else if(game.screen=="battle")Battle();else Result();
+            ShowCurrent();
         }
     }
 }

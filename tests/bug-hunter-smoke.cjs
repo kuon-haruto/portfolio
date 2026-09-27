@@ -120,6 +120,10 @@ async function main() {
     assert((await stats()).level >= 2, 'training levels up the captured insect');
     await click('Practice'); await waitState('battle');
     await shot('battle-desktop');
+    await click('Settings');await page.waitForFunction(()=>window.__bugHunterStats?.settingsOpen);
+    const settingsHp=(await stats()).hp;
+    await page.waitForTimeout(2000);assert.equal((await stats()).hp,settingsHp,'battle freezes while changing preferences');
+    await click('CloseSettings');await page.waitForFunction(()=>!window.__bugHunterStats?.settingsOpen);
     await page.keyboard.press('Escape');
     await page.waitForFunction(() => window.__bugHunterStats?.paused === true);
     const pausedHp = (await stats()).hp;
@@ -212,7 +216,8 @@ async function main() {
     await click('Collection'); await waitState('collection'); await shot('collection-mobile');
     await click('Practice'); await waitState('battle'); await shot('battle-mobile');
     assert(measurements.every(item => item.memory < 64 * 1024 ** 2), 'Unity allocated memory stays under 64 MiB in sampled scenes');
-    assert(measurements.every(item => item.wasmHeapBytes <= 128 * 1024 ** 2), 'WASM heap stays under 128 MiB in sampled scenes');
+    // v0.3 adds detailed specimen meshes and a larger forest; retain the configured 256 MiB ceiling.
+    assert(measurements.every(item => item.wasmHeapBytes <= 256 * 1024 ** 2), 'WASM heap stays within the configured 256 MiB ceiling');
     assert.equal(errors.length, 0, errors.join('\n'));
     await fs.writeFile(path.join(output, 'smoke.json'), JSON.stringify({ measurements, errors, downSeen }, null, 2));
     console.log('BUG_HUNTER_BROWSER_OK');

@@ -68,13 +68,13 @@ public static class BuildGame
     }
     public static void Validate()
     {
-        Setup();EnvironmentAssets();var data=Enumerable.Range(0,6).Select(i=>AssetDatabase.LoadAssetAtPath<Species>(Root+"/Species/"+i+".asset")).ToArray();
+        Setup();EnvironmentAssets();InsectAssets();var data=Enumerable.Range(0,6).Select(i=>AssetDatabase.LoadAssetAtPath<Species>(Root+"/Species/"+i+".asset")).ToArray();
         DomainTests.Run(data);Debug.Log("BUG_HUNTER_VALIDATION_OK");
     }
     static void EnvironmentAssets()
     {
         AssetDatabase.Refresh();
-        foreach(string name in new[]{"Ground","Trail","Bark"})
+        foreach(string name in new[]{"Ground","Trail","Bark","Stone"})
         {
             var importer=(TextureImporter)AssetImporter.GetAtPath(Root+"/Resources/Environment/"+name+".jpg");
             if(importer==null)throw new Exception("Run tools/prepare-bug-hunter-art.cjs first");
@@ -90,9 +90,10 @@ public static class BuildGame
         Surface("Soil","Ground",.45f,.04f);
         var soil=AssetDatabase.LoadAssetAtPath<Material>(Root+"/Resources/Environment/Soil.mat");soil.SetTexture("_PathTex",AssetDatabase.LoadAssetAtPath<Texture2D>(Root+"/Resources/Environment/Trail.jpg"));soil.SetFloat("_UsePath",1);EditorUtility.SetDirty(soil);
         Surface("Trunk","Bark",.7f,.08f);
-        Surface("Rock","Trail",.7f,.04f);
+        Surface("Rock","Stone",.6f,.09f);
         Surface("Foliage",null,1,.12f);
         Surface("Water",null,1,.82f);
+        var water=AssetDatabase.LoadAssetAtPath<Material>(Root+"/Resources/Environment/Water.mat");water.shader=Shader.Find("BugHunter/Stream");EditorUtility.SetDirty(water);
         var leavesImport=(TextureImporter)AssetImporter.GetAtPath(Root+"/Resources/Environment/OakLeaves.png");
         leavesImport.maxTextureSize=1024;leavesImport.alphaIsTransparency=true;leavesImport.mipmapEnabled=true;leavesImport.mipMapsPreserveCoverage=true;leavesImport.alphaTestReferenceValue=.45f;
         leavesImport.textureCompression=TextureImporterCompression.Compressed;leavesImport.SaveAndReimport();
@@ -110,10 +111,55 @@ public static class BuildGame
         if(!sky){sky=new Material(Shader.Find("Skybox/Procedural"));AssetDatabase.CreateAsset(sky,skyPath);}
         sky.SetColor("_SkyTint",new Color(.61f,.69f,.72f));sky.SetFloat("_AtmosphereThickness",.9f);sky.SetFloat("_Exposure",1.1f);
         sky.SetColor("_GroundColor",new Color(.53f,.64f,.61f));
-        EditorUtility.SetDirty(sky);PlayerSettings.bundleVersion="0.2.1";
-        QualitySettings.shadows=ShadowQuality.HardOnly;QualitySettings.shadowResolution=ShadowResolution.Medium;
-        QualitySettings.shadowDistance=22;QualitySettings.shadowCascades=0;
+        EditorUtility.SetDirty(sky);PlayerSettings.bundleVersion="0.3.0";
+        QualitySettings.shadows=ShadowQuality.All;QualitySettings.shadowResolution=ShadowResolution.High;
+        QualitySettings.shadowDistance=36;QualitySettings.shadowCascades=2;
         AssetDatabase.SaveAssets();
+    }
+    static Mesh SaveMesh(string name,Geometry geometry)
+    {
+        string path=Root+"/Generated/"+name+".asset";var mesh=geometry.Mesh(name);var existing=AssetDatabase.LoadAssetAtPath<Mesh>(path);
+        if(!existing){AssetDatabase.CreateAsset(mesh,path);return mesh;}
+        EditorUtility.CopySerialized(mesh,existing);UnityEngine.Object.DestroyImmediate(mesh);EditorUtility.SetDirty(existing);return existing;
+    }
+    static Material ModelMaterial(string name)
+    {
+        string path=Root+"/Generated/"+name+".mat";var material=AssetDatabase.LoadAssetAtPath<Material>(path);
+        if(!material){material=new Material(Shader.Find("BugHunter/"+name));AssetDatabase.CreateAsset(material,path);}
+        return material;
+    }
+    static void InsectAssets()
+    {
+        var chitin=ModelMaterial("Chitin");var wing=ModelMaterial("Wing");
+        for(int i=0;i<6;i++)
+        {
+            var data=AssetDatabase.LoadAssetAtPath<Species>(Root+"/Species/"+i+".asset");
+            var root=new GameObject(data.displayName);var view=root.AddComponent<BugView>();view.legs=new Transform[6];
+            Geometry.Object("Body",SaveMesh("Body"+i,InsectModel.Body(i,data.shell)),chitin,root.transform);
+            for(int side=-1;side<=1;side+=2)for(int n=0;n<3;n++)
+            {
+                int index=(side<0?0:3)+n;
+                var part=Geometry.Object("Leg "+index,SaveMesh("Leg"+i+"_"+index,InsectModel.Leg(i,side,n,data.shell)),chitin,root.transform);
+                part.transform.localPosition=InsectModel.LegAnchor(i,side,n);view.legs[index]=part.transform;
+            }
+            if(i==4)
+            {
+                view.flightWings=new Transform[2];
+                for(int n=0;n<2;n++)
+                {
+                    int side=n==0?-1:1;
+                    var part=Geometry.Object("Wing "+n,SaveMesh("Wing"+n,InsectModel.Wing(side)),wing,root.transform);
+                    part.transform.localPosition=new Vector3(side*.09f,.67f,.12f);view.flightWings[n]=part.transform;
+                }
+            }
+            foreach(var renderer in root.GetComponentsInChildren<Renderer>())
+            {renderer.receiveShadows=true;renderer.shadowCastingMode=renderer.sharedMaterial==wing?UnityEngine.Rendering.ShadowCastingMode.Off:UnityEngine.Rendering.ShadowCastingMode.On;}
+            var prefab=PrefabUtility.SaveAsPrefabAsset(root,Root+"/Generated/Bug"+i+".prefab");UnityEngine.Object.DestroyImmediate(root);
+            data.model=prefab;EditorUtility.SetDirty(data);
+            // These two legacy mesh assets are superseded by six independently animated legs.
+            foreach(int side in new[]{-1,1})AssetDatabase.DeleteAsset(Root+"/Generated/Legs"+i+"_"+side+".asset");
+        }
+        AssetDatabase.DeleteAsset(Root+"/Generated/Wings.asset");AssetDatabase.SaveAssets();
     }
     static void Surface(string name,string texture,float scale,float gloss)
     {

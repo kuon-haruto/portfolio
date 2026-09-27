@@ -118,7 +118,8 @@ namespace BugHunter
             var middle=(Position(0)+Position(1))*.5f;
             middle=Vector3.Lerp(Center,middle,.55f)+Vector3.up*.45f;
             float distance=Vector3.Distance(Position(0),Position(1));
-            float zoom=portrait?Mathf.Max(9.5f,distance*1.5f+2):Mathf.Max(9.7f,distance*1.1f);
+            float horizontalHalfAngle=Mathf.Tan(cameraView.fieldOfView*Mathf.Deg2Rad*.5f)*cameraView.aspect;
+            float zoom=portrait?Mathf.Max(10,(distance+3.2f)/(2*horizontalHalfAngle*.9f*1.22f)):Mathf.Max(9.7f,distance*1.1f);
             var position=middle+new Vector3(0,zoom*.7f,zoom);
             cameraView.transform.position=Vector3.Lerp(cameraView.transform.position,position,1-Mathf.Exp(-dt*3));
             cameraView.transform.rotation=Quaternion.Slerp(cameraView.transform.rotation,Quaternion.LookRotation(middle-cameraView.transform.position),1-Mathf.Exp(-dt*4));

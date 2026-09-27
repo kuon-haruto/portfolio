@@ -9,6 +9,22 @@ public static class DomainTests
     public static void Run(Species[] catalog)
     {
         count=0;var s=catalog[0];var a=Individual.Create(s,123);var b=Individual.Create(s,124);var clone=Individual.Create(s,123);
+        Check(Preferences.Valid(float.NaN,.2f,3,1)==1,"invalid sensitivity defaults");
+        Check(Preferences.Valid(20,.2f,3,1)==3,"sensitivity upper bound");
+        Check(Preferences.Valid(-1,0,1,.75f)==0,"volume lower bound");
+        Check(Preferences.Valid(float.PositiveInfinity,0,1,.75f)==.75f,"invalid volume defaults");
+        foreach(var data in catalog)
+        {
+            int triangles=0;foreach(var filter in data.model.GetComponentsInChildren<MeshFilter>())triangles+=filter.sharedMesh.triangles.Length/3;
+            Check(triangles>16000,"detailed specimen mesh "+data.id);
+            Check(data.model.GetComponent<BugView>().legs.Length==6,"six articulated legs "+data.id);
+            Debug.Log("BUG_HUNTER_MODEL id="+data.id+" triangles="+triangles);
+        }
+        for(int z=-25;z<26;z+=5)
+        {
+            Check(Landscape.Height(Landscape.StreamX(z),z)<Landscape.WaterHeight(z),"river bed lies below water");
+            Check(Landscape.Height(Landscape.StreamX(z)+4,z)>Landscape.WaterHeight(z),"river bank lies above water");
+        }
         Check(a.id!=clone.id,"individual ids unique");Check(a.Stat(s,0)==clone.Stat(s,0),"seeded phenotype");
         bool varied=false;for(int i=0;i<4;i++)varied|=a.aptitude[i]!=b.aptitude[i]||a.growth[i]!=b.growth[i];Check(varied,"same species varies");
         int hp=a.Stat(s,0);a.Gain(a.NextXp);Check(a.level==2&&a.Stat(s,0)==hp+a.growth[0],"growth follows aptitude");

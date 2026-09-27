@@ -26,6 +26,8 @@ namespace BugHunter
         public float ViewYaw=>yaw;
         public float ViewPitch=>pitch;
         public bool exploring;
+        public bool inputEnabled=true;
+        public float sensitivity=1;
         public Vector2 touchMove,touchLook;
         readonly System.Random random=new System.Random(623);
         public float focus;
@@ -127,13 +129,13 @@ namespace BugHunter
                 w.view.transform.rotation=w.rotation*Quaternion.Euler(0,Mathf.Sin(w.timer*.5f)*3,0);
                 w.view.movement=w.startled>0?.8f:.1f;
             }
-            if(!exploring)return;
+            if(!exploring||!inputEnabled)return;
             swing=Mathf.Max(0,swing-dt*2.2f);float sw=Mathf.Sin(swing*Mathf.PI);
             if(net){net.localPosition=new Vector3(-sw*.4f,-.5f+sw*.1f,sw*.25f);net.localRotation=Quaternion.Euler(sw*26,sw*-18,sw*12);}
             // Ignore the transition frame so locking cannot jerk the camera.
             bool rotate=LookLocked&&lookWasLocked;lookWasLocked=LookLocked;
-            yaw=Mathf.Repeat(yaw+(rotate?Input.GetAxisRaw("Mouse X")*2.2f:0)+touchLook.x*75*dt,360);
-            pitch=Mathf.Clamp(pitch-(rotate?Input.GetAxisRaw("Mouse Y")*2.2f:0)-touchLook.y*55*dt,-65,65);
+            yaw=Mathf.Repeat(yaw+((rotate?Input.GetAxisRaw("Mouse X")*2.2f:0)+touchLook.x*75*dt)*sensitivity,360);
+            pitch=Mathf.Clamp(pitch-((rotate?Input.GetAxisRaw("Mouse Y")*2.2f:0)+touchLook.y*55*dt)*sensitivity,-78,78);
             player.rotation=Quaternion.Euler(0,yaw,0);cameraView.transform.localRotation=Quaternion.Euler(pitch,0,0);
             var axes=Vector2.ClampMagnitude(new Vector2(Input.GetAxisRaw("Horizontal"),Input.GetAxisRaw("Vertical"))+touchMove,1);
             vertical=controller.isGrounded?-.7f:vertical-15*dt;

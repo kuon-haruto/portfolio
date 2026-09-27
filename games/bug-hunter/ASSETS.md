@@ -22,7 +22,7 @@ Final prompt:
 
 ## 3D and audio
 
-Original procedural anime insect meshes, terrain, rooted trees, ferns, and short synthesized notice tone.
+Original procedural, articulated insect meshes with stylized colors, physically lit shells, detailed claws and wing veins; terrain, rooted trees, ferns, animated stream shader, and short synthesized notice tone.
 No assets, characters, UI or code were copied from The Ants; it is a visual-quality reference only.
 
 ## Environment textures
@@ -38,6 +38,10 @@ Poly Haven CC0 photographs, original 1K JPEGs; Unity imports as compressed mipma
 - Bark Brown 01: https://polyhaven.com/a/bark_brown_01
   - Rob Tuytel.
   - `Resources/Environment/Bark.jpg`, MD5 `b6d5dcde10b7cd1b36d70cd33a34724a`.
+- Mossy Rock: https://polyhaven.com/a/mossy_rock
+  - Rob Tuytel, CC0.
+  - `Resources/Environment/Stone.jpg`, MD5 `a57fbbf55269eb64f8d40708fe3af26c`.
+  - Used on the new boulders and river stones; the older Trail texture remains on paths only.
 - License and redistribution permission: https://polyhaven.com/license
 - Reproducible asset import: `../../tools/prepare-bug-hunter-art.cjs`.
 

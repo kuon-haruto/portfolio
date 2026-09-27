@@ -24,7 +24,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _MainTex:
-        m_Texture: {fileID: 2800000, guid: 1dfe04859537ec641a9995017402e93b, type: 3}
+        m_Texture: {fileID: 2800000, guid: ea02b6537a7f92c459bd5c575b19b975, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _PathTex:
@@ -33,8 +33,8 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Glossiness: 0.04
-    - _Scale: 0.7
+    - _Glossiness: 0.09
+    - _Scale: 0.6
     - _UsePath: 0
     m_Colors:
     - _Tint: {r: 1, g: 1, b: 1, a: 1}

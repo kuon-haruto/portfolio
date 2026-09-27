@@ -20,7 +20,7 @@ Shader "BugHunter/Leaves"
         void surf(Input IN,inout SurfaceOutput o)
         {
             fixed4 c=tex2D(_MainTex,IN.uv_MainTex)*IN.color;
-            o.Albedo=c.rgb*.8;o.Emission=c.rgb*.2;o.Alpha=c.a;
+            o.Albedo=c.rgb*.94;o.Emission=c.rgb*.055;o.Alpha=c.a;
         }
         ENDCG
     }

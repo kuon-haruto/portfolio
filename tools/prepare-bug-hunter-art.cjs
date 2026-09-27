@@ -8,6 +8,7 @@ const textures = [
   ['forest_floor', 'Ground', 'd67f308e4b8be6a65989e8dc76ec40fe'],
   ['forest_ground_04', 'Trail', '6ad9df4d731a238299806f739a26af83'],
   ['bark_brown_01', 'Bark', 'b6d5dcde10b7cd1b36d70cd33a34724a'],
+  ['mossy_rock', 'Stone', 'a57fbbf55269eb64f8d40708fe3af26c'],
 ];
 function svg(node) {
   const [tag, attributes, children = []] = node;
@@ -29,7 +30,7 @@ function svg(node) {
   const browser = await chromium.launch({channel:'msedge',headless:true});
   try {
     const page = await browser.newPage({viewport:{width:128,height:128},deviceScaleFactor:1});
-    for (const name of ['Backpack','Swords','Shield','Zap','Leaf','Trophy','Pause','ArrowLeft','ChevronLeft','ChevronRight','Compass','Check','Search','Crosshair','Heart','Footprints','Play','X','Plus','ArrowUp','ArrowDown']) {
+    for (const name of ['Backpack','Swords','Shield','Zap','Leaf','Trophy','Pause','ArrowLeft','ChevronLeft','ChevronRight','Compass','Check','Search','Crosshair','Heart','Footprints','Play','X','Plus','ArrowUp','ArrowDown','Settings','Volume2','RotateCcw']) {
       const data = structuredClone(lucide[name]);
       data[1] = {...data[1], width:96, height:96, stroke:'#ffffff', 'stroke-width':1.6};
       await page.setContent(`<style>html,body{margin:0;background:transparent}body{width:128px;height:128px;display:grid;place-items:center}</style>${svg(data)}`);

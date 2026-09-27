@@ -3,13 +3,14 @@ using UnityEngine;
 
 namespace BugHunter
 {
-    // Colored low-poly geometry is baked into shared meshes by the editor builder.
+    // Meshes are shared between specimens; environment geometry is combined by material.
     public sealed class Geometry
     {
         readonly List<Vector3> vertices = new List<Vector3>();
         readonly List<int> indices = new List<int>();
         readonly List<Color> colors = new List<Color>();
         readonly List<Vector2> uvs = new List<Vector2>();
+        public int TriangleCount=>indices.Count/3;
         void Face(Vector3 a, Vector3 b, Vector3 c, Color color)
         {
             int i = vertices.Count; vertices.Add(a); vertices.Add(b); vertices.Add(c);
@@ -35,6 +36,54 @@ namespace BugHunter
             }
             for (int y = 0; y < rows; y++) for (int x = 0; x < sides; x++)
             { Face(Point(x,y), Point(x+1,y), Point(x+1,y+1), color); Face(Point(x,y), Point(x+1,y+1), Point(x,y+1), color); }
+        }
+        public void SmoothOval(Vector3 position,Vector3 size,Color color,int sides=32,int rows=20,Quaternion? rotation=null,float roughness=0)
+        {
+            int start=vertices.Count;var rot=rotation??Quaternion.identity;
+            for(int y=0;y<=rows;y++)for(int x=0;x<=sides;x++)
+            {
+                float a=x*Mathf.PI*2/sides,b=y*Mathf.PI/rows;
+                var direction=new Vector3(Mathf.Sin(b)*Mathf.Cos(a),Mathf.Cos(b),Mathf.Sin(b)*Mathf.Sin(a));
+                float lump=1+roughness*(Mathf.PerlinNoise(direction.x*2.7f+position.x,direction.z*3.3f+direction.y*2+position.z)-.5f);
+                vertices.Add(position+rot*Vector3.Scale(direction,size*.5f)*lump);colors.Add(color);uvs.Add(new Vector2(x/(float)sides,y/(float)rows));
+            }
+            for(int y=0;y<rows;y++)for(int x=0;x<sides;x++)
+            {
+                int a=start+y*(sides+1)+x,b=a+sides+1;
+                indices.Add(a);indices.Add(a+1);indices.Add(b+1);indices.Add(a);indices.Add(b+1);indices.Add(b);
+            }
+        }
+        public void Ribbon(Vector3[] left,Vector3[] right,Color color)
+        {
+            int start=vertices.Count;
+            for(int i=0;i<left.Length;i++)
+            {vertices.Add(left[i]);vertices.Add(right[i]);colors.Add(color);colors.Add(color);uvs.Add(new Vector2(0,i*.5f));uvs.Add(new Vector2(1,i*.5f));}
+            for(int i=0;i<left.Length-1;i++)
+            {int a=start+i*2;indices.Add(a);indices.Add(a+2);indices.Add(a+1);indices.Add(a+1);indices.Add(a+2);indices.Add(a+3);}
+        }
+        public void Curve(Vector3[] points,float radiusA,float radiusB,Color color,int sides=12,int steps=20)
+        {
+            Vector3 Point(float t)
+            {
+                t=Mathf.Clamp01(t)*(points.Length-1);int n=Mathf.Min(points.Length-2,Mathf.FloorToInt(t));float u=t-n;
+                var a=points[Mathf.Max(0,n-1)];var b=points[n];var c=points[n+1];var d=points[Mathf.Min(points.Length-1,n+2)];
+                return .5f*((2*b)+(-a+c)*u+(2*a-5*b+4*c-d)*u*u+(-a+3*b-3*c+d)*u*u*u);
+            }
+            int start=vertices.Count;
+            for(int j=0;j<=steps;j++)
+            {
+                float t=j/(float)steps;var p=Point(t);var rotation=Quaternion.FromToRotation(Vector3.up,(Point(t+.001f)-Point(t-.001f)).normalized);
+                float r=Mathf.Lerp(radiusA,radiusB,t);
+                for(int i=0;i<sides;i++)
+                {
+                    float a=i*Mathf.PI*2/sides;vertices.Add(p+rotation*new Vector3(Mathf.Cos(a)*r,0,Mathf.Sin(a)*r));colors.Add(color);uvs.Add(new Vector2(i/(float)sides,t));
+                }
+            }
+            for(int j=0;j<steps;j++)for(int i=0;i<sides;i++)
+            {
+                int a=start+j*sides+i,b=start+j*sides+(i+1)%sides,c=a+sides,d=b+sides;
+                indices.Add(a);indices.Add(c);indices.Add(d);indices.Add(a);indices.Add(d);indices.Add(b);
+            }
         }
         public void Stem(Vector3 a, Vector3 b, float radiusA, float radiusB, Color color, int sides = 7,bool caps=true)
         {
