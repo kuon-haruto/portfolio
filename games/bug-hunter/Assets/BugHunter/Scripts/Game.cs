@@ -26,6 +26,7 @@ namespace BugHunter
         float captureCooldown, uiClock, resultDelay = -1;
         float diagnosticClock;
         int frameCount;
+        int forestInputStartFrame=-1;
         float frameTime, fps;
         bool rewarded;
         AudioSource sound;
@@ -35,6 +36,9 @@ namespace BugHunter
         public Species Data(Individual bug) => catalog[bug.species];
         void Awake()
         {
+            #if UNITY_WEBGL && !UNITY_EDITOR
+            WebGLInput.stickyCursorLock=false;
+            #endif
             Application.targetFrameRate=60; QualitySettings.vSyncCount=0;QualitySettings.antiAliasing=2;
             RenderSettings.fog=true;RenderSettings.fogMode=FogMode.Linear;RenderSettings.fogStartDistance=22;RenderSettings.fogEndDistance=57;RenderSettings.fogColor=new Color(.53f,.64f,.61f);
             RenderSettings.ambientMode=UnityEngine.Rendering.AmbientMode.Trilight;
@@ -103,6 +107,8 @@ namespace BugHunter
         }
         public void Explore()
         {
+            // The menu's release click must not also activate forest input.
+            forestInputStartFrame=Time.frameCount;
             paused=false;screen="forest";battle=null;resultDelay=-1;ClearActors();forest.Explore();hud.Forest();Save();
         }
         public void Collection()
@@ -178,7 +184,16 @@ namespace BugHunter
             float dt=Time.deltaTime;captureCooldown=Mathf.Max(0,captureCooldown-dt);toastTime=Mathf.Max(0,toastTime-dt);
             frameCount++;frameTime+=Time.unscaledDeltaTime;
             if(frameTime>=1){fps=frameCount/frameTime;frameCount=0;frameTime=0;}
-            if(screen=="forest" && Input.GetKeyDown(KeyCode.Space))Capture();
+            if(screen=="forest"&&Time.frameCount>forestInputStartFrame)
+            {
+                if(Input.GetKeyDown(KeyCode.Space))Capture();
+                if(Input.GetKeyDown(KeyCode.Escape))forest.ReleaseLook();
+                if(Input.GetMouseButtonDown(0)&&Input.touchCount==0)
+                {
+                    if(forest.LookLocked)Capture();
+                    else if(new Rect(0,0,Screen.width,Screen.height).Contains(Input.mousePosition)&&!hud.PointerOverControl())forest.LockLook();
+                }
+            }
             if(Input.GetKeyDown(KeyCode.Tab)){if(screen=="forest")Collection();else if(screen=="collection")Explore();}
             if(screen=="battle" && Input.GetKeyDown(KeyCode.Escape)){if(paused)Resume();else Pause();}
             if(screen=="battle" && !paused)
@@ -204,10 +219,11 @@ namespace BugHunter
                 victory=battle?.Victory??false,paused=paused,trophies=save.trophies,nectar=save.nectar,fps=fps,
                 memory=UnityEngine.Profiling.Profiler.GetTotalAllocatedMemoryLong(),visibleWild=forest.VisibleCount,wildCount=forest.wildlife.Count,
                 targetHabitat=forest.target?.habitat??"",playerPosition=forest.player.position,
+                lookLocked=forest.LookLocked,viewYaw=forest.ViewYaw,viewPitch=forest.ViewPitch,
                 navigation=arena.Navigating,positionA=arena.Position(0),positionB=arena.Position(1),travelA=arena.Travel(0),travelB=arena.Travel(1),maxHitDistance=arena.maxHitDistance,
                 ui=hud.Controls(),habitats=forest.wildlife.ConvertAll(w=>new HabitatDiagnostic {species=w.bug.species,position=w.view.transform.position,normal=w.normal,home=w.home,scale=w.view.transform.localScale.x,habitat=w.habitat}).ToArray() });
         }
         [Serializable] public class HabitatDiagnostic { public int species;public Vector3 position,normal,home;public float scale;public string habitat; }
-        [Serializable] public class Diagnostic { public string screen,targetHabitat; public int count,round,falls,level,trophies,nectar,visibleWild,wildCount;public bool target,victory,paused,navigation;public float focus,hp,enemyHp,energy,balance,down,enemyDown,fps,travelA,travelB,maxHitDistance;public long memory;public Vector3 playerPosition,positionA,positionB;public Hud.ControlDiagnostic[] ui;public HabitatDiagnostic[] habitats; }
+        [Serializable] public class Diagnostic { public string screen,targetHabitat; public int count,round,falls,level,trophies,nectar,visibleWild,wildCount;public bool target,victory,paused,navigation,lookLocked;public float focus,hp,enemyHp,energy,balance,down,enemyDown,fps,travelA,travelB,maxHitDistance,viewYaw,viewPitch;public long memory;public Vector3 playerPosition,positionA,positionB;public Hud.ControlDiagnostic[] ui;public HabitatDiagnostic[] habitats; }
     }
 }

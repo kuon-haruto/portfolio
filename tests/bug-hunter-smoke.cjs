@@ -29,6 +29,13 @@ async function main() {
     await tap(button.x + button.width / 2, button.y + button.height / 2, 1, 1);
   };
   async function shot(name) {
+    if (await page.evaluate(() => Boolean(document.fullscreenElement))) {
+      const bounds = await page.locator('canvas').evaluate(canvas => {
+        const r=canvas.getBoundingClientRect();return {left:r.left,top:r.top,right:r.right,bottom:r.bottom,w:innerWidth,h:innerHeight};
+      });
+      assert(bounds.left>=0&&bounds.top>=0&&bounds.right<=bounds.w+.1&&bounds.bottom<=bounds.h+.1,
+        `${name}: rendered canvas must fit the actual fullscreen viewport: ${JSON.stringify(bounds)}`);
+    }
     const bytes = await page.locator('canvas').screenshot({ path: path.join(output, name + '.png') });
     const png = PNG.sync.read(bytes), colors = new Set();
     for (let y = Math.floor(png.height * .3); y < png.height * .7; y += 5) for (let x = 0; x < png.width; x += 5) {
@@ -71,15 +78,43 @@ async function main() {
     assert(forest.habitats.every(h => Math.abs(h.position.x-h.home.x)+Math.abs(h.position.y-h.home.y)+Math.abs(h.position.z-h.home.z)<.1), 'crawl remains attached to habitat');
     assert((await stats()).fps < 80, 'high-refresh displays do not cause unnecessary rendering');
     await page.locator('canvas').focus();
+    const canvasBox=await page.locator('canvas').boundingBox();
+    const mx=canvasBox.x+canvasBox.width/2,my=canvasBox.y+canvasBox.height/2;
+    await page.mouse.click(mx,my,{delay:150});
+    await page.waitForFunction(()=>document.pointerLockElement?.id==='game-canvas'&&window.__bugHunterStats?.lookLocked);
+    assert.equal((await stats()).count,0,'entry click only starts free look');
+    const original=await stats();
+    await page.mouse.move(mx+80,my+30,{steps:8});await page.waitForTimeout(1200);
+    const turned=await stats();
+    assert(Math.abs(turned.viewYaw-original.viewYaw)>5&&Math.abs(turned.viewPitch-original.viewPitch)>2,'mouse movement without any held button turns the camera');
+    await page.mouse.move(mx,my,{steps:8});await page.waitForTimeout(1200);
+    assert(Math.abs((await stats()).viewYaw-original.viewYaw)<1,'opposite movement restores yaw');
     await page.keyboard.down('w'); await page.waitForTimeout(850); await page.keyboard.up('w');
     await page.waitForFunction(() => window.__bugHunterStats?.target && window.__bugHunterStats?.focus > .9);
     await shot('tree-capture-desktop');
     assert.equal((await stats()).targetHabitat, 'クヌギの幹');
+    await page.keyboard.press('Escape');
+    await page.waitForFunction(()=>!document.pointerLockElement&&!window.__bugHunterStats?.lookLocked);
+    const released=await stats();
+    await page.mouse.move(mx+80,my+30);await page.waitForTimeout(1200);
+    assert.equal((await stats()).viewYaw,released.viewYaw,'released cursor does not rotate the view');
+    await click('Collection');await waitState('collection');
+    assert.equal((await stats()).count,0,'clicking the collection UI does not capture the targeted insect');
+    assert.equal(await page.evaluate(()=>document.pointerLockElement),null,'menu click does not lock the cursor');
+    await click('Explore');await waitState('forest');
+    assert.equal(await page.evaluate(()=>document.pointerLockElement),null,'return click is not reused as a forest click');
+    await page.mouse.click(mx,my,{delay:150});
+    await page.waitForFunction(()=>document.pointerLockElement?.id==='game-canvas'&&window.__bugHunterStats?.lookLocked);
+    await page.waitForTimeout(1200);
+    assert.equal((await stats()).count,0,'re-entry click does not capture');
+    assert(Math.abs((await stats()).viewYaw-released.viewYaw)<1,'re-entering free look does not jerk the camera');
+    await page.waitForFunction(()=>window.__bugHunterStats?.target&&window.__bugHunterStats?.focus>.9);
     for (let attempt = 0; attempt < 5 && (await stats()).count === 0; attempt++) {
-      await page.keyboard.press('Space'); await page.waitForTimeout(1500);
+      await page.mouse.down();await page.waitForTimeout(100);await page.mouse.up();await page.waitForTimeout(1800);
     }
     assert((await stats()).count > 0, 'capture must add an individual');
     await page.keyboard.press('Tab'); await waitState('collection');
+    assert.equal(await page.evaluate(()=>document.pointerLockElement),null,'opening the collection releases the pointer');
     await shot('collection-desktop');
     await click('Train'); await page.waitForTimeout(1300);
     assert((await stats()).level >= 2, 'training levels up the captured insect');
@@ -152,6 +187,8 @@ async function main() {
     const beforeReload = await stats();
     await page.reload(); await waitState('forest');
     assert.equal((await stats()).count, beforeReload.count, 'captured insects persist after reload');
+    // The old grid grew to 1440px inside a 1080px-tall ultrawide screen.
+    await page.setViewportSize({width:2560,height:1080});
     await page.locator('#fullscreen').click();
     await page.waitForFunction(() => document.fullscreenElement?.id === 'player-stage');
     await page.waitForTimeout(2500);
@@ -160,6 +197,14 @@ async function main() {
     await click('Practice');await waitState('battle');await shot('battle-fullscreen');
     await page.keyboard.press('Escape');await page.waitForFunction(()=>window.__bugHunterStats?.paused);
     await click('Retreat');await waitState('collection');await click('Explore');await waitState('forest');
+    for(const [width,height] of [[1920,1080],[1366,768],[1920,800],[1024,768],[390,960]]) {
+      await page.setViewportSize({width,height});await page.waitForTimeout(2200);
+      await shot(`forest-fullscreen-${width}x${height}`);
+      await click('Collection');await waitState('collection');await shot(`collection-fullscreen-${width}x${height}`);
+      await click('Practice');await waitState('battle');await shot(`battle-fullscreen-${width}x${height}`);
+      await page.keyboard.press('Escape');await page.waitForFunction(()=>window.__bugHunterStats?.paused);
+      await click('Retreat');await waitState('collection');await click('Explore');await waitState('forest');
+    }
     await page.evaluate(() => document.exitFullscreen());
     await page.setViewportSize({ width: 390, height: 960 });
     await page.waitForTimeout(2000); await shot('forest-mobile');
@@ -171,6 +216,10 @@ async function main() {
     assert.equal(errors.length, 0, errors.join('\n'));
     await fs.writeFile(path.join(output, 'smoke.json'), JSON.stringify({ measurements, errors, downSeen }, null, 2));
     console.log('BUG_HUNTER_BROWSER_OK');
+  } catch (error) {
+    console.error('Last browser state',await stats());
+    await page.locator('canvas').screenshot({path:path.join(output,'failure.png')});
+    throw error;
   } finally {
     await browser.close();
     await new Promise(resolve => { server.close(resolve); server.closeAllConnections(); });

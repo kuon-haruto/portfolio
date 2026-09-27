@@ -117,6 +117,34 @@ test('runtime errors do not become false successful loads', async () => {
   } finally { await page.close(); }
 });
 
+test('responsive fullscreen canvas fits short, ultrawide and portrait viewports after resizing', async () => {
+  const page = await browser.newPage();
+  try {
+    await page.route('**/*.loader.js', route => route.fulfill({ contentType: 'text/javascript', body:
+      'window.createUnityInstance = async () => ({});' }));
+    await page.goto(base + '/play/bug-hunter/');
+    await page.waitForFunction(() => document.getElementById('player-stage').dataset.state === 'ready');
+    for (const [width, height] of [[1366,768], [1920,1080], [2560,1080], [3440,1440], [1920,800], [1024,768], [390,960]]) {
+      await page.setViewportSize({ width, height });
+      await page.locator('#fullscreen').click();
+      await page.waitForFunction(() => document.fullscreenElement?.id === 'player-stage');
+      for (const intrinsic of [[1920,1080], [390,960], [3440,1440]]) {
+        const bounds = await page.locator('canvas').evaluate((canvas, size) => {
+          [canvas.width, canvas.height] = size;
+          const rect = canvas.getBoundingClientRect();
+          return { x: rect.x, y: rect.y, right: rect.right, bottom: rect.bottom, width: innerWidth, height: innerHeight };
+        }, intrinsic);
+        assert(bounds.x >= 0 && bounds.y >= 0 && bounds.right <= bounds.width + .1 && bounds.bottom <= bounds.height + .1,
+          `Canvas clipped at ${width}x${height}, intrinsic ${intrinsic}: ${JSON.stringify(bounds)}`);
+      }
+      await page.evaluate(() => document.exitFullscreen());
+      const normal = await page.locator('canvas').boundingBox();
+      const stage = await page.locator('#player-stage').boundingBox();
+      assert(Math.abs(normal.height-stage.height)<.1, 'exiting fullscreen restores the normal frame');
+    }
+  } finally { await page.close(); }
+});
+
 for (const mode of ['success', 'missing', 'corrupt']) {
   test(`split data: ${mode}, with verified parts and temporary URL cleanup`, async () => {
     const page = await browser.newPage();

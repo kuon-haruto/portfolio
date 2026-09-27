@@ -29,8 +29,8 @@ async function prepare() {
     objective: '虫を捕まえ、パートナーを選んで育成し、3連戦の森の大会で優勝する。',
     metadataLabel: 'Unity 6 / プレイ可能なプロトタイプ',
     howToPlay: [
-      '探索：W / A / S / Dで移動、右ドラッグで見回します。縦画面では方向ボタンでも操作できます。木の幹や草の葉、水辺を探してみてください。',
-      '近くの虫に狙いを合わせると捕獲ゲージがたまります。Spaceまたは「捕まえる」で捕獲します。',
+      '探索：ゲーム画面をクリックすると視点操作を開始します。W / A / S / Dで移動、マウス移動だけで見回します。右クリックは不要です。Escでカーソルを戻し、Tabで虫かごを開閉します。縦画面では方向ボタンでも操作できます。',
+      '近くの虫に狙いを合わせると捕獲ゲージがたまります。視点操作中に左クリックで捕獲します。Spaceや「捕まえる」ボタンも使えます。',
       '「虫かご・育成」で個体を比較し、パートナーを選びます。樹液8で育成でき、同種でも成長量が異なります。',
       '戦闘：1＝攻撃、2＝防御、3＝技。選んだ指示を繰り返し、移動・接近は虫が自動で行います。',
       '防御で体勢とスタミナを回復します。転倒中は無防備になり、復帰に約3.4〜4.6秒かかります。復帰後3秒は再転倒しません。',
@@ -44,7 +44,7 @@ async function prepare() {
       frameworkUrl: `${folder}/Build/${find('.framework.js.unityweb')}`,
       codeUrl: `${folder}/Build/${find('.wasm.unityweb')}`,
       streamingAssetsUrl: `${folder}/StreamingAssets`,
-      companyName: 'Zenta Shimamoto', productName: 'Bug Hunter', productVersion: '0.2.0', unityVersion: '6000.0.54f1', simplifiedEffects: 0
+      companyName: 'Zenta Shimamoto', productName: 'Bug Hunter', productVersion: '0.2.1', unityVersion: '6000.0.54f1', simplifiedEffects: 0
     },
     downloadBytes: integrity.reduce((sum, file) => sum + file.bytes, 0), integrity
   };

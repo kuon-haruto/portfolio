@@ -21,6 +21,10 @@ namespace BugHunter
         public Camera cameraView;
         CharacterController controller;
         float yaw=21,pitch=5,vertical;
+        bool lookWasLocked;
+        public bool LookLocked=>Cursor.lockState==CursorLockMode.Locked;
+        public float ViewYaw=>yaw;
+        public float ViewPitch=>pitch;
         public bool exploring;
         public Vector2 touchMove,touchLook;
         readonly System.Random random=new System.Random(623);
@@ -75,14 +79,19 @@ namespace BugHunter
         }
         public void Explore()
         {
+            ReleaseLook();
             exploring=true;if(net)net.gameObject.SetActive(true);cameraView.transform.SetParent(player,false);cameraView.transform.localPosition=new Vector3(0,1.6f,0);
             cameraView.transform.localRotation=Quaternion.Euler(pitch,0,0);target=null;focus=0;
         }
         public void View(Vector3 position,Vector3 lookAt)
         {
+            ReleaseLook();
             exploring=false;if(net)net.gameObject.SetActive(false);cameraView.transform.SetParent(null);cameraView.transform.position=position;cameraView.transform.LookAt(lookAt);
             touchMove=Vector2.zero;touchLook=Vector2.zero;
         }
+        public void LockLook(){if(exploring)Cursor.lockState=CursorLockMode.Locked;}
+        public void ReleaseLook(){Cursor.lockState=CursorLockMode.None;Cursor.visible=true;lookWasLocked=false;}
+        void OnApplicationFocus(bool focused){if(!focused)ReleaseLook();}
         public void Catch(Wild wild){wild.respawn=65;wild.view.gameObject.SetActive(false);target=null;focus=0;}
         public void Startle(Wild wild){wild.startled=1.3f;focus=0;}
         public void Swing(){swing=1;}
@@ -121,8 +130,9 @@ namespace BugHunter
             if(!exploring)return;
             swing=Mathf.Max(0,swing-dt*2.2f);float sw=Mathf.Sin(swing*Mathf.PI);
             if(net){net.localPosition=new Vector3(-sw*.4f,-.5f+sw*.1f,sw*.25f);net.localRotation=Quaternion.Euler(sw*26,sw*-18,sw*12);}
-            bool rotate=Input.GetMouseButton(1);
-            yaw+=(rotate?Input.GetAxisRaw("Mouse X")*2.2f:0)+touchLook.x*75*dt;
+            // Ignore the transition frame so locking cannot jerk the camera.
+            bool rotate=LookLocked&&lookWasLocked;lookWasLocked=LookLocked;
+            yaw=Mathf.Repeat(yaw+(rotate?Input.GetAxisRaw("Mouse X")*2.2f:0)+touchLook.x*75*dt,360);
             pitch=Mathf.Clamp(pitch-(rotate?Input.GetAxisRaw("Mouse Y")*2.2f:0)-touchLook.y*55*dt,-65,65);
             player.rotation=Quaternion.Euler(0,yaw,0);cameraView.transform.localRotation=Quaternion.Euler(pitch,0,0);
             var axes=Vector2.ClampMagnitude(new Vector2(Input.GetAxisRaw("Horizontal"),Input.GetAxisRaw("Vertical"))+touchMove,1);

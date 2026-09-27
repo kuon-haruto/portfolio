@@ -110,7 +110,7 @@ public static class BuildGame
         if(!sky){sky=new Material(Shader.Find("Skybox/Procedural"));AssetDatabase.CreateAsset(sky,skyPath);}
         sky.SetColor("_SkyTint",new Color(.61f,.69f,.72f));sky.SetFloat("_AtmosphereThickness",.9f);sky.SetFloat("_Exposure",1.1f);
         sky.SetColor("_GroundColor",new Color(.53f,.64f,.61f));
-        EditorUtility.SetDirty(sky);PlayerSettings.bundleVersion="0.2.0";
+        EditorUtility.SetDirty(sky);PlayerSettings.bundleVersion="0.2.1";
         QualitySettings.shadows=ShadowQuality.HardOnly;QualitySettings.shadowResolution=ShadowResolution.Medium;
         QualitySettings.shadowDistance=22;QualitySettings.shadowCascades=0;
         AssetDatabase.SaveAssets();

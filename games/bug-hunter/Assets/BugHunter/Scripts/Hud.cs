@@ -245,6 +245,12 @@ namespace BugHunter
             }
         }
         static string State(Battle.Fighter f)=>f.IsDown?"転倒 "+f.down.ToString("F1")+"s":f.immunity>0?"復帰":f.order==Order.Guard?"防御":f.order==Order.Skill?"技":"攻撃";
+        public bool PointerOverControl()
+        {
+            foreach(var button in buttons.Values)
+                if(button&&RectTransformUtility.RectangleContainsScreenPoint((RectTransform)button.transform,Input.mousePosition))return true;
+            return false;
+        }
         [Serializable]public class ControlDiagnostic {public string name;public float x,y,width,height;public bool enabled;}
         public ControlDiagnostic[] Controls()
         {
