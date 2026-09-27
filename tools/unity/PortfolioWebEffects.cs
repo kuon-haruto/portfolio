@@ -11,6 +11,7 @@ public sealed class PortfolioWebEffects : IDisposable
 {
     private readonly Dictionary<string, byte[]> originals = new Dictionary<string, byte[]>();
     public int Count { get; private set; }
+    public int IceCount { get; private set; }
 
     public void Prepare()
     {
@@ -28,10 +29,12 @@ public sealed class PortfolioWebEffects : IDisposable
                 foreach (var effect in prefab.GetComponentsInChildren<VisualEffect>(true))
                 {
                     GameObject target = effect.gameObject;
+                    bool ice = PortfolioVLinkIceEffects.TryReplace(effect, path);
                     UnityEngine.Object.DestroyImmediate(effect);
                     foreach (Renderer renderer in target.GetComponents<Renderer>())
                         if (renderer.GetType().Name == "VFXRenderer") UnityEngine.Object.DestroyImmediate(renderer);
-                    AddParticles(target, material, Path.GetFileNameWithoutExtension(path));
+                    if (ice) IceCount++;
+                    else AddParticles(target, material, Path.GetFileNameWithoutExtension(path));
                     Count++;
                 }
                 PrefabUtility.SaveAsPrefabAsset(prefab, path);
@@ -40,6 +43,7 @@ public sealed class PortfolioWebEffects : IDisposable
         }
         AssetDatabase.SaveAssets();
         Debug.Log("PORTFOLIO_WEB_SIMPLE_EFFECTS: " + Count);
+        Debug.Log("PORTFOLIO_WEB_ICE_EFFECTS: " + IceCount);
     }
 
     private static void AddParticles(GameObject target, Material material, string name)

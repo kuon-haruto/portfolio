@@ -64,10 +64,13 @@ Bug Hunter uses its own responsive canvas/UI instead of the fixed drawing buffer
 
 Teruteru Wars, Futago and V-Link use VFX Graph, which requires compute shaders and does
 not support OpenGL ES. Their Web builds replace those effect components with
-small, colored CPU particle effects. Original source checkouts are unchanged.
+CPU particle effects. V-Link's five ice graphs have dedicated mesh/flipbook
+reconstructions using original assets; other graphs retain the small generic
+particles. Original source checkouts are unchanged.
 The editor helper restores the temporary prefab bytes after the
 build, and the player displays a simplified-effects notice. This adaptation is
-recorded as `simplifiedEffects` in the build metadata.
+recorded as `simplifiedEffects` in the build metadata, with V-Link's dedicated
+ice replacements also counted in `iceEffects`.
 
 Compatibility reference:
 https://docs.unity3d.com/Packages/com.unity.visualeffectgraph@17.3/manual/System-Requirements.html

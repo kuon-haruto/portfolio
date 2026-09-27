@@ -16,7 +16,7 @@
       "icon": "../files/game-icons/v-link-battle.png",
       "build": {
         "loaderUrl": "builds/v-link-battle/v1/Build/5336a4b2c43054286fd70b1faa467eee.loader.js",
-        "dataUrl": "builds/v-link-battle/v1/Build/199672fd5cc9620e9fefa4754532c411.data.unityweb",
+        "dataUrl": "builds/v-link-battle/v1/Build/e36aa48b0ad75511e121de9dea2f86c6.data.unityweb",
         "frameworkUrl": "builds/v-link-battle/v1/Build/198fa04d65b316ff44d5469dec2ca3f3.framework.js.unityweb",
         "codeUrl": "builds/v-link-battle/v1/Build/74bbe058f4196363f20e3ef631361796.wasm.unityweb",
         "streamingAssetsUrl": "builds/v-link-battle/v1/StreamingAssets",
@@ -25,77 +25,48 @@
         "productVersion": "0.1.0",
         "unityVersion": "2022.3.50f1",
         "simplifiedEffects": 14,
+        "iceEffects": 5,
         "dataParts": [
           {
-            "url": "builds/v-link-battle/v1/Build/199672fd5cc9620e9fefa4754532c411.data.unityweb.part-000",
+            "url": "builds/v-link-battle/v1/Build/e36aa48b0ad75511e121de9dea2f86c6.data.unityweb.part-000",
             "bytes": 50331648,
-            "sha256": "645044b9571b2ad48874b9c0bcba5549bba879767e2ad8ae7c96c69116d69fc1"
+            "sha256": "130e53346fbc10683e0088f7c3e8ab036e10a3e50da15e424f67aaec0790077f"
           },
           {
-            "url": "builds/v-link-battle/v1/Build/199672fd5cc9620e9fefa4754532c411.data.unityweb.part-001",
+            "url": "builds/v-link-battle/v1/Build/e36aa48b0ad75511e121de9dea2f86c6.data.unityweb.part-001",
             "bytes": 50331648,
-            "sha256": "50deff3732845b1d39f4e014dfec1a07a90701c33fcc36b387819deeeee7c12c"
+            "sha256": "f28e3807a57337b2b84e24eb778d78189a9fef940254877e53c9198a08a4bd9d"
           },
           {
-            "url": "builds/v-link-battle/v1/Build/199672fd5cc9620e9fefa4754532c411.data.unityweb.part-002",
+            "url": "builds/v-link-battle/v1/Build/e36aa48b0ad75511e121de9dea2f86c6.data.unityweb.part-002",
             "bytes": 50331648,
-            "sha256": "5d523de48cff0c6c85a1a2396e056738dbda9aeaaddb483bedca6543b0b3493b"
+            "sha256": "25c36e24ea6145370d9c75e0e5019c2e4c486a11c271fc0cf3ccae3ee00e0c36"
           },
           {
-            "url": "builds/v-link-battle/v1/Build/199672fd5cc9620e9fefa4754532c411.data.unityweb.part-003",
+            "url": "builds/v-link-battle/v1/Build/e36aa48b0ad75511e121de9dea2f86c6.data.unityweb.part-003",
             "bytes": 50331648,
-            "sha256": "e45d12cea557fa92865b8a76fd6178b0ccb176a0929894dbc09b38adfa2ed69f"
+            "sha256": "e017913e2606456f1e20021476f4ecd3ec524f2919a0b54de98b8e934ffcd9f9"
           },
           {
-            "url": "builds/v-link-battle/v1/Build/199672fd5cc9620e9fefa4754532c411.data.unityweb.part-004",
+            "url": "builds/v-link-battle/v1/Build/e36aa48b0ad75511e121de9dea2f86c6.data.unityweb.part-004",
             "bytes": 50331648,
-            "sha256": "0e9ac4a5427000f3312e074031676fdf3b0c9ff99f9f28b4dfce88904169583c"
+            "sha256": "28c269448fa8341bbc836520a14a895ea5849ae209322aac3b246352f1074ebb"
           },
           {
-            "url": "builds/v-link-battle/v1/Build/199672fd5cc9620e9fefa4754532c411.data.unityweb.part-005",
-            "bytes": 17521646,
-            "sha256": "77191d8e71c45736ba5eac3f6c5a77773afa716d902fea8257e7494c3222f6ae"
+            "url": "builds/v-link-battle/v1/Build/e36aa48b0ad75511e121de9dea2f86c6.data.unityweb.part-005",
+            "bytes": 18067905,
+            "sha256": "688bc8b32533c82c702ddfe49d204a8fa51534d24eb82fd1134a8d4e92ca3f8b"
           }
         ]
       },
       "sourceCommit": "f880cf1582ccda1e9aae945cea72e2a5159514f5",
       "browserNotice": "Web版では通知ウィンドウをゲーム画面内に表示し、一部のエフェクトを簡易表示しています。",
-      "downloadBytes": 281014867,
+      "downloadBytes": 281561126,
       "integrity": [
         {
           "file": "198fa04d65b316ff44d5469dec2ca3f3.framework.js.unityweb",
           "bytes": 83169,
-          "sha256": "c0ed916c402eb6227ba53e99f60ba1768ab8c21943fdc52226041fb553ba2bed"
-        },
-        {
-          "file": "199672fd5cc9620e9fefa4754532c411.data.unityweb.part-000",
-          "bytes": 50331648,
-          "sha256": "645044b9571b2ad48874b9c0bcba5549bba879767e2ad8ae7c96c69116d69fc1"
-        },
-        {
-          "file": "199672fd5cc9620e9fefa4754532c411.data.unityweb.part-001",
-          "bytes": 50331648,
-          "sha256": "50deff3732845b1d39f4e014dfec1a07a90701c33fcc36b387819deeeee7c12c"
-        },
-        {
-          "file": "199672fd5cc9620e9fefa4754532c411.data.unityweb.part-002",
-          "bytes": 50331648,
-          "sha256": "5d523de48cff0c6c85a1a2396e056738dbda9aeaaddb483bedca6543b0b3493b"
-        },
-        {
-          "file": "199672fd5cc9620e9fefa4754532c411.data.unityweb.part-003",
-          "bytes": 50331648,
-          "sha256": "e45d12cea557fa92865b8a76fd6178b0ccb176a0929894dbc09b38adfa2ed69f"
-        },
-        {
-          "file": "199672fd5cc9620e9fefa4754532c411.data.unityweb.part-004",
-          "bytes": 50331648,
-          "sha256": "0e9ac4a5427000f3312e074031676fdf3b0c9ff99f9f28b4dfce88904169583c"
-        },
-        {
-          "file": "199672fd5cc9620e9fefa4754532c411.data.unityweb.part-005",
-          "bytes": 17521646,
-          "sha256": "77191d8e71c45736ba5eac3f6c5a77773afa716d902fea8257e7494c3222f6ae"
+          "sha256": "70f8a9de276ff7c18bd8cf7983d6cf72eafaeb15134271f9f595cf1a45e77b72"
         },
         {
           "file": "5336a4b2c43054286fd70b1faa467eee.loader.js",
@@ -105,7 +76,37 @@
         {
           "file": "74bbe058f4196363f20e3ef631361796.wasm.unityweb",
           "bytes": 11707558,
-          "sha256": "2e37a5b001c5036893e22a83960397414f811bb3a2fafd86beac140df06988a5"
+          "sha256": "c44b4e9f706fa4deb4798e45bbcad36213353d46a8d60ea81bfcfc730850088a"
+        },
+        {
+          "file": "e36aa48b0ad75511e121de9dea2f86c6.data.unityweb.part-000",
+          "bytes": 50331648,
+          "sha256": "130e53346fbc10683e0088f7c3e8ab036e10a3e50da15e424f67aaec0790077f"
+        },
+        {
+          "file": "e36aa48b0ad75511e121de9dea2f86c6.data.unityweb.part-001",
+          "bytes": 50331648,
+          "sha256": "f28e3807a57337b2b84e24eb778d78189a9fef940254877e53c9198a08a4bd9d"
+        },
+        {
+          "file": "e36aa48b0ad75511e121de9dea2f86c6.data.unityweb.part-002",
+          "bytes": 50331648,
+          "sha256": "25c36e24ea6145370d9c75e0e5019c2e4c486a11c271fc0cf3ccae3ee00e0c36"
+        },
+        {
+          "file": "e36aa48b0ad75511e121de9dea2f86c6.data.unityweb.part-003",
+          "bytes": 50331648,
+          "sha256": "e017913e2606456f1e20021476f4ecd3ec524f2919a0b54de98b8e934ffcd9f9"
+        },
+        {
+          "file": "e36aa48b0ad75511e121de9dea2f86c6.data.unityweb.part-004",
+          "bytes": 50331648,
+          "sha256": "28c269448fa8341bbc836520a14a895ea5849ae209322aac3b246352f1074ebb"
+        },
+        {
+          "file": "e36aa48b0ad75511e121de9dea2f86c6.data.unityweb.part-005",
+          "bytes": 18067905,
+          "sha256": "688bc8b32533c82c702ddfe49d204a8fa51534d24eb82fd1134a8d4e92ca3f8b"
         }
       ]
     },

@@ -15,6 +15,7 @@ public static class PortfolioWebBuild
         public string productVersion;
         public string unityVersion;
         public int simplifiedEffects;
+        public int iceEffects;
     }
 
     public static void Build()
@@ -52,7 +53,8 @@ public static class PortfolioWebBuild
             productName = PlayerSettings.productName,
             productVersion = PlayerSettings.bundleVersion,
             unityVersion = Application.unityVersion,
-            simplifiedEffects = effects.Count
+            simplifiedEffects = effects.Count,
+            iceEffects = effects.IceCount
         }, true));
         Debug.Log("PORTFOLIO_WEB_BUILD_SUCCEEDED: " + output);
     }

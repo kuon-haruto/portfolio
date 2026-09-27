@@ -24,7 +24,9 @@ not an overwrite. The original C# animation methods are retained verbatim.
 - The unused external-browser window class does not launch another application.
 - The existing game-view utilities use the Web canvas origin rather than an OS
   window position. Original combat, characters, controls and NPC logic remain.
-- VFX Graph components use the shared CPU particle fallback.
+- Five ice VFX graphs use dedicated CPU mesh/particle effects with the original
+  wall, slash and storm meshes and explosion flipbook. Other VFX graphs still
+  use the shared generic particle fallback.
 - The built battle scene disables its development-only debug roster, so actual
   character and NPC selections are respected. The source prefab is unchanged.
 - Selection-screen materials using stencil reference 1 get a scene-local Web
@@ -51,7 +53,7 @@ and reader draws, hidden legs, visible heads and held panels at desktop/mobile
 sizes and desktop fullscreen. Its image regions come from the user's native
 selection-screen reference. The unpatched build fails this regression check.
 
-## Ice Effects And Native Windows Audit (2026-09-27)
+## Pre-Repair Ice And Native Windows Audit (2026-09-27)
 
 The local source still uses Unity 2022.3.50f1, URP 14.0.11 and VFX Graph 14.0.11,
 at the same pinned commit as the published build. No Unity upgrade or upstream
@@ -94,6 +96,41 @@ per-effect Web-compatible mesh/ParticleSystem replacements using the original
 ice materials/textures, preserving attack lifetimes and colliders. A version
 upgrade alone does not remove this WebGL rendering limit, and the currently
 published CPU fallback would still replace the graphs until changed.
+
+## Ice Repair
+
+`PortfolioVLinkIceEffects` now handles `IceWall`, `Ame_IceSlash`,
+`Ame_FlyingSlash`, `BladeStorm` and `Ame_IceExplosion` before the generic fallback.
+It only runs for V-Link's Ame prefab directory with `PORTFOLIO_WEB_VLINK=1`.
+The original FBX sub-mesh IDs, prefab transforms and VFX lifetime properties are
+retained. CPU mesh particles need readable geometry, so only the isolated build
+copy's model importers enable read/write. The active `D:/Vlink` checkout is not
+edited. Unity remains 2022.3.50f1.
+
+The Web shaders preserve identifiable cyan ice silhouettes, a fading slash arc,
+rotating storm ribbons and an animated blast. The blast reuses the original 8x8
+flipbook's luminance instead of multiplying its baked orange fire color by cyan.
+These are Web-compatible reconstructions, not pixel-identical VFX Graph shaders.
+The existing mesh-based guard and other combat behavior are unchanged.
+
+`PortfolioVLinkIceTests.Verify` runs in Unity batch mode after the same build
+helpers are copied to `Assets/Editor` in the isolated project. Set
+`PORTFOLIO_ICE_TEST_OUTPUT` to `launcher/test-output/vlink-ice` for previews.
+It compares all original scripts/colliders/rigidbodies through Unity's serialized
+values (including defaults absent from older YAML), checks readable meshes,
+supported shaders, bounded particle counts and finite repeated simulations,
+and verifies that the original prefab files are restored afterwards.
+
+`node tests/vlink-ice-smoke.cjs` uses ordinary browser/keyboard controls and
+observes actual WebGL draws from the ice shader during repeated combat attacks.
+It does not expose a gameplay-changing debug API. The explosion prefab is tested
+in Unity; it is registered in the battle pool but this audit did not find a normal
+attack-data reference that spawns it. No new move or trigger is invented.
+
+Build just V-Link with `tools/build-web-games.ps1 -Ids v-link-battle`, then run
+`node tools/prepare-web-games.cjs --ids=v-link-battle`. The packager preserves all
+five other published games and replaces only V-Link's content-hashed payloads.
+The manifest records `iceEffects: 5` among the 14 VFX replacements.
 
 References: [VFX Graph 14 requirements](https://docs.unity3d.com/Packages/com.unity.visualeffectgraph@14.0/manual/System-Requirements.html),
 [Unity 6 WebGL graphics](https://docs.unity3d.com/6000.0/Documentation/Manual/webgl-graphics.html),
