@@ -56,7 +56,7 @@ async function prepare() {
     }
     const currentFiles = new Set(integrity.map(asset => asset.file));
     for (const old of await fs.readdir(destinationBuild).catch(() => [])) {
-      // Only remove obsolete generated payload files in this unpublished build version.
+      // The manifest and content-hashed payloads are deployed together; Git retains old revisions.
       if (!currentFiles.has(old) && /^[a-f0-9]{32}\.(loader\.js|data\.unityweb(?:\.part-\d{3})?|framework\.js\.unityweb|wasm\.unityweb)$/.test(old)) {
         await fs.unlink(path.join(destinationBuild, old));
       }

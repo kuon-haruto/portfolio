@@ -33,6 +33,7 @@ function replaceOnce(text, from, to) {
   return text.replace(from, to);
 }
 const scripts = 'Assets/TechC/VBattle/Scripts/';
+write('Assets/PortfolioWebGenerated/SelectionUnlit.shader', fs.readFileSync(path.join(__dirname, 'vlink-web/SelectionUnlit.shader'), 'utf8'));
 const windowRoot = scripts + 'Core/Window/';
 for (const name of ['BrowserWindowSurface', 'WindowClassManager', 'DrawWindowUtility', 'WebWindow', 'IconManager']) {
   const file = name === 'IconManager' ? scripts + 'Core/Managers/' + name + '.cs' : windowRoot + name + '.cs';

@@ -60,9 +60,12 @@ recorded as `simplifiedEffects` in the build metadata.
 Compatibility reference:
 https://docs.unity3d.com/Packages/com.unity.visualeffectgraph@17.3/manual/System-Requirements.html
 
-Builds are currently stored under `v1`. For later releases use a new version
-directory and regenerate the manifest, retaining old assets during deployment.
-Do not silently replace a published build with a different source revision.
+Builds use content-hashed payload filenames under the canonical `v1` directory.
+For a rebuild, regenerate and deploy the manifest with its matching payloads in
+one GitHub Pages deployment. Changed content gets new URLs, not overwritten
+cached bytes; Git retains previous revisions without duplicate project folders.
+An in-progress download crossing deployments may need the player's Retry button.
+Keep `sourceCommit` accurate when the upstream source revision changes.
 
 ## Verification Scope
 
@@ -74,4 +77,6 @@ Futago, and character selection, battle startup, movement, attack and guard inpu
 in V-Link. The wrapper tests also cover failed requests, retry, runtime errors and
 image containment at widths of 320, 390, 900 and 1440 pixels.
 Screenshots and logs are saved under `launcher/test-output/web/` (not published).
+`node tests/vlink-selection-mask.cjs` checks V-Link's selection mask separately,
+including actual WebGL stencil operations and reference-based image regions.
 This is not a full playthrough or a guarantee of touch-only/mobile gameplay.

@@ -27,6 +27,13 @@ not an overwrite. The original C# animation methods are retained verbatim.
 - VFX Graph components use the shared CPU particle fallback.
 - The built battle scene disables its development-only debug roster, so actual
   character and NPC selections are respected. The source prefab is unchanged.
+- Selection-screen materials using stencil reference 1 get a scene-local Web
+  shader that preserves their stencil operations, textures, blending and render
+  queues. The original lilToon shaders fall back to URP Unlit on the tested WebGL
+  build; that fallback omits stencil state, exposing the characters' legs in front
+  of the frames. `SelectionUnlit.shader` uses the same URP Unlit forward shading
+  with the missing stencil state restored. Character transforms, animations,
+  source materials and battle-scene materials are not changed by this fix.
 - Scene video clips are served as separate MP4 URLs rather than embedded clips;
   see [Unity video sources](https://docs.unity3d.com/2022.3/Documentation/Manual/Video.html).
 - The user's uncommitted `Ame_Neutral_W.asset` edit (`hitTiming: 0`) is preserved
@@ -38,3 +45,8 @@ prompt and reference provenance are saved alongside it in `v-link-battle-icon.md
 Run `WEB_TEST_GAME=v-link-battle node tests/web-games-smoke.cjs` (set the environment
 variable with the current shell's syntax). This verifies actual WebGL startup and
 the actions in `tests/web-game-actions.json`; it is not an exhaustive playthrough.
+
+`node tests/vlink-selection-mask.cjs` additionally checks actual stencil writer
+and reader draws, hidden legs, visible heads and held panels at desktop/mobile
+sizes and desktop fullscreen. Its image regions come from the user's native
+selection-screen reference. The unpatched build fails this regression check.
