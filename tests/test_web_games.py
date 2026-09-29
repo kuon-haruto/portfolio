@@ -37,7 +37,8 @@ class WebGameTests(unittest.TestCase):
         game = next(g for g in self.games if g["id"] == "bug-hunter")
         self.assertEqual(game["sourceKind"], "workspace-unity")
         self.assertTrue(game["responsiveCanvas"])
-        self.assertIn("プロトタイプ", game["metadataLabel"])
+        self.assertEqual(game["metadataLabel"], "Unity 6")
+        self.assertNotRegex(game["description"], "試作|プロトタイプ")
         self.assertTrue((ROOT / game["sourcePath"] / "Assets/BugHunter/Scenes/Woodland.unity").is_file())
         self.assertLess(game["downloadBytes"], 20 * 1024 ** 2)
         windows = json.loads((ROOT / "launcher/data/catalog.json").read_text(encoding="utf-8"))["games"]

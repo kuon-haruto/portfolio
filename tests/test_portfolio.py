@@ -107,7 +107,7 @@ class PortfolioTests(unittest.TestCase):
             with self.subTest(section=section):
                 self.assertEqual(len(links), 1)
                 self.assertEqual(links[0]["href"], "https://kuon-haruto.github.io/portfolio/play/")
-                self.assertIn("Web版5作品", source)
+                self.assertIn("Web版6作品", source)
                 self.assertIn("PC", source)
                 self.assertIn("ブラウザーでプレイ", source)
 
@@ -152,7 +152,13 @@ class PortfolioTests(unittest.TestCase):
                 source = (ROOT / file).read_text(encoding="utf-8")
                 self.assertNotIn("ゲームを遊ぶ", source)
 
-    def test_gallery_contains_five_games_and_one_prototype(self):
+    def test_public_labels_use_game_names_without_prototype_qualifiers(self):
+        for file in ("index.html", "scripts/profile-data.js", "tools/prepare-bug-hunter.cjs"):
+            with self.subTest(file=file):
+                source = (ROOT / file).read_text(encoding="utf-8")
+                self.assertNotRegex(source, "試作|プロトタイプ")
+
+    def test_gallery_contains_six_games(self):
         hero = (ROOT / "src/sections/hero.html").read_text(encoding="utf-8")
         document = Document(hero)
         links = [

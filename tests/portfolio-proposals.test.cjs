@@ -44,7 +44,9 @@ test('proposals identify developed games without inventing a development environ
     assert.match(items[2], /^特徴：/);
     for (const feature of ['個体差', '指示式', '転倒', '起き上がるまで無防備', '運']) assert(items[2].includes(feature));
     assert.doesNotMatch(await bug.innerText(), /探索：|育成：|対戦：/);
-    assert.match(await bug.locator('.meta').innerText(), /プレイ可能なプロトタイプ/);
+    assert.equal(await bug.locator('.meta').innerText(), '開発環境：Unity 6');
+    assert.doesNotMatch(await page.locator('body').innerText(), /試作|プロトタイプ/);
+    assert.equal(await bug.locator('.prototype-play-link').innerText(), 'ブラウザーでプレイ');
     assert.equal(await bug.locator('.prototype-play-link').getAttribute('href'), 'https://kuon-haruto.github.io/portfolio/play/bug-hunter/');
   } finally { await page.close(); }
 });

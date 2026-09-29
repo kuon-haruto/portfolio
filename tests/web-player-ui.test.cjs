@@ -87,7 +87,7 @@ test('failed loader offers retry; retry starts only the selected game', async ()
   } finally { await page.close(); }
 });
 
-test('Bug Hunter uses responsive portrait rendering and honest prototype metadata', async () => {
+test('Bug Hunter uses responsive portrait rendering and development environment metadata', async () => {
   const page = await browser.newPage({ viewport: { width: 390, height: 900 } });
   try {
     await page.route('**/*.loader.js', route => route.fulfill({ contentType: 'text/javascript', body: `
@@ -100,7 +100,8 @@ test('Bug Hunter uses responsive portrait rendering and honest prototype metadat
     assert.equal(await page.locator('#renderer-controls').isVisible(), false);
     const stage = await page.locator('#player-stage').boundingBox();
     assert(stage.height > stage.width);
-    assert.match(await page.locator('#game-meta').textContent(), /プロトタイプ/);
+    assert.equal(await page.locator('#game-meta').textContent(), 'Unity 6');
+    assert.doesNotMatch(await page.locator('#player').innerText(), /試作|プロトタイプ/);
     assert.doesNotMatch(await page.locator('#game-meta').textContent(), /undefined/);
   } finally { await page.close(); }
 });
