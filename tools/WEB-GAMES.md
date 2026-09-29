@@ -71,9 +71,14 @@ Bug Hunter uses its own responsive canvas/UI instead of the fixed drawing buffer
 V-Link's Unity 6 WebGPU build retains all 14 original VisualEffect components,
 the original stencil shaders, and a vertex-based adaptation of the original fur.
 Its manifest records `graphicsApi: WebGPU`, `originalVfxComponents: 14` and zero
-CPU replacements. The page probes a WebGPU adapter before downloading the game;
-unsupported environments use the separately verified WebGL compatibility payload.
-GPU startup failures also offer an explicit compatibility retry. GPU allocation
+CPU replacements. V-Link now defaults to the WebGL motion-priority mode with
+an explicit simplified-effects notice. A visible rendering-mode selector keeps
+the original-effects WebGPU mode available at `?renderer=webgpu`; choosing
+`?renderer=webgl` switches back. Mode changes restart the game, and reloads retain
+the URL's choice. Normal library links always start in motion-priority mode.
+Only an explicit WebGPU choice probes an adapter before downloading the game;
+unsupported environments use WebGL with a notice and the selector reflects the
+actual mode. GPU startup failures also offer a motion-priority retry. GPU allocation
 and performance vary by browser/hardware; see the migration report's measured
 Intel/NVIDIA results. The WebGPU build is not universally pixel-identical to Windows.
 
@@ -109,8 +114,11 @@ image containment at widths of 320, 390, 900 and 1440 pixels.
 Screenshots and logs are saved under `launcher/test-output/web/` (not published).
 `node tests/vlink-selection-mask.cjs` checks V-Link's selection mask separately,
 including actual WebGL stencil operations and reference-based image regions.
-It and `tests/vlink-ice-smoke.cjs` explicitly select `?renderer=webgl`.
-`node tests/vlink-webgpu-smoke.cjs` verifies the WebGPU player, including selection
+The selection test explicitly selects `?renderer=webgl`.
+`tests/vlink-ice-smoke.cjs` exercises the default URL without GPU-selection flags,
+checks repeated ice attacks and records ten seconds of battle frame submissions
+on the browser's normal GPU. These observations are not cross-hardware FPS guarantees.
+`node tests/vlink-webgpu-smoke.cjs` explicitly selects `?renderer=webgpu`, including selection
 text/fur, real GPU compute work, four exercised attacks and fullscreen sizing.
 `node tests/vlink-vfx-reference.cjs` captures the separate nine-prefab diagnostic;
 its 36 frames cover all original effect graphs, including effects not triggered

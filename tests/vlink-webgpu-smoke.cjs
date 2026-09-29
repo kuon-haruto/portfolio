@@ -139,7 +139,7 @@ function measureBrowserFrames(page) {
         };
       }
     });
-    await page.goto(new URL('v-link-battle/', base).href);
+    await page.goto(new URL('v-link-battle/?renderer=webgpu', base).href);
     await page.waitForFunction(() => ['ready', 'error'].includes(document.querySelector('#player-stage')?.dataset.state), null, { timeout: 300000 });
     assert.equal(await page.locator('#player-stage').getAttribute('data-state'), 'ready', await page.locator('#game-error').textContent());
     await page.locator('#start-fullscreen').click();

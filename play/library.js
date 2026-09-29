@@ -125,10 +125,16 @@
     $('game-canvas').setAttribute('aria-label', game.title + 'のゲーム画面');
     $('loading-icon').src = url(game.icon);
     if (game.build.graphicsApi === 'WebGPU') {
-      canRetryWebGL = Boolean(game.fallback);
+      const requested = new URLSearchParams(window.location.search).get('renderer');
+      // WebGPU support alone says nothing about frame rate on integrated GPUs.
+      const useWebGPU = !game.fallback || requested === 'webgpu';
+      if (game.fallback && $('renderer-controls')) {
+        $('renderer-controls').hidden = false;
+        $('renderer-mode').value = useWebGPU ? 'webgpu' : 'webgl';
+      }
       let adapter = null;
       let timeout;
-      if (new URLSearchParams(window.location.search).get('renderer') !== 'webgl') {
+      if (useWebGPU) {
         try {
           adapter = await Promise.race([navigator.gpu?.requestAdapter(), new Promise(resolve => {
             timeout = setTimeout(() => resolve(null), 5000);
@@ -139,10 +145,13 @@
       if (!adapter) {
         if (!game.fallback) throw new Error('この環境ではWebGPUを利用できません。対応するEdge / Chromeで開いてください。');
         game = { ...game, ...game.fallback };
-        canRetryWebGL = false;
+        if (useWebGPU) game.browserNotice = 'この環境ではWebGPUを利用できないため、動作優先版に切り替えました。' + (game.browserNotice || '一部のエフェクトは簡易表示になります。');
+      } else {
+        canRetryWebGL = Boolean(game.fallback);
       }
     }
     $('player-stage').dataset.renderer = game.build.graphicsApi === 'WebGPU' ? 'webgpu' : 'webgl';
+    if ($('renderer-mode')) $('renderer-mode').value = $('player-stage').dataset.renderer;
     $('loading-size').textContent = '読み込み容量：約' + Math.ceil(game.downloadBytes / 1024 ** 2) + ' MB';
     $('game-description').textContent = game.description;
     $('game-meta').textContent = game.metadataLabel || game.teamSize + '人制作 / ' + game.duration;
@@ -196,11 +205,14 @@
   }
 
   for (const id of ['reload', 'retry']) $(id).addEventListener('click', () => window.location.reload());
-  $('retry-webgl')?.addEventListener('click', () => {
+  function switchRenderer(renderer) {
+    if (!['webgl', 'webgpu'].includes(renderer)) return;
     const target = new URL(window.location.href);
-    target.searchParams.set('renderer', 'webgl');
+    target.searchParams.set('renderer', renderer);
     window.location.assign(target.href);
-  });
+  }
+  $('retry-webgl')?.addEventListener('click', () => switchRenderer('webgl'));
+  $('renderer-mode')?.addEventListener('change', event => switchRenderer(event.target.value));
   $('fullscreen').addEventListener('click', async () => {
     if (document.fullscreenElement) await document.exitFullscreen().catch(() => {});
     else await enterFullscreen();

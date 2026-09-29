@@ -18,7 +18,7 @@ const output = path.join(__dirname, '../launcher/test-output/vlink-ice');
     page.on('pageerror', e => errors.push(e.message));
     page.on('console', msg => { if (msg.type() === 'error') errors.push(msg.text()); });
     await page.addInitScript(() => {
-      window.__iceRendering = { programs: 0, draws: 0, vertices: 0 };
+      window.__iceRendering = { programs: 0, draws: 0, vertices: 0, canvasSubmitted: false };
       // Observe actual WebGL submissions; do not change Unity objects or gameplay.
       for (const type of [WebGLRenderingContext, WebGL2RenderingContext]) {
         const proto = type.prototype, sources = new WeakMap(), shaders = new WeakMap(), ice = new WeakSet();
@@ -38,6 +38,7 @@ const output = path.join(__dirname, '../launcher/test-output/vlink-ice');
         for (const name of ['drawElements', 'drawArrays', 'drawElementsInstanced', 'drawArraysInstanced']) {
           const draw = proto[name]; if (!draw) continue;
           proto[name] = function(...args) {
+            if (this.canvas.id === 'game-canvas') window.__iceRendering.canvasSubmitted = true;
             if (current && ice.has(current)) { window.__iceRendering.draws++; window.__iceRendering.vertices += args[name.includes('Elements') ? 1 : 2]; }
             return draw.apply(this, args);
           };
@@ -45,8 +46,10 @@ const output = path.join(__dirname, '../launcher/test-output/vlink-ice');
       }
     });
     await fs.mkdir(output, { recursive: true });
-    await page.goto(new URL('v-link-battle/?renderer=webgl', base).href);
+    // Exercise the public default on the browser's normal GPU, without GPU flags.
+    await page.goto(new URL('v-link-battle/', base).href);
     await page.locator('#start-fullscreen').waitFor({ timeout: 180000 });
+    assert.equal(await page.locator('#player-stage').getAttribute('data-renderer'), 'webgl');
     await page.locator('#start-fullscreen').click();
     await page.waitForTimeout(6500);
     for (const action of actions) {
@@ -86,7 +89,36 @@ const output = path.join(__dirname, '../launcher/test-output/vlink-ice');
     assert((await page.evaluate(() => window.__iceRendering.programs)) > 0, 'Web-compatible ice shader was never compiled');
     assert(results.filter(r => r.iceDraws > 0).length >= 6, 'Ice did not render repeatedly during combat');
     assert(results.every(r => r.cyanPixels > 100), 'Battle canvas lost its rendered content');
+    const timing = await page.evaluate(() => new Promise(resolve => {
+      const canvas = document.querySelector('#game-canvas');
+      const gl = canvas.getContext('webgl2');
+      const debug = gl?.getExtension('WEBGL_debug_renderer_info');
+      const renderer = debug ? gl.getParameter(debug.UNMASKED_RENDERER_WEBGL) : 'unavailable';
+      let start, previous, callbacks = 0, renderedFrames = 0;
+      const intervals = [];
+      function sample(now) {
+        if (start === undefined) { start = previous = now; window.__iceRendering.canvasSubmitted = false; }
+        else {
+          callbacks++;
+          if (window.__iceRendering.canvasSubmitted) {
+            renderedFrames++;
+            intervals.push(now - previous);
+            previous = now;
+          }
+          window.__iceRendering.canvasSubmitted = false;
+        }
+        if (now - start < 10000) return requestAnimationFrame(sample);
+        intervals.sort((a, b) => a - b);
+        resolve({ renderer, elapsedMs: now - start, browserCallbacks: callbacks, renderedFrames,
+          renderedFramesPerSecond: renderedFrames * 1000 / (now - start),
+          p95RenderedIntervalMs: intervals[Math.floor(intervals.length * .95)],
+          over100Ms: intervals.filter(ms => ms > 100).length });
+      }
+      requestAnimationFrame(sample);
+    }));
+    console.log(JSON.stringify({ timing }));
+    assert(timing.renderedFrames > 0, 'Battle stopped submitting frames');
     assert.deepEqual(errors, []);
-    await fs.writeFile(path.join(output, 'browser.json'), JSON.stringify({ base, results, errors }, null, 2));
+    await fs.writeFile(path.join(output, 'browser.json'), JSON.stringify({ base, browser: browser.version(), results, timing, errors }, null, 2));
   } finally { await browser.close(); server.closeAllConnections(); await new Promise(r => server.close(r)); }
 })().catch(error => { console.error(error); process.exitCode = 1; });

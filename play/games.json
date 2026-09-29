@@ -63,7 +63,7 @@
         ]
       },
       "sourceCommit": "f880cf1582ccda1e9aae945cea72e2a5159514f5",
-      "browserNotice": "WebGPU版です。元の氷VFXを使用し、通知ウィンドウはゲーム画面内に表示しています。",
+      "browserNotice": "演出優先版（WebGPU）です。元の氷VFXを使用し、通知ウィンドウはゲーム画面内に表示します。動きが重い場合は描画モードを「動作優先」に変更してください。",
       "fallback": {
         "build": {
           "loaderUrl": "builds/v-link-battle/webgl/Build/5336a4b2c43054286fd70b1faa467eee.loader.js",
@@ -159,7 +159,7 @@
           }
         ],
         "downloadBytes": 281561126,
-        "browserNotice": "互換版で起動しています。通知ウィンドウはゲーム画面内に表示し、一部のエフェクトは簡易表示になります。"
+        "browserNotice": "動作優先版（WebGL）です。一部のエフェクトは簡易表示になり、通知ウィンドウはゲーム画面内に表示されます。"
       },
       "downloadBytes": 301469910,
       "integrity": [

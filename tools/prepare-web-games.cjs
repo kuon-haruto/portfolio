@@ -33,7 +33,7 @@ async function preserveWebGL(previous, id) {
     for (const { asset, bytes } of verified) await fs.writeFile(path.join(destination, asset.file), bytes);
   }
   return { build, integrity: existing.integrity, downloadBytes: existing.downloadBytes,
-    browserNotice: '互換版で起動しています。通知ウィンドウはゲーム画面内に表示し、一部のエフェクトは簡易表示になります。' };
+    browserNotice: '動作優先版（WebGL）です。一部のエフェクトは簡易表示になり、通知ウィンドウはゲーム画面内に表示されます。' };
 }
 
 async function prepare() {
@@ -107,7 +107,7 @@ async function prepare() {
     games.push({ id, title, genre, description, objective, duration, teamSize, howToPlay,
       icon: '../files/game-icons/' + icon, build, sourceCommit: source.commit,
       ...(id === 'v-link-battle' ? { browserNotice: fallback
-        ? 'WebGPU版です。元の氷VFXを使用し、通知ウィンドウはゲーム画面内に表示しています。'
+        ? '演出優先版（WebGPU）です。元の氷VFXを使用し、通知ウィンドウはゲーム画面内に表示します。動きが重い場合は描画モードを「動作優先」に変更してください。'
         : 'Web版では通知ウィンドウをゲーム画面内に表示し、一部のエフェクトを簡易表示しています。' } : {}),
       ...(fallback ? { fallback } : {}),
       downloadBytes: integrity.reduce((total, file) => total + file.bytes, 0), integrity });

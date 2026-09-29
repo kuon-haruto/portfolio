@@ -3,6 +3,8 @@ const { test, before, after } = require('node:test');
 const { chromium } = require('../launcher/node_modules/playwright');
 const { createServer } = require('../tools/web-test-server.cjs');
 const { createHash } = require('node:crypto');
+const fs = require('node:fs/promises');
+const path = require('node:path');
 let server, browser, base;
 
 before(async () => {
@@ -95,6 +97,7 @@ test('Bug Hunter uses responsive portrait rendering and honest prototype metadat
     await page.goto(base + '/play/bug-hunter/');
     await page.waitForFunction(() => document.getElementById('player-stage').dataset.state === 'ready');
     assert.equal(await page.evaluate(() => window.testConfig.matchWebGLToCanvasSize), true);
+    assert.equal(await page.locator('#renderer-controls').isVisible(), false);
     const stage = await page.locator('#player-stage').boundingBox();
     assert(stage.height > stage.width);
     assert.match(await page.locator('#game-meta').textContent(), /プロトタイプ/);
@@ -302,7 +305,7 @@ for (const mode of ['success', 'missing', 'corrupt']) {
   });
 }
 
-for (const mode of ['available', 'missing', 'rejected', 'forced', 'failed']) {
+for (const mode of ['default', 'unknown', 'available', 'missing', 'rejected', 'forced', 'failed', 'switch', 'cached']) {
   test(`WebGPU selection and compatibility recovery: ${mode}`, async () => {
     const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
     try {
@@ -314,11 +317,18 @@ for (const mode of ['available', 'missing', 'rejected', 'forced', 'failed']) {
         browserNotice: '互換版・一部のエフェクトは簡易表示', downloadBytes: 1024 };
       const requests = [];
       await page.addInitScript(mode => {
+        window.adapterRequests = 0;
         Object.defineProperty(navigator, 'gpu', { value: mode === 'missing' ? undefined : { requestAdapter: async () => {
+          window.adapterRequests++;
           if (mode === 'rejected') throw new Error('GPU unavailable');
           return {};
         } } });
       }, mode);
+      if (mode === 'cached') await page.route('**/play/v-link-battle/', async route => {
+        const response = await route.fetch();
+        const html = (await response.text()).replace(/<div id="renderer-controls"[\s\S]*?<\/div>/, '');
+        await route.fulfill({ response, body: html });
+      });
       await page.route('**/games.json', route => route.fulfill({ json: manifest }));
       await page.route('**/*.loader.js', route => {
         const gpu = route.request().url().endsWith('gpu.loader.js');
@@ -327,7 +337,9 @@ for (const mode of ['available', 'missing', 'rejected', 'forced', 'failed']) {
           ? 'window.createUnityInstance = async () => { throw new Error("GPU runtime error"); };'
           : 'window.createUnityInstance = async () => ({});' });
       });
-      await page.goto(base + '/play/v-link-battle/' + (mode === 'forced' ? '?renderer=webgl' : ''));
+      const query = mode === 'forced' ? '?renderer=webgl' : mode === 'unknown' ? '?renderer=invalid'
+        : ['default', 'switch', 'cached'].includes(mode) ? '' : '?renderer=webgpu';
+      await page.goto(base + '/play/v-link-battle/' + query);
       await page.waitForFunction(() => ['ready', 'error'].includes(document.querySelector('#player-stage').dataset.state));
       if (mode === 'failed') {
         await page.locator('#retry-webgl').click();
@@ -335,10 +347,36 @@ for (const mode of ['available', 'missing', 'rejected', 'forced', 'failed']) {
         await page.waitForFunction(() => document.querySelector('#player-stage').dataset.state === 'ready');
         assert.deepEqual(requests, ['webgpu', 'webgl']);
       } else assert.deepEqual(requests, [mode === 'available' ? 'webgpu' : 'webgl']);
+      assert.equal(await page.evaluate(() => window.adapterRequests), ['available', 'rejected'].includes(mode) ? 1 : 0);
       assert.equal(await page.locator('#player-stage').getAttribute('data-renderer'), mode === 'available' ? 'webgpu' : 'webgl');
+      if (mode !== 'cached') assert.equal(await page.locator('#renderer-mode').inputValue(), mode === 'available' ? 'webgpu' : 'webgl');
       assert.equal(await page.locator('#retry-webgl').isVisible(), false);
       if (mode !== 'available') assert.match(await page.locator('#player-notice').textContent(), /互換版/);
+      if (['missing', 'rejected'].includes(mode)) assert.match(await page.locator('#player-notice').textContent(), /利用できないため/);
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
+      if (mode === 'switch') {
+        for (const renderer of ['webgpu', 'webgl']) {
+          await page.locator('#renderer-mode').selectOption(renderer);
+          await page.waitForURL('**/?renderer=' + renderer);
+          await page.waitForFunction(() => document.querySelector('#player-stage').dataset.state === 'ready');
+          assert.equal(await page.locator('#player-stage').getAttribute('data-renderer'), renderer);
+          assert.equal(await page.locator('#renderer-mode').inputValue(), renderer);
+          assert.equal(await page.locator('#play-prompt').isVisible(), true);
+        }
+        assert.deepEqual(requests, ['webgl', 'webgpu', 'webgl'], 'Only the selected build is downloaded on each visit');
+        await page.reload();
+        await page.waitForFunction(() => document.querySelector('#player-stage').dataset.state === 'ready');
+        assert.equal(await page.locator('#player-stage').getAttribute('data-renderer'), 'webgl');
+        const output = path.join(__dirname, '../launcher/test-output/web');
+        await fs.mkdir(output, { recursive: true });
+        for (const width of [320, 390, 1440]) {
+          await page.setViewportSize({ width, height: 900 });
+          assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
+          const select = await page.locator('#renderer-mode').boundingBox();
+          assert(select.x >= 0 && select.x + select.width <= width);
+          await page.screenshot({ path: path.join(output, `vlink-renderer-controls-${width}.png`), fullPage: true });
+        }
+      }
     } finally { await page.close(); }
   });
 }

@@ -302,10 +302,33 @@ must not be presented as a guarantee of smooth or constant game FPS.
 This agrees with Chrome's documented
 [Windows GPU-selection limitations](https://developer.chrome.com/docs/web-platform/webgpu/troubleshooting-tips#windows-specific_limitations):
 the browser's allocated GPU is reused, and the page's `powerPreference` cannot
-switch it there. Do not hide this by forcing the faithful player into WebGL.
-The real GPU requirement and any compatibility choice must remain explicit.
+switch it there. The real GPU requirement and any compatibility choice must
+remain explicit; a WebGL run does not verify original WebGPU effect fidelity.
 Use `$env:VLINK_TEST_GPU='high-performance'` before the smoke-test command to
 repeat the discrete-GPU test; omit it to test normal browser selection.
+
+## Motion-Priority Default
+
+Following the user's severe-stutter report, the wrapper defaults to the existing
+WebGL compatibility build instead of treating WebGPU availability as a performance
+check. This changes only build selection, not either payload or the original Unity
+project. The visible selector labels WebGL as motion-priority with simplified
+effects, and WebGPU as original-effects/high-load. Selecting a mode reloads into
+`?renderer=webgl` or `?renderer=webgpu`; no persistent high-load preference is saved.
+Original WebGPU assets and the fidelity test remain available unchanged.
+
+The default path makes no WebGPU adapter request and downloads only the selected
+build. An unsupported explicit WebGPU choice falls back visibly, and successful
+but slow WebGPU sessions can now switch modes without requiring a load failure.
+The fixed 1920x1080 drawing buffer is preserved to avoid clipping the original UI.
+`tests/vlink-ice-smoke.cjs` exercises the default path on normal browser settings
+and records main-canvas draw submissions per animation interval separately from
+the browser callback count. See `launcher/test-output/vlink-ice/browser.json`.
+The local retest on normal Intel UHD/D3D11 recorded 391 rendered intervals in
+10.011 seconds (about 39.1/s), a 30.4 ms 95th-percentile interval and no intervals
+over 100 ms during that sample. Nine attack attempts also exercised the simplified
+ice renderer. This is a local observation with a live NPC, not a guaranteed FPS
+or a claim that WebGL matches the original VFX.
 
 ## Public Verification
 

@@ -39,6 +39,13 @@
           <button id="fullscreen" class="icon-button" type="button" aria-label="全画面でプレイ" title="全画面でプレイ" disabled><svg class="icon" aria-hidden="true"><use href="#icon-fullscreen"></use></svg></button>
         </div>
       </div>
+      <div id="renderer-controls" class="renderer-controls" hidden>
+        <label for="renderer-mode">描画モード</label>
+        <select id="renderer-mode" title="変更するとゲームが再起動します">
+          <option value="webgl">動作優先（簡易エフェクト）</option>
+          <option value="webgpu">演出優先（元のエフェクト・高負荷）</option>
+        </select>
+      </div>
       <div id="player-stage" class="player-stage" data-state="loading">
         <canvas id="game-canvas" width="1920" height="1080" tabindex="0" aria-label="ゲーム画面"></canvas>
         <div id="play-prompt" class="play-prompt" hidden>
@@ -54,7 +61,7 @@
           <p id="loading-size"></p>
           <p id="game-error" hidden></p>
           <button id="retry" type="button" hidden><svg class="icon" aria-hidden="true"><use href="#icon-reload"></use></svg>再試行</button>
-          <button id="retry-webgl" type="button" hidden><svg class="icon" aria-hidden="true"><use href="#icon-monitor"></use></svg>互換版で再試行</button>
+          <button id="retry-webgl" type="button" hidden><svg class="icon" aria-hidden="true"><use href="#icon-monitor"></use></svg>動作優先で再試行</button>
         </div>
       </div>
       <p id="fullscreen-notice" class="player-notice" role="alert" hidden></p>
