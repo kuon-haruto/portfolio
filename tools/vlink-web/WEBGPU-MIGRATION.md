@@ -55,8 +55,8 @@ build, followed by the TMP startup check and actual-browser smoke test.
 - [x] Review the nine VFX prefabs' fixed-step silhouettes/colors, with live-time limitations recorded below.
 - [x] Check character shaders, selection masking, exercised battle actions and three fullscreen sizes.
 - [x] Handle unsupported browsers honestly and retain an appropriate working path.
-- [ ] Publish only validated artifacts and verify the public player.
-- [ ] Consolidate the reproducible source changes and remove disposable build data.
+- [x] Publish only validated artifacts and verify the public player.
+- [x] Consolidate the reproducible source changes and remove disposable build data.
 
 `PortfolioVfxReference.Begin` captures nine original effect prefabs using their
 actual VisualEffect components. Set `PORTFOLIO_VFX_REFERENCE_OUTPUT` to an absolute
@@ -307,13 +307,39 @@ The real GPU requirement and any compatibility choice must remain explicit.
 Use `$env:VLINK_TEST_GPU='high-performance'` before the smoke-test command to
 repeat the discrete-GPU test; omit it to test normal browser selection.
 
-## Remaining Fidelity Work
+## Public Verification
+
+Commit `bebf4893e8add29b2d540ff22e754196b840ebf3` was published successfully by
+[GitHub Pages run 36543529860](https://github.com/kuon-haruto/portfolio/actions/runs/36543529860).
+The public `play/games.json` matches the local verified manifest. The actual
+[published player](https://kuon-haruto.github.io/portfolio/play/v-link-battle/)
+passed the 20-view WebGPU smoke test in Edge 154.0.4258.37 on the NVIDIA adapter:
+46 compute modules, 147,105 dispatches, four fur renderers, and zero runtime/GPU
+errors or device losses. The tested selection, attacks and fullscreen sizes are
+the same as the local reconstruction test; this was not a redirected local build.
+The published WebGL compatibility URL also passed the actual-game selection-mask
+test at widths 1440 and 390, including desktop fullscreen. Both held panels and
+heads were visible, legs were clipped, stencil writer/reader states were recorded,
+and no runtime errors occurred. Its binary payload remains byte-identical to the
+previously published WebGL game, relocated to the explicit compatibility path.
+
+Completed diagnostic players (`v-link-battle-vfx-check` and
+`v-link-battle-fur-check`) and the temporary reconstruction script/recovery patch
+were removed after validation: 396,765,249 bytes of files by logical size.
+Comparison PNGs/reports, the original project, the one current migration cache,
+the current full build and the WebGL compatibility payload remain. Diagnostic
+players can be regenerated with the documented build commands. The cleanup
+record is `launcher/test-output/vlink-cleanup.json`.
+
+## Known Limits
 
 - Preserve the original animated slash/storm texture behavior. Global shader
   time is not frozen by fixed-step VFX simulation; image-phase differences must
   not be hidden by removing the original animation.
-- Finish the broader VFX/gameplay review and public-player validation. The new
-  fur checks do not prove all effects or all target hardware are equivalent.
+- The nine-prefab comparisons and exercised gameplay paths do not prove pixel
+  identity for every animation frame or equivalent performance on all hardware.
+  Native Windows desktop windows remain in-canvas adaptations, as documented
+  in the WebGL/native-window audit; browsers do not expose the original Win32 API.
 - Source reconstruction passed with existing import/package caches retained.
   An empty-cache installation is not claimed. The manifest guard accepts
   equivalent JSON ordering without rewriting it, but rejects unknown dependency
