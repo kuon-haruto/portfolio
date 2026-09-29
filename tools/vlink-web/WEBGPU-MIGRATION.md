@@ -330,6 +330,16 @@ over 100 ms during that sample. Nine attack attempts also exercised the simplifi
 ice renderer. This is a local observation with a live NPC, not a guaranteed FPS
 or a claim that WebGL matches the original VFX.
 
+The published motion-priority wrapper was verified after Pages deployment of
+`4d2439a` (run `36546910450`, success). Public HTML and JS exposed the selector
+and the new default. The final public Edge/Intel retest observed all nine ice
+attack attempts and no runtime errors, with 228 rendered intervals over 10.005 s
+(about 22.8/s), a 72.7 ms 95th-percentile interval and two intervals over 100 ms.
+This variability means the change is a lower-load default, not a 60 FPS guarantee
+or an optimization of the original WebGPU payload. The live-NPC smoke test now
+retries an interrupted attack up to three times rather than depending on a single
+fixed input timing; the same six-of-nine rendering assertion is retained.
+
 ## Public Verification
 
 Commit `bebf4893e8add29b2d540ff22e754196b840ebf3` was published successfully by

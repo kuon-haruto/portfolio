@@ -69,10 +69,17 @@ const output = path.join(__dirname, '../launcher/test-output/vlink-ice');
     ];
     for (const move of moves) {
       const before = await page.evaluate(() => window.__iceRendering.draws);
-      for (const key of move.keys) await page.keyboard.down(key);
-      await page.waitForTimeout(140);
-      for (const key of [...move.keys].reverse()) await page.keyboard.up(key);
-      await page.waitForTimeout(move.wait);
+      let attempts = 0;
+      // Live NPC hits can interrupt an input; retry it without changing game state.
+      do {
+        attempts++;
+        for (const key of move.keys) await page.keyboard.down(key);
+        await page.waitForTimeout(140);
+        for (const key of [...move.keys].reverse()) await page.keyboard.up(key);
+        await page.waitForTimeout(move.wait);
+        if (await page.evaluate(() => window.__iceRendering.draws) > before) break;
+        await page.waitForTimeout(1500);
+      } while (attempts < 3);
       const bytes = await page.screenshot();
       await fs.writeFile(path.join(output, move.name + '-web.png'), bytes);
       const png = PNG.sync.read(bytes);
@@ -82,13 +89,10 @@ const output = path.join(__dirname, '../launcher/test-output/vlink-ice');
         if (b > 120 && g > 100 && b > r * 1.3 && g > r * 1.3) cyan++;
       }
       const rendering = await page.evaluate(() => window.__iceRendering);
-      results.push({ move: move.name, iceDraws: rendering.draws - before, cyanPixels: cyan });
+      results.push({ move: move.name, attempts, iceDraws: rendering.draws - before, cyanPixels: cyan });
       console.log(JSON.stringify(results.at(-1)));
       await page.waitForTimeout(1000);
     }
-    assert((await page.evaluate(() => window.__iceRendering.programs)) > 0, 'Web-compatible ice shader was never compiled');
-    assert(results.filter(r => r.iceDraws > 0).length >= 6, 'Ice did not render repeatedly during combat');
-    assert(results.every(r => r.cyanPixels > 100), 'Battle canvas lost its rendered content');
     const timing = await page.evaluate(() => new Promise(resolve => {
       const canvas = document.querySelector('#game-canvas');
       const gl = canvas.getContext('webgl2');
@@ -117,8 +121,12 @@ const output = path.join(__dirname, '../launcher/test-output/vlink-ice');
       requestAnimationFrame(sample);
     }));
     console.log(JSON.stringify({ timing }));
+    const icePrograms = await page.evaluate(() => window.__iceRendering.programs);
+    await fs.writeFile(path.join(output, 'browser.json'), JSON.stringify({ base, browser: browser.version(), results, icePrograms, timing, errors }, null, 2));
+    assert(icePrograms > 0, 'Web-compatible ice shader was never compiled');
+    assert(results.filter(r => r.iceDraws > 0).length >= 6, 'Ice did not render repeatedly during combat');
+    assert(results.every(r => r.cyanPixels > 100), 'Battle canvas lost its rendered content');
     assert(timing.renderedFrames > 0, 'Battle stopped submitting frames');
     assert.deepEqual(errors, []);
-    await fs.writeFile(path.join(output, 'browser.json'), JSON.stringify({ base, browser: browser.version(), results, timing, errors }, null, 2));
   } finally { await browser.close(); server.closeAllConnections(); await new Promise(r => server.close(r)); }
 })().catch(error => { console.error(error); process.exitCode = 1; });
