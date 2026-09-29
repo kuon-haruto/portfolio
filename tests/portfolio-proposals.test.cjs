@@ -109,6 +109,7 @@ test('new work cards show verified production details and playable destinations'
     const metadata = await parking.locator('.meta').innerText();
     for (const detail of ['開発環境：Unity 6', '制作人数：4人', '制作期間：3日間', '担当：企画立案 / 整理 / 画像作成 / SE']) assert(metadata.includes(detail));
     assert.equal(await parking.locator('.work-play-link').getAttribute('href'), 'https://unityroom.com/games/sliding-space-parking');
+    assert.equal(await parking.locator('.work-play-link').innerText(), 'すべる宇宙駐車場をプレイ');
     assert.match(await parking.locator('.work-play-link').getAttribute('rel'), /noopener/);
     assert.doesNotMatch(await page.locator('body').innerText(), /試作|プロトタイプ/);
   } finally { await page.close(); }
