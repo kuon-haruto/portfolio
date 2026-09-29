@@ -255,6 +255,15 @@ h1, h2, h3 { text-wrap: pretty; }
 
 .work-thumb { min-height: 190px; }
 .work-thumb h3 { font-size: 1.45rem; line-height: 1.55; }
+.work-thumb-bug-hunter { background: #246449; }
+.work-thumb-space-parking { background: #22536b; }
+.work-thumb-bug-hunter::before, .work-thumb-space-parking::before,
+.work-thumb-bug-hunter::after, .work-thumb-space-parking::after { content: none; }
+.work-game-heading { display: grid; grid-template-columns: 64px minmax(0, 1fr); align-items: center; gap: 14px; min-height: 75px; }
+.work-game-heading img { width: 64px; height: 64px; object-fit: contain; border-radius: 8px; }
+.work-game-heading > span { min-width: 0; word-break: keep-all; overflow-wrap: anywhere; }
+.work-game-preview { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; object-fit: contain; background: #111; }
+.work-game-preview + .work-body li { word-break: auto-phrase; overflow-wrap: break-word; text-wrap: pretty; }
 .app-icon { width: 32px; height: 32px; flex-basis: 32px; padding: 4px; }
 .tool-head span { line-height: 1.6; }
 .contact-card p { overflow-wrap: anywhere; }

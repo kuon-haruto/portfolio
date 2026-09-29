@@ -134,8 +134,7 @@ class PortfolioTests(unittest.TestCase):
                     self.assertIn(description, ids)
         self.assertIn("未署名のアプリ", self.html)
 
-    def test_six_games_have_direct_browser_links(self):
-        self.assertNotIn("unityroom.com/games/", self.html)
+    def test_seven_games_have_direct_browser_links(self):
         self.assertNotIn("プレイURL", self.html)
         links = [
             attrs["href"] for tag, attrs in self.document.elements
@@ -146,7 +145,7 @@ class PortfolioTests(unittest.TestCase):
         self.assertEqual(set(links), {
             f"https://kuon-haruto.github.io/portfolio/play/{game}/" for game in
             ("line-boundary", "hanten-assassination", "teruteru-wars", "futago", "v-link-battle", "bug-hunter")
-        })
+        } | {"https://unityroom.com/games/sliding-space-parking"})
         for file in ("index.html", "scripts/main.js", "scripts/profile-data.js"):
             with self.subTest(file=file):
                 source = (ROOT / file).read_text(encoding="utf-8")
@@ -158,20 +157,40 @@ class PortfolioTests(unittest.TestCase):
                 source = (ROOT / file).read_text(encoding="utf-8")
                 self.assertNotRegex(source, "試作|プロトタイプ")
 
-    def test_gallery_contains_six_games(self):
+    def test_gallery_contains_seven_games(self):
         hero = (ROOT / "src/sections/hero.html").read_text(encoding="utf-8")
         document = Document(hero)
         links = [
             attrs["href"] for tag, attrs in document.elements
             if tag == "a" and attrs.get("class") == "game-icon-link"
         ]
-        self.assertEqual(len(set(links)), 6)
+        self.assertEqual(len(links), 7)
+        self.assertEqual(len(set(links)), 7)
+        self.assertIn("ゲーム作品 <strong>7</strong>", hero)
         self.assertIn("#featured-works", links)
         self.assertIn("files/game-icons/v-link-battle.png", hero)
         self.assertIn("#game-bug-hunter", links)
         self.assertIn("files/game-icons/bug-hunter.png", hero)
+        self.assertIn("#game-sliding-space-parking", links)
+        self.assertIn("files/game-icons/sliding-space-parking.png", hero)
         self.assertNotIn("hero-scene", hero)
         self.assertNotIn("v-link-battle.jpg", hero)
+
+    def test_new_games_are_in_works_and_proposal_is_preserved(self):
+        works = Document((ROOT / "src/sections/works.html").read_text(encoding="utf-8"))
+        cards = {
+            attrs["id"] for tag, attrs in works.elements
+            if tag == "article" and "work-detail" in attrs.get("class", "").split()
+        }
+        self.assertEqual(len(cards), 6)
+        self.assertIn("game-bug-hunter", cards)
+        self.assertIn("game-sliding-space-parking", cards)
+        proposals = (ROOT / "src/sections/proposals.html").read_text(encoding="utf-8")
+        self.assertIn('id="proposal-bug-hunter"', proposals)
+        self.assertIn('href="files/mushi-shooting.pdf"', proposals)
+        profile = (ROOT / "scripts/profile-data.js").read_text(encoding="utf-8")
+        self.assertIn("計7作品", profile)
+        self.assertIn("ゲームライブラリの6作品", profile)
 
 
 if __name__ == "__main__":
