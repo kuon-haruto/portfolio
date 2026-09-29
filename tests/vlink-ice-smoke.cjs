@@ -45,7 +45,7 @@ const output = path.join(__dirname, '../launcher/test-output/vlink-ice');
       }
     });
     await fs.mkdir(output, { recursive: true });
-    await page.goto(new URL('v-link-battle/', base).href);
+    await page.goto(new URL('v-link-battle/?renderer=webgl', base).href);
     await page.locator('#start-fullscreen').waitFor({ timeout: 180000 });
     await page.locator('#start-fullscreen').click();
     await page.waitForTimeout(6500);

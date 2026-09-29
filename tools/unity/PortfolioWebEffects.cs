@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.VFX;
 
-// VFX Graph requires compute shaders. Web builds use CPU particles instead.
+// WebGL needs replacements; WebGPU preserves the original compute-based graphs.
 public sealed class PortfolioWebEffects : IDisposable
 {
     private readonly Dictionary<string, byte[]> originals = new Dictionary<string, byte[]>();

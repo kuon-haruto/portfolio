@@ -4,6 +4,7 @@ const fs = require('node:fs/promises');
 const path = require('node:path');
 const os = require('node:os');
 const { execFileSync } = require('node:child_process');
+const { createHash } = require('node:crypto');
 
 test('a V-Link-only update preserves every other published game', async () => {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), 'portfolio-package-test-'));
@@ -30,6 +31,24 @@ test('a V-Link-only update preserves every other published game', async () => {
     assert.equal(games[0].integrity.length, 4);
     for (const original of previous.slice(1)) assert.deepEqual(games.find(g => g.id === original.id), original);
     for (const id of ids) assert.match(await fs.readFile(path.join(root, 'play', id, 'index.html'), 'utf8'), /start-fullscreen/);
+    const legacy = games[0];
+    await write('output/v-link-battle/portfolio-build.json', { graphicsApi: 'WebGPU', originalVfxComponents: 14, simplifiedEffects: 0 });
+    const packageGPU = () => execFileSync(process.execPath, [path.join(root, 'tools/prepare-web-games.cjs'), path.join(root, 'output'), '--ids=v-link-battle'], { stdio: 'pipe' });
+    packageGPU();
+    const gpu = JSON.parse(await fs.readFile(path.join(root, 'play/games.json'), 'utf8')).games[0];
+    assert.equal(gpu.build.graphicsApi, 'WebGPU');
+    assert.deepEqual(gpu.fallback.integrity, legacy.integrity);
+    assert.equal(gpu.fallback.downloadBytes, legacy.downloadBytes);
+    assert.match(gpu.fallback.build.loaderUrl, /\/webgl\/Build\//);
+    assert.equal(gpu.fallback.build.streamingAssetsUrl, legacy.build.streamingAssetsUrl);
+    for (const asset of gpu.fallback.integrity) {
+      const bytes = await fs.readFile(path.join(root, 'play/builds/v-link-battle/webgl/Build', asset.file));
+      assert.equal(createHash('sha256').update(bytes).digest('hex'), asset.sha256);
+    }
+    packageGPU();
+    assert.deepEqual(JSON.parse(await fs.readFile(path.join(root, 'play/games.json'), 'utf8')).games[0], gpu, 'Repeated GPU updates retain the same compatibility build');
+    await fs.writeFile(path.join(root, 'play/builds/v-link-battle/webgl/Build', gpu.fallback.integrity[0].file), 'corrupted');
+    assert.throws(packageGPU, /failed integrity/);
     assert.throws(() => execFileSync(process.execPath, [path.join(root, 'tools/prepare-web-games.cjs'), '--ids=typo'], { stdio: 'pipe' }), /Unknown game id/);
   } finally { await fs.rm(root, { recursive: true, force: true }); }
 });

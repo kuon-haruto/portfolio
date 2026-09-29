@@ -23,7 +23,12 @@ class WebGameTests(unittest.TestCase):
         self.assertTrue((ROOT / ".nojekyll").is_file())
         for game in self.games:
             if game["id"] in ("teruteru-wars", "futago", "v-link-battle"):
-                self.assertGreater(game["build"].get("simplifiedEffects", 0), 0)
+                if game["build"].get("graphicsApi") == "WebGPU":
+                    self.assertEqual(game["build"]["simplifiedEffects"], 0)
+                    self.assertGreaterEqual(game["build"]["originalVfxComponents"], 14)
+                    self.assertGreater(game["fallback"]["build"]["simplifiedEffects"], 0)
+                else:
+                    self.assertGreater(game["build"].get("simplifiedEffects", 0), 0)
             if game["id"] == "v-link-battle":
                 self.assertIn("ウィンドウ", game["browserNotice"])
                 self.assertEqual(game["icon"], "../files/game-icons/v-link-battle.png")
@@ -39,7 +44,9 @@ class WebGameTests(unittest.TestCase):
         self.assertNotIn("bug-hunter", [g["id"] for g in windows])
 
     def test_build_integrity_and_github_file_limits(self):
-        for game in self.games:
+        variants = self.games + [dict(game["fallback"], id=game["id"] + "-webgl", icon=game["icon"])
+                                 for game in self.games if "fallback" in game]
+        for game in variants:
             with self.subTest(game=game["id"]):
                 folder = (PLAY / game["build"]["loaderUrl"]).parent
                 self.assertEqual({file.name for file in folder.iterdir()}, {file["file"] for file in game["integrity"]})

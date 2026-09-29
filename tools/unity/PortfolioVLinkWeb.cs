@@ -14,7 +14,8 @@ public sealed class PortfolioVLinkWeb : IProcessSceneWithReport
     public void OnProcessScene(Scene scene, BuildReport report)
     {
         if (Environment.GetEnvironmentVariable("PORTFOLIO_WEB_VLINK") != "1" || report == null) return;
-        if (scene.name == "SelectScene") PreserveSelectionStencil(scene);
+        // WebGPU retains original shading/stencil; a separate vertex adapter restores fur.
+        if (scene.name == "SelectScene" && Environment.GetEnvironmentVariable("PORTFOLIO_WEBGPU") != "1") PreserveSelectionStencil(scene);
         foreach (GameObject root in scene.GetRootGameObjects())
         {
             foreach (MonoBehaviour component in root.GetComponentsInChildren<MonoBehaviour>(true))

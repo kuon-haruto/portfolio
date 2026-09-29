@@ -8,6 +8,7 @@
   let started = false;
   let fullscreenPending = false;
   let exitTimer;
+  let canRetryWebGL = false;
   const url = relative => new URL(relative, base).href;
 
   function startPlaying() {
@@ -84,6 +85,7 @@
     $('game-error').textContent = String(error?.message || error);
     $('game-error').hidden = false;
     $('retry').hidden = false;
+    if ($('retry-webgl')) $('retry-webgl').hidden = !canRetryWebGL;
     $('fullscreen').disabled = true;
     $('play-prompt').hidden = true;
   }
@@ -122,6 +124,25 @@
     document.title = game.title + ' | 島本善太';
     $('game-canvas').setAttribute('aria-label', game.title + 'のゲーム画面');
     $('loading-icon').src = url(game.icon);
+    if (game.build.graphicsApi === 'WebGPU') {
+      canRetryWebGL = Boolean(game.fallback);
+      let adapter = null;
+      let timeout;
+      if (new URLSearchParams(window.location.search).get('renderer') !== 'webgl') {
+        try {
+          adapter = await Promise.race([navigator.gpu?.requestAdapter(), new Promise(resolve => {
+            timeout = setTimeout(() => resolve(null), 5000);
+          })]);
+        } catch { /* An unavailable GPU uses the compatibility build. */ }
+        finally { clearTimeout(timeout); }
+      }
+      if (!adapter) {
+        if (!game.fallback) throw new Error('この環境ではWebGPUを利用できません。対応するEdge / Chromeで開いてください。');
+        game = { ...game, ...game.fallback };
+        canRetryWebGL = false;
+      }
+    }
+    $('player-stage').dataset.renderer = game.build.graphicsApi === 'WebGPU' ? 'webgpu' : 'webgl';
     $('loading-size').textContent = '読み込み容量：約' + Math.ceil(game.downloadBytes / 1024 ** 2) + ' MB';
     $('game-description').textContent = game.description;
     $('game-meta').textContent = game.metadataLabel || game.teamSize + '人制作 / ' + game.duration;
@@ -175,6 +196,11 @@
   }
 
   for (const id of ['reload', 'retry']) $(id).addEventListener('click', () => window.location.reload());
+  $('retry-webgl')?.addEventListener('click', () => {
+    const target = new URL(window.location.href);
+    target.searchParams.set('renderer', 'webgl');
+    window.location.assign(target.href);
+  });
   $('fullscreen').addEventListener('click', async () => {
     if (document.fullscreenElement) await document.exitFullscreen().catch(() => {});
     else await enterFullscreen();

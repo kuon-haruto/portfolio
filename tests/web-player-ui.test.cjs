@@ -102,6 +102,29 @@ test('Bug Hunter uses responsive portrait rendering and honest prototype metadat
   } finally { await page.close(); }
 });
 
+test('cached pre-WebGPU HTML still loads and offers normal retry', async () => {
+  const page = await browser.newPage();
+  const errors = [];
+  page.on('pageerror', error => errors.push(error.message));
+  try {
+    await page.route('**/play/line-boundary/', async route => {
+      const response = await route.fetch();
+      const html = (await response.text()).replace(/<button id="retry-webgl"[^\n]+<\/button>/, '');
+      await route.fulfill({ response, body: html });
+    });
+    let attempts = 0;
+    await page.route('**/*.loader.js', route => ++attempts === 1 ? route.abort()
+      : route.fulfill({ contentType: 'text/javascript', body: 'window.createUnityInstance = async () => ({});' }));
+    await page.goto(base + '/play/line-boundary/');
+    assert.equal(await page.locator('#retry-webgl').count(), 0);
+    await page.locator('#retry').waitFor({ state: 'visible' });
+    await page.locator('#retry').click();
+    await page.waitForFunction(() => document.getElementById('player-stage').dataset.state === 'ready');
+    assert.equal(attempts, 2);
+    assert.deepEqual(errors, []);
+  } finally { await page.close(); }
+});
+
 test('runtime errors do not become false successful loads', async () => {
   const page = await browser.newPage();
   try {
@@ -149,7 +172,10 @@ test('all six games offer genuine fullscreen startup and windowed fallback', asy
   const page = await browser.newPage();
   try {
     const manifest = structuredClone(require('../play/games.json'));
-    for (const game of manifest.games) delete game.build.dataParts;
+    for (const game of manifest.games) {
+      delete game.build.dataParts;
+      if (game.fallback) delete game.fallback.build.dataParts;
+    }
     await page.route('**/games.json', route => route.fulfill({ json: manifest }));
     await page.route('**/*.loader.js', route => route.fulfill({ contentType: 'text/javascript', body: 'window.createUnityInstance = async () => ({});' }));
     await page.addInitScript(() => {
@@ -272,6 +298,47 @@ for (const mode of ['success', 'missing', 'corrupt']) {
         assert.equal(await page.evaluate(() => Boolean(window.started)), false);
         assert.equal(await page.locator('#retry').isVisible(), true);
       }
+    } finally { await page.close(); }
+  });
+}
+
+for (const mode of ['available', 'missing', 'rejected', 'forced', 'failed']) {
+  test(`WebGPU selection and compatibility recovery: ${mode}`, async () => {
+    const page = await browser.newPage({ viewport: { width: 390, height: 844 } });
+    try {
+      const manifest = structuredClone(require('../play/games.json'));
+      const game = manifest.games.find(game => game.id === 'v-link-battle');
+      game.build = { ...game.build, graphicsApi: 'WebGPU', loaderUrl: 'builds/test/gpu.loader.js' };
+      delete game.build.dataParts;
+      game.fallback = { build: { ...game.build, graphicsApi: 'OpenGLES3', loaderUrl: 'builds/test/gl.loader.js' },
+        browserNotice: '互換版・一部のエフェクトは簡易表示', downloadBytes: 1024 };
+      const requests = [];
+      await page.addInitScript(mode => {
+        Object.defineProperty(navigator, 'gpu', { value: mode === 'missing' ? undefined : { requestAdapter: async () => {
+          if (mode === 'rejected') throw new Error('GPU unavailable');
+          return {};
+        } } });
+      }, mode);
+      await page.route('**/games.json', route => route.fulfill({ json: manifest }));
+      await page.route('**/*.loader.js', route => {
+        const gpu = route.request().url().endsWith('gpu.loader.js');
+        requests.push(gpu ? 'webgpu' : 'webgl');
+        return route.fulfill({ contentType: 'text/javascript', body: mode === 'failed' && gpu
+          ? 'window.createUnityInstance = async () => { throw new Error("GPU runtime error"); };'
+          : 'window.createUnityInstance = async () => ({});' });
+      });
+      await page.goto(base + '/play/v-link-battle/' + (mode === 'forced' ? '?renderer=webgl' : ''));
+      await page.waitForFunction(() => ['ready', 'error'].includes(document.querySelector('#player-stage').dataset.state));
+      if (mode === 'failed') {
+        await page.locator('#retry-webgl').click();
+        await page.waitForURL('**/?renderer=webgl');
+        await page.waitForFunction(() => document.querySelector('#player-stage').dataset.state === 'ready');
+        assert.deepEqual(requests, ['webgpu', 'webgl']);
+      } else assert.deepEqual(requests, [mode === 'available' ? 'webgpu' : 'webgl']);
+      assert.equal(await page.locator('#player-stage').getAttribute('data-renderer'), mode === 'available' ? 'webgpu' : 'webgl');
+      assert.equal(await page.locator('#retry-webgl').isVisible(), false);
+      if (mode !== 'available') assert.match(await page.locator('#player-notice').textContent(), /互換版/);
+      assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
     } finally { await page.close(); }
   });
 }

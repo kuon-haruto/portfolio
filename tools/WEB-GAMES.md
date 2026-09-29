@@ -10,6 +10,10 @@ itself is opened as a local HTML file from a USB drive.
 V-Link Battle uses the user's current `D:/Vlink` project in an isolated build copy.
 Its native Windows effects are adapted to the game canvas. Details and provenance
 are recorded in [vlink-web/README.md](vlink-web/README.md).
+The original-VFX Unity 6/WebGPU migration and its current validation gates are
+tracked in [vlink-web/WEBGPU-MIGRATION.md](vlink-web/WEBGPU-MIGRATION.md).
+Its build command is `./tools/build-web-games.ps1 -Ids v-link-battle -VLinkWebGPU`;
+do not run the older editor against the migrated temporary project.
 
 ## Build
 
@@ -17,10 +21,12 @@ are recorded in [vlink-web/README.md](vlink-web/README.md).
    Web Build Support, using Unity Hub. A valid Unity license is required.
 2. Prepare the source clones in `launcher/game-sources/` as described in the
    launcher README. Builds use the pinned commits, not uncommitted local edits.
-3. Run `./tools/build-web-games.ps1`. Sources and intermediate outputs are isolated
+3. Run `./tools/build-web-games.ps1` for an initial legacy build. When reusing the
+   migrated V-Link cache, build the other four imported games with `-Ids`, then
+   build V-Link separately with `-Ids v-link-battle -VLinkWebGPU`. Sources and intermediate outputs are isolated
    under `%TEMP%/portfolio-web-builds/` to avoid Unicode toolchain path issues.
    Logs are written to `launcher/test-output/*-web-build.log`.
-4. Run `node tools/prepare-web-games.cjs`. This copies the five builds to `play/`,
+4. Run `node tools/prepare-web-games.cjs` (or `--ids=v-link-battle` for its update only). This copies the selected builds to `play/`,
    records their checksums, and generates the library and individual game pages.
    `--ready` is for local incremental testing only; it includes completed builds.
 5. Run `python build.py`, `python -m unittest discover -s tests`,
@@ -62,9 +68,18 @@ fullscreen mode. This preserves the fixed-pixel UI in the original Unity scenes;
 automatically resizing Unity's drawing buffer clips those menus on small screens.
 Bug Hunter uses its own responsive canvas/UI instead of the fixed drawing buffer.
 
-Teruteru Wars, Futago and V-Link use VFX Graph, which requires compute shaders and does
-not support OpenGL ES. Their Web builds replace those effect components with
-CPU particle effects. V-Link's five ice graphs have dedicated mesh/flipbook
+V-Link's Unity 6 WebGPU build retains all 14 original VisualEffect components,
+the original stencil shaders, and a vertex-based adaptation of the original fur.
+Its manifest records `graphicsApi: WebGPU`, `originalVfxComponents: 14` and zero
+CPU replacements. The page probes a WebGPU adapter before downloading the game;
+unsupported environments use the separately verified WebGL compatibility payload.
+GPU startup failures also offer an explicit compatibility retry. GPU allocation
+and performance vary by browser/hardware; see the migration report's measured
+Intel/NVIDIA results. The WebGPU build is not universally pixel-identical to Windows.
+
+Teruteru Wars, Futago and the retained V-Link WebGL compatibility build use CPU
+replacements because VFX Graph requires compute shaders unavailable with OpenGL ES.
+V-Link's five legacy ice replacements have dedicated mesh/flipbook
 reconstructions using original assets; other graphs retain the small generic
 particles. Original source checkouts are unchanged.
 The editor helper restores the temporary prefab bytes after the
@@ -94,6 +109,13 @@ image containment at widths of 320, 390, 900 and 1440 pixels.
 Screenshots and logs are saved under `launcher/test-output/web/` (not published).
 `node tests/vlink-selection-mask.cjs` checks V-Link's selection mask separately,
 including actual WebGL stencil operations and reference-based image regions.
+It and `tests/vlink-ice-smoke.cjs` explicitly select `?renderer=webgl`.
+`node tests/vlink-webgpu-smoke.cjs` verifies the WebGPU player, including selection
+text/fur, real GPU compute work, four exercised attacks and fullscreen sizing.
+`node tests/vlink-vfx-reference.cjs` captures the separate nine-prefab diagnostic;
+its 36 frames cover all original effect graphs, including effects not triggered
+by the normal attack smoke test. Reproduction commands and visual limitations are
+documented in the migration report.
 This is not a full playthrough or a guarantee of touch-only/mobile gameplay.
 
 `node tests/web-fullscreen-native.cjs` checks all six actual Unity builds in a

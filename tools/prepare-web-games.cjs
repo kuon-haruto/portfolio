@@ -3,6 +3,38 @@ const path = require('node:path');
 const os = require('node:os');
 const { createHash } = require('node:crypto');
 const root = path.join(__dirname, '..');
+const payloadPattern = /^[a-f0-9]{32}\.(loader\.js|data\.unityweb(?:\.part-\d{3})?|framework\.js\.unityweb|wasm\.unityweb)$/;
+
+async function preserveWebGL(previous, id) {
+  if (!previous) throw new Error('A verified WebGL build is required before migrating to WebGPU.');
+  const existing = previous.build.graphicsApi === 'WebGPU' ? previous.fallback : previous;
+  if (!existing?.integrity?.length || existing.build.graphicsApi === 'WebGPU') throw new Error('Missing WebGL compatibility build.');
+  const from = `builds/${id}/${previous.build.graphicsApi === 'WebGPU' ? 'webgl' : 'v1'}/Build/`;
+  const to = `builds/${id}/webgl/Build/`;
+  const remap = value => {
+    if (!value?.startsWith(from) || !payloadPattern.test(value.slice(from.length))) throw new Error('Unexpected compatibility payload path.');
+    return to + value.slice(from.length);
+  };
+  const build = { ...existing.build, graphicsApi: 'WebGL2' };
+  for (const key of ['loaderUrl', 'dataUrl', 'frameworkUrl', 'codeUrl']) build[key] = remap(build[key]);
+  if (build.dataParts) build.dataParts = build.dataParts.map(part => ({ ...part, url: remap(part.url) }));
+  // The original video asset URLs are baked into the game and remain in v1.
+  const destination = path.join(root, 'play', to);
+  const verified = [];
+  for (const asset of existing.integrity) {
+    if (!payloadPattern.test(asset.file)) throw new Error('Unexpected compatibility payload name.');
+    const bytes = await fs.readFile(path.join(root, 'play', from, asset.file));
+    if (bytes.length !== asset.bytes || createHash('sha256').update(bytes).digest('hex') !== asset.sha256)
+      throw new Error(`Compatibility payload failed integrity: ${asset.file}`);
+    verified.push({ asset, bytes });
+  }
+  if (from !== to) {
+    await fs.mkdir(destination, { recursive: true });
+    for (const { asset, bytes } of verified) await fs.writeFile(path.join(destination, asset.file), bytes);
+  }
+  return { build, integrity: existing.integrity, downloadBytes: existing.downloadBytes,
+    browserNotice: '互換版で起動しています。通知ウィンドウはゲーム画面内に表示し、一部のエフェクトは簡易表示になります。' };
+}
 
 async function prepare() {
   const args = process.argv.slice(2);
@@ -21,6 +53,8 @@ async function prepare() {
     const output = path.join(outputRoot, source.id);
     if (args.includes('--ready') && !(await fs.stat(path.join(output, 'portfolio-build.json')).catch(() => null))) continue;
     const metadata = JSON.parse(await fs.readFile(path.join(output, 'portfolio-build.json'), 'utf8'));
+    const fallback = metadata.graphicsApi === 'WebGPU'
+      ? await preserveWebGL(previous.games.find(game => game.id === source.id), source.id) : null;
     const files = await fs.readdir(path.join(output, 'Build'));
     const find = ending => {
       const matching = files.filter(file => file.endsWith(ending));
@@ -62,7 +96,7 @@ async function prepare() {
     const currentFiles = new Set(integrity.map(asset => asset.file));
     for (const old of await fs.readdir(destinationBuild).catch(() => [])) {
       // The manifest and content-hashed payloads are deployed together; Git retains old revisions.
-      if (!currentFiles.has(old) && /^[a-f0-9]{32}\.(loader\.js|data\.unityweb(?:\.part-\d{3})?|framework\.js\.unityweb|wasm\.unityweb)$/.test(old)) {
+      if (!currentFiles.has(old) && payloadPattern.test(old)) {
         await fs.unlink(path.join(destinationBuild, old));
       }
     }
@@ -72,7 +106,10 @@ async function prepare() {
     const { id, title, genre, description, objective, duration, teamSize, howToPlay, icon } = original;
     games.push({ id, title, genre, description, objective, duration, teamSize, howToPlay,
       icon: '../files/game-icons/' + icon, build, sourceCommit: source.commit,
-      ...(id === 'v-link-battle' ? { browserNotice: 'Web版では通知ウィンドウをゲーム画面内に表示し、一部のエフェクトを簡易表示しています。' } : {}),
+      ...(id === 'v-link-battle' ? { browserNotice: fallback
+        ? 'WebGPU版です。元の氷VFXを使用し、通知ウィンドウはゲーム画面内に表示しています。'
+        : 'Web版では通知ウィンドウをゲーム画面内に表示し、一部のエフェクトを簡易表示しています。' } : {}),
+      ...(fallback ? { fallback } : {}),
       downloadBytes: integrity.reduce((total, file) => total + file.bytes, 0), integrity });
     console.log(`Prepared ${id}: ${(games.at(-1).downloadBytes / 1024 ** 2).toFixed(1)} MB`);
   }

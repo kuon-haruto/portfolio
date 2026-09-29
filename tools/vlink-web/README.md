@@ -1,5 +1,10 @@
 # V-Link Web Adaptation
 
+The Unity 6/WebGPU path uses the original VFX and character stencil shaders.
+See [WEBGPU-MIGRATION.md](WEBGPU-MIGRATION.md) for its build and validation status.
+The Unity 2022/WebGL notes below describe the retained compatibility build;
+do not reopen the migrated temporary project with the older editor.
+
 Source: `Allow-hub/VBattle`, commit `f880cf1582ccda1e9aae945cea72e2a5159514f5`,
 Unity 2022.3.50f1. The user's active checkout is `D:/Vlink`; never modify it for a
 Web build. Clone it into `%TEMP%/portfolio-web-builds/sources/v-link-battle`, or

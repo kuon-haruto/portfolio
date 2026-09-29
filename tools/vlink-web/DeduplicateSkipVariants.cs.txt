@@ -1,0 +1,19 @@
+        // Unity 6.3 rejects duplicate skip_variants across passes (upstream lilToon #407).
+        private static string PortfolioUniqueSkipVariants(string shader)
+        {
+            var seen = new System.Collections.Generic.HashSet<string>();
+            var result = new System.Text.StringBuilder();
+            foreach (string line in shader.Replace("\r\n", "\n").Split('\n'))
+            {
+                string trimmed = line.TrimStart();
+                const string prefix = "#pragma skip_variants ";
+                if (!trimmed.StartsWith(prefix, StringComparison.Ordinal)) { result.AppendLine(line); continue; }
+                var remaining = new System.Collections.Generic.List<string>();
+                foreach (string keyword in trimmed.Substring(prefix.Length).Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries))
+                    if (seen.Add(keyword)) remaining.Add(keyword);
+                if (remaining.Count != 0)
+                    result.AppendLine(line.Substring(0, line.Length - trimmed.Length) + prefix + string.Join(" ", remaining));
+            }
+            return result.ToString();
+        }
+
