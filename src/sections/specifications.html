@@ -3,10 +3,31 @@
         <div class="section-heading">
           <div class="label">Specifications</div>
           <h2>仕様書</h2>
-          <p>ルール・画面・システム・数値を具体化した4つの仕様書。企画を制作へつなぐための設計資料です。</p>
+          <p>公開している7作品のルールと確認項目を整理しました。変更前・変更理由・変更後も残し、途中から参加した人にも経緯が伝わる資料を目指しています。</p>
         </div>
 
         <div class="proposal-grid">
+          <article class="proposal-card">
+            <h3 class="proposal-game-heading"><img src="files/game-icons/sliding-space-parking.png" alt="" width="64" height="64" loading="lazy"><span>すべる宇宙駐車場</span></h3>
+            <div class="meta"><span class="tag">Unity</span><span class="tag">制作人数：4人</span></div>
+            <p>慣性移動と駐車判定、得点の条件を整理。タッチ操作への対応と評価方法の変化を記録しています。</p>
+            <ul><li>移動・減速・駐車の条件</li><li>操作別の確認項目</li><li>変更の経緯と未確認事項</li></ul>
+            <p><a href="files/sliding-space-parking_spec.pdf" target="_blank" rel="noopener noreferrer">仕様書を見る</a></p>
+          </article>
+          <article class="proposal-card">
+            <h3 class="proposal-game-heading"><img src="files/game-icons/v-link-battle.png" alt="" width="64" height="64" loading="lazy"><span>V-Link Battle</span></h3>
+            <div class="meta"><span class="tag">Unity</span><span class="tag">制作人数：8人</span></div>
+            <p>対戦操作とWeb版の表示条件を整理。キャラクターの枠表示や攻撃演出を見直した経緯を残しています。</p>
+            <ul><li>選択画面・対戦操作</li><li>描画方式とウィンドウ表示</li><li>移植時の判断と確認項目</li></ul>
+            <p><a href="files/v-link-battle_spec.pdf" target="_blank" rel="noopener noreferrer">仕様書を見る</a></p>
+          </article>
+          <article class="proposal-card">
+            <h3 class="proposal-game-heading"><img src="files/game-icons/bug-hunter.png" alt="" width="64" height="64" loading="lazy"><span>バグハンター</span></h3>
+            <div class="meta"><span class="tag">Unity</span><span class="tag">制作人数：1人</span></div>
+            <p>個体差・育成・指示式バトルを整理。転倒による駆け引きと、操作や全画面表示の改善を記録しています。</p>
+            <ul><li>相性・指示・自動接近</li><li>転倒・追撃・復帰の条件</li><li>要望から変更に至った経緯</li></ul>
+            <p><a href="files/bug-hunter_spec.pdf" target="_blank" rel="noopener noreferrer">仕様書を見る</a></p>
+          </article>
           <!--
           仕様書を追加する場合は、この article をコピーして使ってください。
 
@@ -33,13 +54,14 @@
           -->
 
           <article class="proposal-card">
-            <h3><span class="title-phrase">線のこちら側</span> / <span class="title-phrase">向こう側</span> 仕様書</h3>
-            <p>重力切替システムやステージ構造、プレイヤー挙動などを整理した仕様書。</p>
+            <h3 class="proposal-game-heading"><img src="files/game-icons/line-boundary.png" alt="" width="64" height="64" loading="lazy"><span><span class="title-phrase">線のこちら側</span> / <span class="title-phrase">向こう側</span></span></h3>
+            <div class="meta"><span class="tag">Unity</span><span class="tag">制作人数：4人</span></div>
+            <p>2点を使う境界線と領域効果を整理。自由描画を想定した旧案との差と、引き継ぎ事項を記録しています。</p>
             <ul>
               <li>重力変更ルール</li>
               <li>プレイヤー移動仕様</li>
-              <li>ステージギミック</li>
-              <li>UI設計</li>
+              <li>領域切替・初期化</li>
+              <li>旧案と現行仕様の違い</li>
             </ul>
             <p>
               <a href="files/kochiratomukou_spec.pdf" target="_blank" rel="noopener noreferrer">
@@ -56,13 +78,14 @@
           </article>
 
           <article class="proposal-card">
-            <h3>反転暗殺 仕様書</h3>
-            <p>盤面反転ルールや敵の視界、ステルス判定などを整理した仕様書。</p>
+            <h3 class="proposal-game-heading"><img src="files/game-icons/hanten-assassination.jpeg" alt="" width="64" height="64" loading="lazy"><span>反転暗殺</span></h3>
+            <div class="meta"><span class="tag">Unity</span><span class="tag">制作人数：4人</span></div>
+            <p>移動・反転の回数と勝敗条件を整理。連続操作を想定した旧案と、現在のターン制を分けて説明します。</p>
             <ul>
-              <li>敵視界システム</li>
+              <li>ターン進行と入力受付</li>
               <li>盤面反転仕様</li>
-              <li>暗殺判定</li>
-              <li>ステージ設計</li>
+              <li>勝敗の判定</li>
+              <li>旧案からの変化と確認事項</li>
             </ul>
             <p>
               <a href="files/hanntenn-ansatu_spec.pdf" target="_blank" rel="noopener noreferrer">
@@ -79,13 +102,14 @@
           </article>
 
           <article class="proposal-card">
-            <h3>てるてるウォーズ 仕様書</h3>
-            <p>ユニット性能や状態異常、ウェーブ構成を整理した仕様書。</p>
+            <h3 class="proposal-game-heading"><img src="files/game-icons/teruteru-wars.png" alt="" width="64" height="64" loading="lazy"><span>てるてるウォーズ</span></h3>
+            <div class="meta"><span class="tag">Unity</span><span class="tag">制作人数：4人</span></div>
+            <p>通常・反転モードと拠点の判定を整理。クリア条件の記載を補い、Web向け演出の変更を残しています。</p>
             <ul>
               <li>通常 / 逆さモード</li>
               <li>状態異常仕様</li>
-              <li>敵ウェーブ設計</li>
-              <li>UI・ゲームフロー</li>
+              <li>時間・ウェーブ・拠点耐久</li>
+              <li>変更の背景と動作確認項目</li>
             </ul>
             <p>
               <a href="files/teruteru-wars_spec.pdf" target="_blank" rel="noopener noreferrer">
@@ -102,13 +126,14 @@
           </article>
 
           <article class="proposal-card">
-            <h3>双子 仕様書</h3>
-            <p>リンクシステムのルールや発動順制御、コマンドバトルの進行フローを整理した仕様書。</p>
+            <h3 class="proposal-game-heading"><img src="files/game-icons/futago.png" alt="" width="64" height="64" loading="lazy"><span>双子</span></h3>
+            <div class="meta"><span class="tag">Unity</span><span class="tag">制作人数：6人</span></div>
+            <p>リンクの作成・共有・消費と行動順を整理。リンクの種類を絞った経緯と、伝達上の課題をまとめています。</p>
             <ul>
               <li>リンク設置・発動仕様</li>
               <li>ダメージ / バフリンク仕様</li>
               <li>行動順・発動順制御</li>
-              <li>UI・戦闘フロー</li>
+              <li>旧案と現在の仕様の違い</li>
             </ul>
             <p>
               <a href="files/futago_spec.pdf" target="_blank" rel="noopener noreferrer">

@@ -109,6 +109,8 @@ h1, h2, h3 { text-wrap: pretty; }
 }
 .hero-statement { font-size: 1.55rem; line-height: 1.6; margin: 16px 0 10px; color: #fff; font-weight: 700; }
 .hero-summary { font-size: 0.95rem; color: var(--muted); margin: 0; line-height: 1.9; }
+.hero-release { margin: 8px 0 12px; font-size: 0.95rem; font-weight: 700; }
+.hero-release a { color: var(--teal); }
 .hero-actions { margin-top: 20px; gap: 10px; }
 .hero-download-info { display: flex; flex-wrap: wrap; gap: 4px 16px; margin: 10px 0 0; font-size: 0.8rem; color: var(--muted); }
 .hero-download-info span { display: inline-block; }
@@ -184,10 +186,8 @@ h1, h2, h3 { text-wrap: pretty; }
 .profile-story p { font-size: 0.95rem; line-height: 1.95; margin: 0 0 16px; color: var(--muted); }
 .profile-story p:last-child { margin-bottom: 0; }
 .profile-story .profile-intro { color: var(--text); font-size: 1.05rem; font-weight: 700; }
-.jam-story { border-left: 3px solid var(--teal); }
 .story-label { font-size: 0.85rem; color: var(--teal); font-weight: 700; }
 .jam-story h3 { font-size: 1.2rem; line-height: 1.65; margin: 10px 0 14px; color: #fff; }
-.profile-facts { border-top: 3px solid var(--blue-bright); }
 .profile-name { font-size: 1.5rem; font-weight: 700; margin: 0 0 20px; color: #fff; }
 .profile-name small { display: block; font-size: 0.85rem; color: var(--muted); margin-top: 3px; font-weight: 400; }
 .profile-facts dl { margin: 0; }
@@ -197,14 +197,14 @@ h1, h2, h3 { text-wrap: pretty; }
 .profile-facts dd strong { color: var(--teal); }
 .profile-contact { display: inline-block; margin-top: 12px; }
 .strengths-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; margin-top: 24px; }
-.strengths-grid article { border-top: 3px solid var(--blue-bright); }
-.strengths-grid article:nth-child(2) { border-top-color: var(--teal); }
-.strengths-grid article:nth-child(3) { border-top-color: #c5afff; }
 .strengths-grid article > span { color: var(--blue-bright); font-size: 0.75rem; }
 .strengths-grid h3 { color: #fff; font-size: 1.15rem; margin: 10px 0; }
 .strengths-grid p { font-size: 0.95rem; line-height: 1.85; margin: 0; color: var(--muted); }
 
 .case-section .section-heading h2 { font-size: 2.5rem; }
+.case-game-heading { display: flex; align-items: center; gap: 14px; }
+.case-game-heading img { width: 64px; height: 64px; flex: 0 0 64px; object-fit: contain; }
+.case-game-heading span { min-width: 0; }
 .case-section .section-heading > p { font-size: 1.1rem; color: var(--text); }
 .case-summary {
   display: grid;
@@ -232,6 +232,9 @@ h1, h2, h3 { text-wrap: pretty; }
 .selection-note strong { display: block; color: var(--teal); font-size: 1.2rem; margin-top: 6px; }
 .case-media { margin: 0; border: 1px solid var(--panel-border); border-radius: var(--radius); overflow: hidden; background: var(--surface); }
 .case-media video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; background: #000; }
+.parking-store-media > img { display: block; width: 100%; height: auto; aspect-ratio: 1600 / 740; object-fit: contain; }
+.case-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; }
+.work-body > .app-store-link { margin-bottom: 12px; max-width: 100%; }
 .case-media figcaption {
   display: flex;
   justify-content: space-between;
@@ -255,10 +258,14 @@ h1, h2, h3 { text-wrap: pretty; }
 
 .work-thumb { min-height: 190px; }
 .work-thumb h3 { font-size: 1.45rem; line-height: 1.55; }
+.work-thumb-line-boundary { background: #1f5694; }
+.work-thumb-hanten-assassination { background: #734995; }
+.work-thumb-teruteru-wars { background: #1f7457; }
+.work-thumb-futago { background: #98462a; }
 .work-thumb-bug-hunter { background: #246449; }
 .work-thumb-space-parking { background: #22536b; }
-.work-thumb-bug-hunter::before, .work-thumb-space-parking::before,
-.work-thumb-bug-hunter::after, .work-thumb-space-parking::after { content: none; }
+.work-thumb-sanshoku-bunki { background: #354640; }
+.work-thumb::before, .work-thumb::after { content: none; }
 .work-game-heading { display: grid; grid-template-columns: 64px minmax(0, 1fr); align-items: center; gap: 14px; min-height: 75px; }
 .work-game-heading img { width: 64px; height: 64px; object-fit: contain; border-radius: 8px; }
 .work-game-heading > span { min-width: 0; word-break: keep-all; overflow-wrap: anywhere; }

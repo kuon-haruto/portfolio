@@ -145,6 +145,9 @@ const availableFiles = new Set([
   'files/hanntenn-ansatu_spec.pdf',
   'files/teruteru-wars_spec.pdf',
   'files/futago_spec.pdf',
+  'files/sliding-space-parking_spec.pdf',
+  'files/v-link-battle_spec.pdf',
+  'files/bug-hunter_spec.pdf',
 ]);
 
 const setupFileLinks = () => {
@@ -172,7 +175,7 @@ const guideMessages = {
   '': 'ようこそ！ナビの「プラン」です。ポートフォリオをご案内いたします。',
   about: 'まずはプロフィールです。人柄や強みをぜひご覧ください。',
   'featured-works': 'こちらは注目作品です。実績のあるイチオシ作品で、プレイ動画もご覧いただけます。',
-  works: '制作したゲームの一覧です。V-Link Battleを含む5作品を、アプリをダウンロードせずブラウザーでプレイできます。Windows用の「アプリインストーラー」も用意しています。',
+  works: '制作したゲームの一覧です。ゲームライブラリの6作品に加え、「三色の分岐係」と「すべる宇宙駐車場」はunityroomでプレイできます。各作品のプレイボタンからお進みください。',
   proposals: '企画書はPDFでご覧いただけます。企画の意図まで丁寧にまとめています。',
   specifications: '仕様書コーナーです。設計力はこちらでご確認ください。',
   thinking: '企画の際に大切にしている考え方をまとめています。',

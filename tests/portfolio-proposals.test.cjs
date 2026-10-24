@@ -4,10 +4,47 @@ const fs = require('node:fs/promises');
 const path = require('node:path');
 const { pathToFileURL } = require('node:url');
 const { chromium } = require('../launcher/node_modules/playwright');
+const { PNG } = require('../launcher/node_modules/playwright-core/lib/utilsBundle');
 
 const output = path.join(__dirname, '../launcher/test-output/portfolio');
 const url = process.env.PORTFOLIO_TEST_URL || pathToFileURL(path.join(__dirname, '../index.html')).href;
+const recordedGames = ['line-boundary', 'hanten-assassination', 'teruteru-wars', 'futago'];
 let browser;
+
+test('Sanshoku uses its existing icon and both unityroom games have direct play links', async () => {
+  const page = await browser.newPage({ reducedMotion: 'reduce' });
+  try {
+    await page.goto(url);
+    const game = page.locator('#game-sanshoku-bunki');
+    assert.equal(await game.count(), 1);
+    assert.equal(await page.locator('#game-sliding-space-parking').count(), 1);
+    const text = await game.innerText();
+    for (const value of ['制作人数：5人', 'プランナー', '企画立案', 'システム・ルール設計', 'タスク振り分け', '画像・SEの用意']) assert(text.includes(value));
+    for (const [id, target] of [
+      ['sanshoku-bunki', 'https://unityroom.com/games/sansyokunobunkigakari'],
+      ['sliding-space-parking', 'https://unityroom.com/games/sliding-space-parking'],
+    ]) {
+      const link = page.locator(`#game-${id} .work-play-link`);
+      assert.equal(await link.getAttribute('href'), target);
+      assert.equal(await link.getAttribute('target'), '_blank');
+      assert.match(await link.getAttribute('rel'), /noopener/);
+      // Verify the click destination without loading the third-party game during regression tests.
+      await page.context().route(target, route => route.fulfill({ contentType: 'text/html', body: '<title>Destination</title>' }));
+      const opened = page.waitForEvent('popup');
+      await link.click();
+      const popup = await opened;
+      await popup.waitForLoadState();
+      assert.equal(popup.url(), target);
+      await popup.close();
+    }
+    for (const width of [320, 1440]) {
+      await page.setViewportSize({ width, height: 1000 });
+      await game.scrollIntoViewIfNeeded();
+      await game.locator('img').evaluateAll(images => Promise.all(images.map(img => img.decode())));
+      await game.screenshot({ path: path.join(output, `sanshoku-bunki-${width}.png`), animations: 'disabled', style: '.site-header { visibility: hidden !important; }' });
+    }
+  } finally { await page.close(); }
+});
 
 before(async () => {
   await fs.mkdir(output, { recursive: true });
@@ -46,8 +83,10 @@ test('proposals identify developed games without inventing a development environ
     assert.doesNotMatch(await bug.innerText(), /探索：|育成：|対戦：/);
     assert.equal(await bug.locator('.meta').innerText(), '開発環境：Unity 6');
     assert.doesNotMatch(await page.locator('body').innerText(), /試作|プロトタイプ/);
-    assert.equal(await bug.locator('.prototype-play-link').innerText(), 'ブラウザーでプレイ');
-    assert.equal(await bug.locator('.prototype-play-link').getAttribute('href'), 'https://kuon-haruto.github.io/portfolio/play/bug-hunter/');
+    assert.equal(await bug.locator('a').count(), 1);
+    assert.equal(await bug.locator('a').getAttribute('href'), 'files/mushi-shooting.pdf');
+    assert.doesNotMatch(await bug.innerText(), /ブラウザー?でプレイ/);
+    assert.equal(await page.locator('#game-bug-hunter .work-play-link').getAttribute('href'), 'https://kuon-haruto.github.io/portfolio/play/bug-hunter/');
   } finally { await page.close(); }
 });
 
@@ -99,7 +138,7 @@ test('new work cards show verified production details and playable destinations'
   const page = await browser.newPage();
   try {
     await page.goto(url + '#works');
-    assert.equal(await page.locator('#works .work-detail').count(), 6);
+    assert.equal(await page.locator('#works .work-detail').count(), 7);
     const bug = page.locator('#works #game-bug-hunter');
     assert.equal(await bug.locator('h3').innerText(), 'バグハンター');
     assert.equal(await bug.locator('.work-play-link').getAttribute('href'), 'https://kuon-haruto.github.io/portfolio/play/bug-hunter/');
@@ -107,7 +146,10 @@ test('new work cards show verified production details and playable destinations'
     const parking = page.locator('#works #game-sliding-space-parking');
     assert.equal(await parking.locator('h3').innerText(), 'すべる宇宙駐車場');
     const metadata = await parking.locator('.meta').innerText();
-    for (const detail of ['開発環境：Unity 6', '制作人数：4人', '制作期間：3日間', '担当：企画立案 / 整理 / 画像作成 / SE']) assert(metadata.includes(detail));
+    for (const detail of ['開発環境：Unity 6', '制作人数：4人', '担当：企画立案 / 整理 / 画像作成 / SE']) assert(metadata.includes(detail));
+    for (const [id, count] of [['line-boundary', 4], ['hanten-assassination', 4], ['teruteru-wars', 4], ['futago', 6], ['bug-hunter', 1], ['sliding-space-parking', 4]]) {
+      assert((await page.locator(`#game-${id} .meta`).innerText()).includes(`制作人数：${count}人`));
+    }
     assert.equal(await parking.locator('.work-play-link').getAttribute('href'), 'https://unityroom.com/games/sliding-space-parking');
     assert.equal(await parking.locator('.work-play-link').innerText(), 'すべる宇宙駐車場をプレイ');
     assert.match(await parking.locator('.work-play-link').getAttribute('rel'), /noopener/);
@@ -115,13 +157,13 @@ test('new work cards show verified production details and playable destinations'
   } finally { await page.close(); }
 });
 
-test('new work media, titles and tags fit mobile and desktop widths', async () => {
+test('all work media, titles and tags fit mobile and desktop widths', async () => {
   const page = await browser.newPage();
   try {
     for (const width of [320, 390, 768, 1024, 1440]) {
       await page.setViewportSize({ width, height: 1000 });
       await page.goto(url + '#game-bug-hunter');
-      for (const id of ['game-bug-hunter', 'game-sliding-space-parking']) {
+      for (const id of [...recordedGames.map(id => 'game-' + id), 'game-bug-hunter', 'game-sliding-space-parking']) {
         const card = page.locator('#' + id);
         await card.scrollIntoViewIfNeeded();
         await card.locator('img').evaluateAll(images => Promise.all(images.map(image => image.decode())));
@@ -132,7 +174,7 @@ test('new work media, titles and tags fit mobile and desktop widths', async () =
           const preview = card.querySelector('.work-game-preview');
           return {
             overflow: card.scrollWidth > card.clientWidth,
-            contained: [...card.querySelectorAll('h3, h3 span, img, .tag, .work-play-link')].every(element => {
+            contained: [...card.querySelectorAll('h3, h3 span, img, video, .tag, .work-play-link')].every(element => {
               const r = element.getBoundingClientRect();
               return r.left >= box.left && r.right <= box.right && r.top >= box.top && r.bottom <= box.bottom;
             }),
@@ -143,26 +185,94 @@ test('new work media, titles and tags fit mobile and desktop widths', async () =
         });
         assert(!bounds.overflow && bounds.contained && bounds.separated && bounds.imageLoaded, `${id} at ${width}: ${JSON.stringify(bounds)}`);
         assert(Math.abs(bounds.previewRatio - 16 / 9) < 0.02);
-        assert((await card.locator('.work-play-link').boundingBox()).height <= 60, `${id}: play button should not break mid-word at ${width}px`);
+        const maxButtonHeight = id === 'game-line-boundary' ? 88 : 60;
+        assert((await card.locator('.work-play-link').boundingBox()).height <= maxButtonHeight, `${id}: play button should not break mid-word at ${width}px`);
         if ([320, 1440].includes(width)) {
           await card.screenshot({ path: path.join(output, `${id}-${width}.png`), animations: 'disabled', style: '.site-header { visibility: hidden !important; }' });
         }
       }
+      const featured = page.locator('#featured-works .case-game-heading');
+      await featured.scrollIntoViewIfNeeded();
+      await featured.locator('img').evaluate(image => image.decode());
+      assert(await featured.evaluate(heading => {
+        const box = heading.getBoundingClientRect();
+        const icon = heading.querySelector('img').getBoundingClientRect();
+        const title = heading.querySelector('span').getBoundingClientRect();
+        return heading.scrollWidth <= heading.clientWidth && icon.right + 10 <= title.left && title.right <= box.right;
+      }), `V-Link heading should fit at ${width}px`);
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
     }
   } finally { await page.close(); }
 });
 
-test('all seven game icons circulate and new icons target their work cards', async () => {
+test('recorded previews use matching icons and posters, play correctly and do not download before play', async () => {
+  const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
+  const requests = [];
+  page.on('request', request => requests.push(request.url()));
+  try {
+    await page.goto(url + '#works');
+    assert.equal(await page.locator('#works video.work-game-preview').count(), 4);
+    assert(!requests.some(url => url.includes('/files/videos/')), 'Previews should not download before play');
+    for (const id of recordedGames) {
+      const card = page.locator('#game-' + id);
+      const extension = id === 'hanten-assassination' ? 'jpeg' : 'png';
+      assert.equal(await card.locator('h3 img').getAttribute('src'), `files/game-icons/${id}.${extension}`);
+      const video = card.locator('video');
+      assert.equal(await video.getAttribute('preload'), 'none');
+      assert.equal(await video.getAttribute('autoplay'), null);
+      assert.equal(await video.getAttribute('poster'), `files/images/${id}-gameplay.png`);
+      assert.equal(await video.locator('source').getAttribute('src'), `files/videos/${id}.mp4`);
+      await video.scrollIntoViewIfNeeded();
+      const info = await video.evaluate(async video => {
+        await new Promise((resolve, reject) => {
+          const poster = new Image();
+          poster.onload = resolve;
+          poster.onerror = () => reject(new Error('Poster did not load'));
+          poster.src = video.poster;
+        });
+        video.muted = true;
+        await video.play();
+        return { width: video.videoWidth, height: video.videoHeight, duration: video.duration, controls: video.controls, inline: video.playsInline };
+      });
+      assert.equal(info.width, 960);
+      assert.equal(info.height, 540);
+      assert(info.duration > 4 && info.duration < 90 && info.controls && info.inline, JSON.stringify(info));
+      await page.waitForFunction(id => document.querySelector(`#game-${id} video`).currentTime > 0.1, id);
+      await video.evaluate(video => { video.pause(); video.controls = false; });
+      const frames = [];
+      for (const time of [0.5, info.duration - 1]) {
+        await video.evaluate((video, time) => new Promise(resolve => {
+          video.addEventListener('seeked', resolve, { once: true });
+          video.currentTime = time;
+        }), time);
+        frames.push(PNG.sync.read(await video.screenshot()));
+      }
+      let changed = 0;
+      let light = 0;
+      for (let i = 0; i < frames[0].data.length; i += 16) {
+        if (Math.abs(frames[0].data[i] - frames[1].data[i]) + Math.abs(frames[0].data[i + 1] - frames[1].data[i + 1]) + Math.abs(frames[0].data[i + 2] - frames[1].data[i + 2]) > 40) changed++;
+        if (frames[1].data[i] + frames[1].data[i + 1] + frames[1].data[i + 2] > 90) light++;
+      }
+      const samples = frames[0].data.length / 16;
+      assert(light / samples > 0.05, `${id}: blank video`);
+      assert(changed / samples > 0.001, `${id}: video should show actual gameplay changes`);
+      await video.evaluate(video => { video.controls = true; });
+    }
+    assert.equal(await page.locator('#featured-works .case-game-heading img').getAttribute('src'), 'files/game-icons/v-link-battle.png');
+    assert.equal(await page.locator('#featured-video video source').first().getAttribute('src'), 'files/Vlinkvideo.mp4');
+  } finally { await page.close(); }
+});
+
+test('all eight game icons circulate and new icons target their work cards', async () => {
   const page = await browser.newPage();
   try {
     await page.goto(url);
     const group = page.locator('.game-gallery-group:not(.game-gallery-copy)');
-    assert.equal(await group.locator('a').count(), 7);
-    assert.equal(await page.locator('.game-gallery-copy a').count(), 7);
-    for (const id of ['game-bug-hunter', 'game-sliding-space-parking']) {
+    assert.equal(await group.locator('a').count(), 8);
+    assert.equal(await page.locator('.game-gallery-copy a').count(), 8);
+    for (const id of ['game-bug-hunter', 'featured-parking']) {
       assert.equal(await group.locator(`a[href="#${id}"]`).count(), 1);
-      assert.equal(await page.locator(`#works #${id}`).count(), 1);
+      assert.equal(await page.locator(`#${id}`).count(), 1);
     }
     await group.locator('img').evaluateAll(images => Promise.all(images.map(image => image.decode())));
     const track = page.locator('.game-gallery-track');
@@ -170,5 +280,118 @@ test('all seven game icons circulate and new icons target their work cards', asy
     await page.waitForFunction(previous => getComputedStyle(document.querySelector('.game-gallery-track')).transform !== previous, before);
     assert.equal(await track.evaluate(element => getComputedStyle(element).animationPlayState), 'running');
     assert.equal(await group.locator('img').evaluateAll(images => images.every(image => getComputedStyle(image).animationName === 'none')), true);
+  } finally { await page.close(); }
+});
+
+test('tool icons use valid PNGs and preserve their brand colors', async () => {
+  const page = await browser.newPage({ reducedMotion: 'reduce' });
+  try {
+    await page.goto(url + '#skills');
+    const icons = page.locator('#skills .app-icon');
+    assert.equal(await icons.count(), 15);
+    const sources = await icons.evaluateAll(images => [...new Set(images.map(image => image.getAttribute('src')))]);
+    assert.equal(sources.length, 8);
+    for (const source of sources) {
+      assert(source.endsWith('.png'));
+      const png = PNG.sync.read(await fs.readFile(path.join(__dirname, '..', source)));
+      assert.equal(png.width, 256);
+      let visible = 0;
+      let colored = 0;
+      for (let i = 0; i < png.data.length; i += 4) {
+        const [r, g, b, a] = png.data.subarray(i, i + 4);
+        if (a > 128 && Math.min(r, g, b) < 200) visible++;
+        if (a > 128 && Math.max(r, g, b) - Math.min(r, g, b) > 40) colored++;
+      }
+      assert(visible > 1000, `${source} is blank`);
+      if (!/\/(unity|unrealengine)\.png$/.test(source)) assert(colored > 1000, `${source} lost its color`);
+    }
+    for (const width of [390, 1440]) {
+      await page.setViewportSize({ width, height: 1000 });
+      await icons.evaluateAll(images => Promise.all(images.map(image => image.decode())));
+      assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
+      await page.locator('.tool-bars').screenshot({ path: path.join(output, `tool-colors-${width}.png`), animations: 'disabled', style: '.site-header { visibility: hidden !important; }' });
+    }
+  } finally { await page.close(); }
+});
+
+test('profile panels have consistent borders on phone and desktop', async () => {
+  const page = await browser.newPage({ reducedMotion: 'reduce' });
+  try {
+    for (const width of [390, 1440]) {
+      await page.setViewportSize({ width, height: 1000 });
+      await page.goto(url + '#about');
+      const panels = page.locator('#about .profile-panel, #about .strengths-grid article');
+      const borders = await panels.evaluateAll(elements => elements.map(element => {
+        const style = getComputedStyle(element);
+        return ['Top', 'Right', 'Bottom', 'Left'].map(side => ({
+          width: style[`border${side}Width`], color: style[`border${side}Color`], style: style[`border${side}Style`]
+        }));
+      }));
+      assert.equal(borders.length, 7);
+      for (const edges of borders) for (const edge of edges) {
+        assert.equal(edge.width, '1px');
+        assert.equal(edge.style, 'solid');
+        assert.equal(edge.color, borders[0][0].color);
+      }
+      assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
+      await page.locator('#about .profile-story').screenshot({ path: path.join(output, `profile-borders-${width}.png`), animations: 'disabled', style: '.site-header { visibility: hidden !important; }' });
+    }
+  } finally { await page.close(); }
+});
+
+test('student strengths describe self-study, specifications and completed team work', async () => {
+  const page = await browser.newPage({ reducedMotion: 'reduce' });
+  try {
+    for (const width of [320, 390, 1440]) {
+      await page.setViewportSize({ width, height: 1000 });
+      await page.goto(url + '#about');
+      const strengths = page.locator('#about .strengths-grid');
+      assert.equal(await strengths.locator('article').count(), 3);
+      assert.match(await strengths.innerText(), /自分で学び、柔軟に考える/);
+      assert.match(await strengths.innerText(), /仕様書を作った経験/);
+      assert.match(await strengths.innerText(), /仲間と完成させた経験/);
+      assert.match(await strengths.innerText(), /プランナーの役割を一人で担い/);
+      assert.match(await strengths.innerText(), /状況に合わせて企画を見直す/);
+      assert.doesNotMatch(await page.locator('#about').innerText(), /主体性と完遂力/);
+      assert(await strengths.locator('article').evaluateAll(cards => cards.every(card =>
+        [...card.querySelectorAll('h3, p')].every(element => element.scrollWidth <= element.clientWidth + 1)
+      )));
+      assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
+      if (width !== 320) await strengths.screenshot({ path: path.join(output, `student-strengths-${width}.png`), animations: 'disabled', style: '.site-header { visibility: hidden !important; }' });
+    }
+  } finally { await page.close(); }
+});
+
+test('App Store release is a leading featured work with original assets and mobile-safe links', async () => {
+  const page = await browser.newPage({ reducedMotion: 'reduce' });
+  try {
+    for (const width of [320, 390, 768, 1440]) {
+      await page.setViewportSize({ width, height: 1000 });
+      await page.goto(url + '#featured-parking');
+      const featured = page.locator('#featured-parking');
+      assert.equal(await page.locator('.case-section').count(), 2);
+      assert(await page.evaluate(() => {
+        const sections = [...document.querySelectorAll('main > section')].map(section => section.id);
+        return sections.indexOf('featured-parking') < sections.indexOf('featured-works') && sections.indexOf('featured-works') < sections.indexOf('about');
+      }));
+      assert.equal(await featured.locator('.app-store-link').getAttribute('href'), 'https://apps.apple.com/jp/app/id6816609277');
+      assert.match(await featured.locator('.app-store-link').getAttribute('rel'), /noopener/);
+      assert.match(await featured.innerText(), /2026年10月7日/);
+      assert.match(await featured.locator('.case-role').innerText(), /制作人数：4人/);
+      assert.equal(await featured.locator('h2 img').getAttribute('src'), 'files/game-icons/sliding-space-parking.png');
+      await featured.scrollIntoViewIfNeeded();
+      await featured.locator('img').evaluateAll(images => Promise.all(images.map(image => image.decode())));
+      assert(await featured.evaluate(section => {
+        const box = section.getBoundingClientRect();
+        return [...section.querySelectorAll('h2, img, .button, .selection-note')].every(element => {
+          const r = element.getBoundingClientRect();
+          return r.left >= box.left && r.right <= box.right && element.scrollWidth <= element.clientWidth + 1;
+        });
+      }), `Featured release overflows at ${width}px`);
+      assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
+      if ([390, 1440].includes(width)) {
+        await featured.screenshot({ path: path.join(output, `featured-parking-${width}.png`), animations: 'disabled', style: '.site-header { visibility: hidden !important; }' });
+      }
+    }
   } finally { await page.close(); }
 });
