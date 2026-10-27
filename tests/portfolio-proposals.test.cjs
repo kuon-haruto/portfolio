@@ -52,6 +52,40 @@ before(async () => {
 });
 after(async () => { await browser?.close(); });
 
+test('V-Link offers both editions with explicit limits and responsive explanations', async () => {
+  const page = await browser.newPage({ reducedMotion: 'reduce' });
+  try {
+    await page.goto(url);
+    const section = page.locator('#featured-works');
+    assert.equal(await section.locator('.work-play-link').getAttribute('href'), 'https://kuon-haruto.github.io/portfolio/play/v-link-battle/');
+    assert.equal(await section.locator('.vlink-windows-link').getAttribute('href'), 'https://github.com/kuon-haruto/portfolio/releases/download/launcher-v0.2.0/v-link-battle-1.0.0.zip');
+    assert.equal(await section.locator('.vlink-play-actions a[href="#featured-video"]').count(), 1);
+    const copy = await section.locator('.vlink-editions').innerText();
+    for (const phrase of ['セキュリティ方針', '約724 MB', '未署名', '通信・読み込み', '疑似ウィンドウ', '再現していません', '簡易表示', '完全な表示一致を保証するものではありません']) assert(copy.includes(phrase), phrase);
+    for (const link of await section.locator('.vlink-play-actions a[aria-describedby]').all()) {
+      const id = await link.getAttribute('aria-describedby');
+      assert.equal(await page.locator(`[id="${id}"]`).count(), 1);
+    }
+    // Block the archive request: this checks the destination without downloading an executable.
+    const downloadUrl = await section.locator('.vlink-windows-link').getAttribute('href');
+    let requested = false;
+    await page.route(downloadUrl, route => { requested = true; return route.abort(); });
+    await section.locator('.vlink-windows-link').click();
+    assert(requested);
+    await page.goto(url);
+    for (const width of [320, 390, 768, 1440]) {
+      await page.setViewportSize({ width, height: 1000 });
+      await section.locator('.vlink-editions').scrollIntoViewIfNeeded();
+      const overflow = await section.evaluate(el => [...el.querySelectorAll('.vlink-editions, .vlink-editions *, .vlink-play-actions a')].filter(node => {
+        const box = node.getBoundingClientRect();
+        return box.left < -1 || box.right > innerWidth + 1 || node.scrollWidth > node.clientWidth + 1;
+      }).map(node => node.tagName));
+      assert.deepEqual(overflow, [], `width ${width}`);
+      if ([320, 1440].includes(width)) await section.locator('.vlink-editions').screenshot({ path: path.join(output, `vlink-editions-${width}.png`), animations: 'disabled', style: '.site-header { visibility: hidden !important; }' });
+    }
+  } finally { await page.close(); }
+});
+
 test('proposals identify developed games without inventing a development environment for paper concepts', async () => {
   const page = await browser.newPage({ reducedMotion: 'reduce' });
   try {
@@ -263,24 +297,153 @@ test('recorded previews use matching icons and posters, play correctly and do no
   } finally { await page.close(); }
 });
 
-test('all eight game icons circulate and new icons target their work cards', async () => {
-  const page = await browser.newPage();
+test('eight upright icons auto-orbit even with reduced motion and retain pause and keyboard access', async () => {
+  const page = await browser.newPage({ reducedMotion: 'reduce' });
   try {
     await page.goto(url);
-    const group = page.locator('.game-gallery-group:not(.game-gallery-copy)');
+    const gallery = page.locator('[data-game-gallery]');
+    const group = gallery.locator('.game-gallery-group');
     assert.equal(await group.locator('a').count(), 8);
-    assert.equal(await page.locator('.game-gallery-copy a').count(), 8);
+    assert.equal(await page.locator('.game-gallery-copy').count(), 0);
     for (const id of ['game-bug-hunter', 'featured-parking']) {
       assert.equal(await group.locator(`a[href="#${id}"]`).count(), 1);
       assert.equal(await page.locator(`#${id}`).count(), 1);
     }
     await group.locator('img').evaluateAll(images => Promise.all(images.map(image => image.decode())));
-    const track = page.locator('.game-gallery-track');
-    const before = await track.evaluate(element => getComputedStyle(element).transform);
-    await page.waitForFunction(previous => getComputedStyle(document.querySelector('.game-gallery-track')).transform !== previous, before);
-    assert.equal(await track.evaluate(element => getComputedStyle(element).animationPlayState), 'running');
+    await page.waitForFunction(() => document.querySelector('[data-game-gallery]').classList.contains('is-orbit'));
+    const first = group.locator('li').first();
+    const before = await first.getAttribute('style');
+    await page.waitForFunction(previous => document.querySelector('.game-gallery-group li').getAttribute('style') !== previous, before);
     assert.equal(await group.locator('img').evaluateAll(images => images.every(image => getComputedStyle(image).animationName === 'none')), true);
+    await gallery.locator('.gallery-toggle').click();
+    assert.equal(await gallery.locator('.gallery-toggle').getAttribute('aria-label'), '自動巡回を再開');
+    const paused = await first.getAttribute('style');
+    await page.waitForTimeout(180);
+    assert.equal(await first.getAttribute('style'), paused);
+    for (const width of [320, 390, 768, 1440]) {
+      await page.setViewportSize({ width, height: 1000 });
+      await gallery.scrollIntoViewIfNeeded();
+      await page.waitForTimeout(80);
+      const sizes = await group.locator('.is-in-orbit img').evaluateAll(images => images.map(image => {
+        const rect = image.getBoundingClientRect();
+        return { width: rect.width, left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom };
+      }));
+      assert(Math.max(...sizes.map(rect => rect.width)) / Math.min(...sizes.map(rect => rect.width)) > 1.1, 'perspective size difference');
+      assert(sizes.length >= (width <= 640 ? 2 : 4) && sizes.length <= (width <= 640 ? 3 : 5), `visible window at ${width}`);
+      const rear = await group.locator('.is-rear-orbit').evaluateAll(items => items.map(item => ({
+        opacity: Number(getComputedStyle(item).opacity),
+        blur: parseFloat(item.style.getPropertyValue('--orbit-blur')),
+        width: item.querySelector('img').getBoundingClientRect().width,
+        titleOpacity: getComputedStyle(item.querySelector('a > span:last-child')).opacity,
+        layer: Number(item.style.zIndex),
+      })));
+      assert(rear.length >= 2, `rear works remain visible at ${width}`);
+      for (const item of rear) {
+        assert(item.opacity > 0 && item.opacity <= 0.42);
+        assert(item.blur >= 3);
+        assert(item.width < Math.max(...sizes.map(rect => rect.width)));
+        assert.equal(item.titleOpacity, '0');
+        assert(item.layer < 70);
+      }
+      assert.equal(Math.round((await gallery.boundingBox()).width), width, 'full-width carousel');
+      const fits = await gallery.evaluate(el => {
+        const viewport = el.querySelector('.game-gallery-viewport').getBoundingClientRect();
+        return [...el.querySelectorAll('.is-front .game-icon-art, .is-front .game-icon-link > span:last-child')].every(node => {
+          const box = node.getBoundingClientRect();
+          return box.left >= viewport.left - 1 && box.right <= viewport.right + 1 && box.top >= viewport.top - 1 && box.bottom <= viewport.bottom + 1;
+        });
+      });
+      assert(fits, `icons and visible name must fit the orbit at ${width}`);
+      const painted = await gallery.locator('canvas').evaluate(canvas => {
+        const pixels = canvas.getContext('2d').getImageData(0, 0, canvas.width, canvas.height).data;
+        let count = 0;
+        for (let i = 3; i < pixels.length; i += 4) if (pixels[i] > 0) count++;
+        return count;
+      });
+      assert(painted > 200, 'orbit canvas must not be blank');
+      await gallery.screenshot({ path: path.join(output, `gallery-3d-${width}.png`), animations: 'disabled', style: '.site-header { visibility: hidden !important; }' });
+    }
+    await gallery.locator('.gallery-toggle').click();
+    await page.waitForFunction(previous => document.querySelector('.game-gallery-group li').getAttribute('style') !== previous, paused);
+    for (const reducedMotion of ['no-preference', 'reduce']) {
+      await page.emulateMedia({ reducedMotion });
+      const previous = await first.getAttribute('style');
+      await page.waitForFunction(value => document.querySelector('.game-gallery-group li').getAttribute('style') !== value, previous);
+      assert.equal(await gallery.evaluate(el => el.classList.contains('is-paused')), false);
+    }
+    await gallery.locator('.gallery-toggle').focus();
+    await page.keyboard.press('Tab');
+    assert.equal(await gallery.evaluate(el => el.classList.contains('is-orbit')), false);
+    assert.equal(await group.locator('a').first().evaluate(el => el === document.activeElement), true);
+    await page.keyboard.press('Enter');
+    assert.equal(await page.evaluate(() => location.hash), '#game-sanshoku-bunki');
   } finally { await page.close(); }
+});
+
+test('3D carousel stays framed through a full lap on desktop and mobile', async () => {
+  const page = await browser.newPage();
+  try {
+    await page.clock.install();
+    await page.goto(url);
+    await page.waitForFunction(() => document.querySelector('[data-game-gallery]').classList.contains('is-orbit'));
+    const frontNames = new Set();
+    for (const width of [320, 1440]) {
+      await page.setViewportSize({ width, height: 1000 });
+      await page.locator('[data-game-gallery]').scrollIntoViewIfNeeded();
+      for (let step = 0; step < 16; step++) {
+        await page.clock.runFor(2100);
+        const state = await page.locator('[data-game-gallery]').evaluate(el => {
+          const viewport = el.querySelector('.game-gallery-viewport').getBoundingClientRect();
+          const visible = [...el.querySelectorAll('.is-front .game-icon-art, .is-front .game-icon-link > span:last-child')];
+          return {
+            front: el.querySelector('.is-front a').title,
+            visibleCount: el.querySelectorAll('.is-in-orbit').length,
+            rearCount: el.querySelectorAll('.is-rear-orbit').length,
+            clipped: visible.filter(node => {
+              const box = node.getBoundingClientRect();
+              return box.left < viewport.left - 1 || box.right > viewport.right + 1 || box.top < viewport.top - 1 || box.bottom > viewport.bottom + 1;
+            }).map(node => node.tagName),
+          };
+        });
+        assert.deepEqual(state.clipped, [], `width ${width}, step ${step}`);
+        assert(state.visibleCount <= (width <= 640 ? 3 : 5), `too many icons at ${width}`);
+        assert(state.rearCount >= 2, 'rear works must keep circulating');
+        frontNames.add(state.front);
+      }
+    }
+    assert.equal(frontNames.size, 8);
+  } finally { await page.close(); }
+});
+
+test('expanded carousel keeps five visible slots and large icons with sixteen works', async () => {
+  const fixture = path.join(output, 'gallery-expanded.html');
+  const page = await browser.newPage({ viewport: { width: 1440, height: 1000 } });
+  try {
+    let html = await fs.readFile(path.join(__dirname, '../index.html'), 'utf8');
+    html = html.replace('<head>', `<head><base href="${pathToFileURL(path.join(__dirname, '../')).href}">`);
+    html = html.replace(/(<ul class="game-gallery-group">)([\s\S]*?)(<\/ul>)/, (_, start, body, end) => {
+      const entries = body.match(/<li>[\s\S]*?<\/li>/g);
+      return start + Array.from({ length: 16 }, (_, i) => entries[i % entries.length].replace(/<span>([^<]*)<\/span><\/a>/, `<span>作品${i + 1}</span></a>`)).join('') + end;
+    });
+    await fs.writeFile(fixture, html);
+    await page.clock.install();
+    await page.goto(pathToFileURL(fixture).href);
+    await page.waitForFunction(() => document.querySelector('[data-game-gallery]').classList.contains('is-orbit'));
+    assert.equal(await page.locator('.game-gallery-heading strong').innerText(), '16');
+    const seen = new Set();
+    for (let step = 0; step < 16; step++) {
+      await page.clock.runFor(4200);
+      const state = await page.locator('[data-game-gallery]').evaluate(el => ({
+        count: el.querySelectorAll('.is-in-orbit').length,
+        front: el.querySelector('.is-front a').title,
+        size: el.querySelector('.is-front img').getBoundingClientRect().width,
+      }));
+      assert(state.count >= 4 && state.count <= 5);
+      assert(state.size > 230, 'future works must not shrink existing icons');
+      seen.add(state.front);
+    }
+    assert.equal(seen.size, 16);
+  } finally { await page.close(); await fs.rm(fixture, { force: true }); }
 });
 
 test('tool icons use valid PNGs and preserve their brand colors', async () => {

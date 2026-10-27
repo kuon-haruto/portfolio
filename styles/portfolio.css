@@ -84,15 +84,27 @@ h1, h2, h3 { text-wrap: pretty; }
 .game-icon-frame { display: grid; place-items: center; width: 100%; max-width: 132px; aspect-ratio: 1; flex-shrink: 0; }
 .game-icon-art { width: 100%; height: auto; aspect-ratio: 1; object-fit: contain; }
 .game-icon-link > span:not(.game-icon-frame) { font-size: 0.9rem; line-height: 1.5; min-height: 2.7em; text-align: center; text-wrap: balance; }
-.game-gallery-copy { display: none; }
-.is-animated .game-gallery-copy { display: flex; }
-.is-animated .game-gallery-viewport { overflow-x: hidden; }
-.is-animated .game-gallery-track { animation: gallery-lap 24s linear infinite; }
-.is-paused .game-gallery-track { animation-play-state: paused; }
-.work-detail[id] { scroll-margin-top: 100px; }
-@keyframes gallery-lap {
-  to { transform: translateX(-50%); }
+.game-gallery-viewport { position: relative; height: 480px; }
+.gallery-orbit { display: none; position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.is-orbit .gallery-orbit { display: block; }
+.is-orbit .game-gallery-viewport { overflow: hidden; }
+.is-orbit .game-gallery-track { width: 100%; height: 100%; }
+.is-orbit .game-gallery-group { display: block; padding: 0; }
+.is-orbit .game-gallery-group li { position: absolute; left: 0; top: 0; width: calc(var(--orbit-icon-size) + 16px); height: calc(var(--orbit-icon-size) + 64px); opacity: var(--orbit-opacity, 0); will-change: transform; }
+.is-orbit .game-gallery-group li:not(.is-in-orbit):not(.is-rear-orbit) { visibility: hidden; pointer-events: none; }
+.is-orbit .is-rear-orbit { pointer-events: none; }
+.is-orbit .game-icon-link { height: 100%; gap: 8px; padding: 4px; }
+.is-orbit .game-icon-frame { width: var(--orbit-icon-size); max-width: var(--orbit-icon-size); filter: blur(var(--orbit-blur, 0px)) drop-shadow(0 10px 8px rgba(0, 0, 0, 0.3)); opacity: var(--depth-opacity, 1); }
+.is-orbit .game-icon-link > span:not(.game-icon-frame) { width: 240px; font-size: 0.95rem; opacity: 0; pointer-events: none; }
+.is-orbit .is-front .game-icon-link > span:not(.game-icon-frame) { opacity: 1; }
+.game-gallery:not(.is-orbit) .game-gallery-group li { transform: none !important; }
+.game-gallery:not(.is-orbit) .game-icon-link > span:last-child { transform: none !important; }
+@media (max-width: 640px) {
+  .game-gallery-viewport { height: 340px; }
+  .is-orbit .game-icon-link > span:not(.game-icon-frame) { width: 176px; font-size: 0.85rem; opacity: 0; pointer-events: none; }
+  .is-orbit .is-front .game-icon-link > span:not(.game-icon-frame) { opacity: 1; }
 }
+.work-detail[id] { scroll-margin-top: 100px; }
 .hero-caption {
   background: rgba(12, 18, 38, 0.96);
   padding: 26px 0 30px;
@@ -234,6 +246,20 @@ h1, h2, h3 { text-wrap: pretty; }
 .case-media video { display: block; width: 100%; height: auto; aspect-ratio: 16 / 9; background: #000; }
 .parking-store-media > img { display: block; width: 100%; height: auto; aspect-ratio: 1600 / 740; object-fit: contain; }
 .case-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; }
+.vlink-play-actions .button { max-width: 100%; white-space: normal; text-align: center; }
+.vlink-editions { margin: 0 0 28px; padding: 20px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.vlink-editions h3 { margin: 0 0 12px; font-size: 1.1rem; line-height: 1.7; }
+.vlink-editions h4 { margin: 20px 0 10px; font-size: 1rem; }
+.vlink-editions p, .vlink-editions dd, .vlink-editions li { font-size: 0.95rem; line-height: 1.9; color: var(--muted); overflow-wrap: anywhere; }
+.vlink-editions p { margin: 0; }
+.vlink-edition-details { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 20px; margin: 20px 0; }
+.vlink-edition-details > div { min-width: 0; padding-left: 16px; border-left: 2px solid var(--panel-border); }
+.vlink-edition-details dt { font-size: 1rem; font-weight: 700; line-height: 1.7; color: var(--text); }
+.vlink-edition-details dd { margin: 8px 0 0; }
+.vlink-editions ul { margin: 0 0 16px; padding-left: 1.4em; }
+.vlink-editions li + li { margin-top: 10px; }
+.vlink-editions strong { color: var(--text); }
+.vlink-editions .vlink-edition-note { font-size: 0.85rem; }
 .work-body > .app-store-link { margin-bottom: 12px; max-width: 100%; }
 .case-media figcaption {
   display: flex;

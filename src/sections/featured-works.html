@@ -41,7 +41,31 @@
           <p>Vtuberの配信文化を、3D対戦アクションへ。視聴者とのコミュニケーションをヒントに、アピールやコメントが駆け引きになるルールを企画しました。</p>
           <div class="selection-note"><small>神ゲーエボリューション2025</small><strong>1次審査通過</strong></div>
         </div>
-        <a class="button primary work-play-link" href="https://kuon-haruto.github.io/portfolio/play/v-link-battle/">V-Link Battleをプレイ</a>
+        <div class="case-actions vlink-play-actions">
+          <a class="button primary work-play-link" href="https://kuon-haruto.github.io/portfolio/play/v-link-battle/" aria-describedby="vlink-browser-notice">ブラウザー版でプレイ</a>
+          <a class="button secondary vlink-windows-link" href="https://github.com/kuon-haruto/portfolio/releases/download/launcher-v0.2.0/v-link-battle-1.0.0.zip" aria-describedby="vlink-windows-notice">Windows版をダウンロード</a>
+          <a class="button secondary" href="#featured-video">プレイ映像を見る</a>
+        </div>
+        <div class="vlink-editions" aria-labelledby="vlink-editions-title">
+          <h3 id="vlink-editions-title">閲覧環境に合わせて、2つの遊び方を用意しました</h3>
+          <p>企業様のセキュリティ方針などにより、実行ファイルのダウンロードや起動が難しい場合にも作品を体験していただけるよう、ブラウザー版を用意しました。Windows固有のウィンドウ演出をご覧いただくにはWindows版、アプリを導入せずに操作を試すにはブラウザー版をお選びいただけます。</p>
+          <dl class="vlink-edition-details">
+            <div>
+              <dt>Windows版 / 本来のウィンドウ演出</dt>
+              <dd id="vlink-windows-notice">V-Link単体のZIP（約724 MB / v1.0.0）。Windows 10・11（64bit）向けです。ZIP全体を展開し、付属ファイルを同じフォルダーに残して「V-LinkBattle.exe」を起動します。アプリは未署名のため、警告が表示される場合があります。所属先の利用方針に従い、許可された環境でご利用ください。</dd>
+            </div>
+            <div>
+              <dt>ブラウザー版 / アプリのインストール不要</dt>
+              <dd id="vlink-browser-notice">PC・キーボード・マウス推奨。ゲームデータの通信・読み込みは発生します。ブラウザーの対応状況や所属先のネットワーク制限によっては利用できない場合があります。</dd>
+            </div>
+          </dl>
+          <h4>ブラウザー版で異なる点</h4>
+          <ul>
+            <li><strong>Windowsの別ウィンドウ：</strong>Windows APIは使用できないため、ゲーム画面内の疑似ウィンドウに置き換えています。ゲーム画面の外に出る本物のウィンドウや、OSのタスクバー・通知領域との連携は再現していません。</li>
+            <li><strong>攻撃エフェクト：</strong>標準の「動作優先」では、氷など一部の演出を簡易表示しています。「演出優先」は対応環境で元のエフェクトを使用しますが、負荷が高く、Windows版との完全な表示一致を保証するものではありません。</li>
+          </ul>
+          <p class="vlink-edition-note">ブラウザー版はWindows版と同一の体験ではありません。どちらも実行できない場合は、下のプレイ映像から作品をご覧いただけます。</p>
+        </div>
         <figure class="case-media" id="featured-video">
           <video controls playsinline preload="metadata" poster="files/images/v-link-battle.jpg" width="1920" height="1080" aria-label="V-Link Battle プレイ動画">
             <source src="files/Vlinkvideo.mp4" type="video/mp4">
