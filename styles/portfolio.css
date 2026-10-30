@@ -370,29 +370,9 @@ a[data-missing] { color: var(--muted); text-decoration-style: dotted; }
 .proposal-game-heading > span { min-width: 0; word-break: keep-all; overflow-wrap: anywhere; }
 .proposal-game-heading > span:only-child { grid-column: 1 / -1; }
 
-/* Native disclosure keeps idea notes readable without JavaScript. */
-#ideas .idea-stage-note { font-size: 0.9rem; color: var(--muted); }
-.idea-list { border-top: 1px solid var(--panel-border); }
-.idea-note { border-bottom: 1px solid var(--panel-border); }
-.idea-note > summary { padding: 24px 12px; cursor: pointer; color: var(--text); }
-.idea-note > summary::marker { color: var(--teal); }
-.idea-note > summary:hover .idea-title { color: var(--teal); }
-.idea-note > summary:focus-visible { outline: 2px solid var(--teal); outline-offset: -2px; }
-.idea-title { font-size: 1.2rem; font-weight: 700; line-height: 1.65; overflow-wrap: anywhere; }
-.idea-hook { display: block; margin: 8px 0 0 22px; line-height: 1.8; }
-.idea-genre { display: block; margin: 6px 0 0 22px; font-size: 0.85rem; color: var(--muted); }
-.idea-content { padding: 0 34px 28px; }
-.idea-content dl { margin: 0; }
-.idea-content dl > div { display: grid; grid-template-columns: 170px minmax(0, 1fr); gap: 24px; padding: 18px 0; }
-.idea-content dt { color: var(--teal); font-weight: 700; line-height: 1.9; }
-.idea-content dd { margin: 0; color: var(--muted); line-height: 1.9; overflow-wrap: anywhere; }
-.idea-scene { margin: 14px 0; padding: 18px 24px; border-left: 3px solid var(--teal); background: var(--surface); }
-.idea-scene h3 { margin: 0 0 10px; font-size: 1rem; }
-.idea-scene p { margin: 0; line-height: 1.9; }
+.idea-entry { display: flex; align-items: center; justify-content: space-between; gap: 24px; padding-block: 24px; border-block: 1px solid var(--panel-border); }
+.idea-entry .section-heading { margin-bottom: 0; }
+.idea-entry .button { flex-shrink: 0; max-width: 100%; white-space: normal; text-align: center; }
 @media (max-width: 720px) {
-  .idea-note > summary { padding: 20px 8px; }
-  .idea-title { font-size: 1.1rem; }
-  .idea-content { padding: 0 8px 20px; }
-  .idea-content dl > div { grid-template-columns: 1fr; gap: 8px; padding: 14px 0; }
-  .idea-scene { padding: 16px; }
+  .idea-entry { flex-direction: column; align-items: flex-start; gap: 20px; }
 }

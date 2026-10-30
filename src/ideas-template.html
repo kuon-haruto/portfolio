@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0c1226" />
+  <meta name="description" content="島本善太が考えたゲームの構想一覧。遊びの核、面白さの狙い、具体的な場面、検討中の点を紹介します。" />
+  <title>構想中のアイデア | 島本善太 Portfolio</title>
+  <link rel="stylesheet" href="styles/main.css" />
+  <link rel="stylesheet" href="styles/ideas.css" />
+</head>
+<body class="ideas-page">
+  <a class="skip-link" href="#catalog">企画一覧へ</a>
+  <header class="ideas-header">
+    <div class="container">
+      <a class="ideas-brand" href="index.html">島本善太 <span>Portfolio</span></a>
+      <a href="index.html#ideas">ポートフォリオに戻る</a>
+    </div>
+  </header>
+  <main id="top" class="container">
+    <div class="ideas-intro">
+      <p class="ideas-eyebrow">IDEA NOTES</p>
+      <h1>構想中のアイデア</h1>
+      <p>どんな遊びを、なぜ面白いと思ったのか。<br />ゲーム化に向けて考えた企画の狙いと、これから確かめたいことをまとめています。</p>
+      <p class="ideas-disclaimer">内容は企画段階の案を含みます。制作へ進んだものは段階を分け、画像は実際のプレイ画面と区別して掲載しています。</p>
+    </div>
+    <form class="ideas-controls" id="ideas-controls" role="search" hidden>
+      <div class="ideas-search"><label for="idea-search">企画を探す</label><input type="search" id="idea-search" placeholder="作品名・遊び・ジャンル" autocomplete="off" /></div>
+      <div><label for="idea-stage">制作段階</label><select id="idea-stage"><option value="all">すべて</option><option value="idea">構想中</option><option value="unknown">実装状況は未確認</option><option value="validation">検証中</option><option value="developing">制作中</option><option value="implemented">制作へ進んだ企画</option></select></div>
+      <button type="reset">条件をリセット</button>
+    </form>
+    <div class="ideas-results"><h2 id="catalog">企画一覧</h2><p id="idea-count" role="status" aria-live="polite"><!-- idea-count --></p></div>
+    <p id="ideas-empty" hidden>一致する企画がありません。</p>
+    <div class="ideas-grid" id="idea-list">
+<!-- idea-catalog -->
+    </div>
+    <nav class="ideas-bottom" aria-label="ページ移動"><a href="index.html#proposals">ポートフォリオの企画書へ戻る</a><a href="#top">ページの先頭へ</a></nav>
+  </main>
+  <footer class="ideas-footer"><div class="container">島本善太 / Game Planner Portfolio</div></footer>
+  <script src="scripts/ideas.js"></script>
+</body>
+</html>
