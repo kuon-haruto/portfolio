@@ -45,9 +45,6 @@ function page(d, title, subtitle) {
   d.titles.push(title);
   text(d, s, title, 64, 46, 1152, 70, 44, d.theme.ink, true);
   if (subtitle) text(d, s, subtitle, 64, 120, 1152, 42, 24, d.theme.accent);
-  const n = d.p.slides.items.length;
-  text(d, s, `${d.title} / 企画書`, 64, 677, 1000, 26, 16, d.theme.muted);
-  text(d, s, `${String(n).padStart(2, '0')} / 06`, 1120, 677, 100, 26, 16, d.theme.muted);
   s.speakerNotes.text = '根拠資料\n' + d.sources.join('\n') + '\n想定プレイヤー・企画の狙いは提案上の位置付け。市場調査の結果ではありません。';
   return s;
 }
@@ -108,7 +105,7 @@ try {
 const v = deck('v-link-battle', 'V-Link Battle', { bg: '#211E2B', ink: '#FAF8FF', muted: '#C5BDCE', accent: '#FF72B5' }, [
   '既存企画資料：D:/企画書、ポートフォリオ、仕様書/企画書/V-LinkBattle (1).pdf',
   '担当・制作人数：src/sections/featured-works.html、利用者確認（8人）',
-  '実演映像：D:/自作ゲーム動画/アピール.mov、コメント機能.mov、タブ.mov',
+  '掲載映像：files/Vlinkvideo.mp4（対戦24秒、コメント30秒、キャラクター選択12秒）',
   '公開版の差異：tools/vlink-web/README.md、documents/specifications/specifications.json',
 ]);
 {
@@ -127,17 +124,17 @@ const v = deck('v-link-battle', 'V-Link Battle', { bg: '#211E2B', ink: '#FAF8FF'
 }
 {
   const s = page(v, 'アピールが生むリスクと見返り', '企画上のルール：攻撃を止める瞬間にも、判断を持たせる');
-  await image(s, assets + 'vlink-appeal.jpg', 64, 190, 736, 414, 'アピール後の攻撃を説明した制作時の実演映像');
+  await image(s, assets + 'vlink-battle.jpg', 64, 190, 736, 414, '現在掲載している映像の対戦画面。アピールの瞬間を示す画像ではなく、企画ルールの背景として掲載');
   block(v, s, '隙を見つけて魅せる', 'アピール中は無防備。\n成功後の攻撃で\nボルテージを高める。', 842, 191, 374, 115);
   block(v, s, '読み合いの場面', '安全に攻撃を続けるか。\n相手の動きを読んで、\nアピールを挟むか。', 842, 397, 374, 115);
   text(v, s, 'ボルテージを高め、必殺技の見せ場へつなぐ構想。', 64, 620, 1152, 40, 25, v.theme.accent);
 }
 {
-  const s = page(v, '配信らしさを、戦場の出来事に', '企画上の仕掛け / 画像は制作時の実演映像');
-  await image(s, assets + 'vlink-comments.jpg', 64, 185, 552, 311, 'コメントが3D空間を流れる実演');
-  await image(s, assets + 'vlink-tabs.jpg', 664, 185, 552, 311, '通知ウィンドウが現れる実演');
-  block(v, s, 'コメントに触れる判断', '流れる言葉に効果を持たせ、\n拾う・避ける判断へつなげる。', 64, 514, 552, 81);
-  block(v, s, '通知による意外性', '見慣れた通知ウィンドウの出現で、\n戦闘中のタイミングを変える。', 664, 514, 552, 81);
+  const s = page(v, '配信を感じさせる画面と演出', 'コメントとウィンドウ風の画面で、デジタルな世界観を伝える');
+  await image(s, assets + 'vlink-comments.jpg', 64, 185, 552, 311, '現在掲載している対戦映像。立体のコメントが流れる');
+  await image(s, assets + 'vlink-selection.jpg', 664, 185, 552, 311, '現在掲載しているキャラクター選択画面。ブラウザー風の枠内にキャラクターを表示');
+  block(v, s, '立体的なコメント', '戦闘空間を横切る言葉で、\n配信の賑わいを表現する。', 64, 514, 552, 81);
+  block(v, s, 'ウィンドウ風の画面', 'キャラクター選択もブラウザー風の枠に。\n対戦前から作品の世界観を伝える。', 664, 514, 552, 81);
 }
 {
   const s = page(v, '企画の見どころと公開版の違い', '企画上の構想と、試遊できる範囲を分けてご案内します');

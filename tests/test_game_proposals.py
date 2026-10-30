@@ -25,7 +25,10 @@ class GameProposalsTest(unittest.TestCase):
                 self.assertEqual(len(slides), 6)
                 for name in slides:
                     xml = ET.fromstring(archive.read(name))
-                    self.assertGreater(len(xml.findall(".//a:t", NS)), 4, "Pages must retain editable text")
+                    self.assertGreaterEqual(len(xml.findall(".//a:t", NS)), 3, "Pages must retain editable title and body text")
+                    values = [node.text or "" for node in xml.findall(".//a:t", NS)]
+                    self.assertNotIn(deck["title"] + " / 企画書", values)
+                    self.assertFalse(any(re.fullmatch(r"\d{2} / 06", value) for value in values))
                 images = [name for name in archive.namelist() if name.startswith("ppt/media/")]
                 self.assertGreaterEqual(len(images), 4)
 
@@ -48,6 +51,8 @@ class GameProposalsTest(unittest.TestCase):
                 if deck["id"] == "v-link-battle":
                     self.assertIn("企画上の構想", compact)
                     self.assertIn("無効", compact)
+                    self.assertIn("ウィンドウ風の画面", compact)
+                    self.assertNotIn("制作時の実演映像", compact)
 
     def test_published_links_use_canonical_paths(self):
         html = (ROOT / "index.html").read_text(encoding="utf-8")
