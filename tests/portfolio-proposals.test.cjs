@@ -91,21 +91,39 @@ test('proposals identify developed games without inventing a development environ
   try {
     await page.goto(url + '#proposals');
     const cards = page.locator('#proposals .proposal-card');
-    assert.equal(await cards.count(), 7);
-    const icons = ['line-boundary.png', 'hanten-assassination.jpeg', 'teruteru-wars.png', 'futago.png', null, null, 'bug-hunter.png'];
+    assert.equal(await cards.count(), 10);
+    const icons = ['v-link-battle.png', 'sliding-space-parking.png', 'sanshoku-bunki.png', 'line-boundary.png', 'hanten-assassination.jpeg', 'teruteru-wars.png', 'futago.png', null, null, 'bug-hunter.png'];
     for (let i = 0; i < icons.length; i++) {
       const card = cards.nth(i);
       const title = card.locator('h3');
       assert(await title.innerText());
       if (icons[i]) {
         assert.equal(await title.locator('img').getAttribute('src'), 'files/game-icons/' + icons[i]);
-        assert.match(await card.locator('.meta').innerText(), /開発環境：Unity 6/);
+        assert.match(await card.locator('.meta').innerText(), i === 0 ? /開発環境：Unity/ : /開発環境：Unity 6/);
       } else {
         assert.equal(await title.locator('img').count(), 0);
         assert.equal(await card.locator('.meta').innerText(), '企画書のみ');
         assert.doesNotMatch(await card.innerText(), /Unity/);
       }
       assert.equal(await card.locator('a[href$=".pdf"]').count(), 1);
+      assert.equal(await card.locator('a[data-missing]').count(), 0);
+      if (i < 3) {
+        const pdfLink = card.locator('a[href$=".pdf"]');
+        const href = await pdfLink.getAttribute('href');
+        const opened = page.waitForEvent('popup');
+        await pdfLink.click();
+        const popup = await opened;
+        await popup.waitForURL(target => target.href.endsWith(href));
+        await popup.waitForLoadState();
+        assert(popup.url().endsWith(href), popup.url());
+        await popup.close();
+        const pptx = card.locator('a[href$=".pptx"]');
+        assert.equal(await pptx.count(), 1);
+        assert.notEqual(await pptx.getAttribute('download'), null);
+        await fs.access(path.join(__dirname, '..', await pptx.getAttribute('href')));
+        await fs.access(path.join(__dirname, '..', await card.locator('a[href$=".pdf"]').getAttribute('href')));
+        assert.match(await card.innerText(), /制作人数：[845]人/);
+      }
     }
     const bug = page.locator('#proposal-bug-hunter');
     const items = await bug.locator('li').allTextContents();
@@ -161,7 +179,7 @@ test('proposal headings, icons and text fit phone and desktop layouts', async ()
       if ([320, 1440].includes(width)) {
         await page.locator('#proposals').screenshot({ path: path.join(output, `proposals-${width}.png`), animations: 'disabled', style: '.site-header { visibility: hidden !important; }' });
         await page.locator('#proposal-bug-hunter').screenshot({ path: path.join(output, `bug-hunter-proposal-${width}.png`), animations: 'disabled' });
-        await cards.first().screenshot({ path: path.join(output, `line-boundary-proposal-${width}.png`), animations: 'disabled' });
+        await cards.first().screenshot({ path: path.join(output, `vlink-proposal-${width}.png`), animations: 'disabled' });
       }
     }
     assert.deepEqual(errors, []);

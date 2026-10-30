@@ -1,0 +1,98 @@
+[
+  {
+    "id": "v-link-battle",
+    "title": "V-Link Battle",
+    "pages": 6,
+    "titles": [
+      "V-Link Battle",
+      "企画の核とプレイヤー体験",
+      "アピールが生むリスクと見返り",
+      "配信らしさを、戦場の出来事に",
+      "企画の見どころと公開版の違い",
+      "制作体制と作品への入口"
+    ],
+    "pptx": "documents/proposals/v-link-battle_proposal.pptx",
+    "pdf": "files/v-link-battle_proposal.pdf",
+    "links": [
+      {
+        "page": 5,
+        "label": "ブラウザー版をプレイ",
+        "url": "https://kuon-haruto.github.io/portfolio/play/v-link-battle/",
+        "x": 64,
+        "y": 463,
+        "width": 1100,
+        "height": 40
+      },
+      {
+        "page": 5,
+        "label": "Windows版・プレイ映像を見る",
+        "url": "https://kuon-haruto.github.io/portfolio/#featured-works",
+        "x": 64,
+        "y": 522,
+        "width": 1100,
+        "height": 40
+      }
+    ]
+  },
+  {
+    "id": "sliding-space-parking",
+    "title": "すべる宇宙駐車場",
+    "pages": 6,
+    "titles": [
+      "すべる宇宙駐車場",
+      "身近な「駐車」を、慣性で難しくする",
+      "面白さは「いつ減速を始めるか」",
+      "宇宙の駐車場で、進路とタイミングを読む",
+      "クリアの次は、もっと少ない噴射で",
+      "制作体制と公開先"
+    ],
+    "pptx": "documents/proposals/sliding-space-parking_proposal.pptx",
+    "pdf": "files/sliding-space-parking_proposal.pdf",
+    "links": [
+      {
+        "page": 5,
+        "label": "App Storeで見る",
+        "url": "https://apps.apple.com/jp/app/id6816609277",
+        "x": 64,
+        "y": 559,
+        "width": 1100,
+        "height": 40
+      },
+      {
+        "page": 5,
+        "label": "unityroomでプレイ",
+        "url": "https://unityroom.com/games/sliding-space-parking",
+        "x": 64,
+        "y": 616,
+        "width": 1100,
+        "height": 40
+      }
+    ]
+  },
+  {
+    "id": "sanshoku-bunki",
+    "title": "三色の分岐係",
+    "pages": 6,
+    "titles": [
+      "三色の分岐係",
+      "流れる品物を、その場で判断する",
+      "同じ種類でも、送り先が変わる",
+      "三方向への仕分けと、上への返却",
+      "結果がすぐ伝わる、スコアへの挑戦",
+      "制作体制と公開先"
+    ],
+    "pptx": "documents/proposals/sanshoku-bunki_proposal.pptx",
+    "pdf": "files/sanshoku-bunki_proposal.pdf",
+    "links": [
+      {
+        "page": 5,
+        "label": "unityroomで「三色の分岐係」をプレイ",
+        "url": "https://unityroom.com/games/sansyokunobunkigakari",
+        "x": 64,
+        "y": 594,
+        "width": 1100,
+        "height": 40
+      }
+    ]
+  }
+]
