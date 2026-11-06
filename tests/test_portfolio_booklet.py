@@ -74,6 +74,26 @@ class PortfolioBookletTest(unittest.TestCase):
             self.assertEqual(len(skills.findall('.//a:tbl', NS)), 1)
             self.assertEqual(len(skills.findall('.//a:tbl/a:tr', NS)), 9)
 
+    def test_dark_page_links_keep_the_authored_high_contrast_color(self):
+        with zipfile.ZipFile(BOOKLET.with_suffix('.pptx')) as archive:
+            for number in [4, 7, 18, 21]:
+                xml = ET.fromstring(archive.read(f'ppt/slides/slide{number}.xml'))
+                linked_runs = [run for run in xml.findall('.//a:r', NS)
+                               if run.find('a:rPr/a:hlinkClick', NS) is not None]
+                self.assertTrue(linked_runs)
+                for run in linked_runs:
+                    color = run.find('a:rPr/a:solidFill/a:srgbClr', NS)
+                    self.assertIsNotNone(color)
+                    self.assertEqual(color.get('val'), 'C6F36B')
+
+    def test_editable_text_is_retained_in_pdf(self):
+        with zipfile.ZipFile(BOOKLET.with_suffix('.pptx')) as archive:
+            for number in range(1, 22):
+                xml = ET.fromstring(archive.read(f'ppt/slides/slide{number}.xml'))
+                for node in xml.findall('.//a:t', NS):
+                    content = re.sub(r'\s+', '', node.text or '')
+                    self.assertIn(content, self.text[number - 1], f'Page {number}: {content}')
+
 
 if __name__ == '__main__':
     unittest.main()
