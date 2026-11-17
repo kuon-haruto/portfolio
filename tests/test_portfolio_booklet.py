@@ -22,30 +22,34 @@ class PortfolioBookletTest(unittest.TestCase):
                             for i, page in enumerate(cls.pdf.pages)}
 
     def test_pages_and_contents_destinations(self):
-        self.assertEqual(len(self.pdf.pages), 21)
-        self.assertEqual(len(self.pdf.outline), 21)
+        self.assertEqual(len(self.pdf.pages), 22)
+        self.assertEqual(len(self.pdf.outline), 22)
         for i, item in enumerate(self.pdf.outline):
             self.assertEqual(self.pdf.get_destination_page_number(item), i)
             self.assertGreater(len(self.text[i]), 40)
             self.assertNotIn('\ufffd', self.text[i])
         targets = [self.page_numbers[ref.get_object()['/Dest'][0].idnum]
                    for ref in self.pdf.pages[1]['/Annots']]
-        self.assertEqual(targets, [2, 3, 6, 10, 16, 18, 19, 2])
+        self.assertEqual(targets, [2, 3, 6, 10, 17, 19, 20, 2])
 
     def test_team_sizes_and_honest_responsibility(self):
         for page, count in [(7, 8), (11, 6), (13, 4), (15, 5), (16, 1)]:
             self.assertIn(f'制作人数：{count}人', self.text[page - 1])
-        self.assertIn('制作人数4人', self.text[3])
+        self.assertIn('制作人数：4人', self.text[3])
+        for index in (3, 6):
+            self.assertLess(self.text[index].index('私の担当'), self.text[index].index('制作人数'))
         self.assertIn('制作人数：各4人', self.text[13])
         self.assertIn('プログラムは自作ではなく、AIによる実装支援を利用。', self.text[15])
         self.assertIn('改善前後の比較は今後の課題。', self.text[15])
-        self.assertIn('実際のプレイ画面ではありません。', self.text[17])
+        self.assertIn('制作人数：7人', self.text[16])
+        self.assertIn('未公開', self.text[16])
+        self.assertIn('実際のプレイ画面ではありません。', self.text[18])
         self.assertNotRegex(''.join(self.text), r'制作期間|3日間|三日間')
 
     def test_links_and_local_published_targets(self):
         annotations = [ref.get_object() for page in self.pdf.pages
                        for ref in page.get('/Annots', [])]
-        self.assertEqual(len(annotations), 67)
+        self.assertEqual(len(annotations), 68)
         urls = {str(a['/A']['/URI']) for a in annotations
                 if a.get('/A', {}).get('/S') == '/URI'}
         self.assertIn('https://unityroom.com/games/sansyokunobunkigakari', urls)
@@ -67,11 +71,11 @@ class PortfolioBookletTest(unittest.TestCase):
         with zipfile.ZipFile(BOOKLET.with_suffix('.pptx')) as archive:
             slides = [p for p in archive.namelist()
                       if re.fullmatch(r'ppt/slides/slide\d+\.xml', p)]
-            self.assertEqual(len(slides), 21)
+            self.assertEqual(len(slides), 22)
             for name in slides:
                 xml = ET.fromstring(archive.read(name))
                 self.assertGreaterEqual(len(xml.findall('.//a:t', NS)), 3)
-            skills = ET.fromstring(archive.read('ppt/slides/slide19.xml'))
+            skills = ET.fromstring(archive.read('ppt/slides/slide20.xml'))
             self.assertEqual(len(skills.findall('.//a:tbl', NS)), 1)
             self.assertEqual(len(skills.findall('.//a:tbl/a:tr', NS)), 9)
 
@@ -86,7 +90,7 @@ class PortfolioBookletTest(unittest.TestCase):
 
     def test_dark_page_links_keep_the_authored_high_contrast_color(self):
         with zipfile.ZipFile(BOOKLET.with_suffix('.pptx')) as archive:
-            for number in [4, 7, 18, 21]:
+            for number in [4, 7, 19, 22]:
                 xml = ET.fromstring(archive.read(f'ppt/slides/slide{number}.xml'))
                 linked_runs = [run for run in xml.findall('.//a:r', NS)
                                if run.find('a:rPr/a:hlinkClick', NS) is not None]
@@ -98,7 +102,7 @@ class PortfolioBookletTest(unittest.TestCase):
 
     def test_editable_text_is_retained_in_pdf(self):
         with zipfile.ZipFile(BOOKLET.with_suffix('.pptx')) as archive:
-            for number in range(1, 22):
+            for number in range(1, 23):
                 xml = ET.fromstring(archive.read(f'ppt/slides/slide{number}.xml'))
                 for node in xml.findall('.//a:t', NS):
                     content = re.sub(r'\s+', '', node.text or '')

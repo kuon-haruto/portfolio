@@ -90,9 +90,9 @@ function sectionFor(number) {
   if (number <= 3) return 'PROFILE';
   if (number <= 6) return 'SELECTED WORK 01';
   if (number <= 10) return 'SELECTED WORK 02';
-  if (number <= 16) return 'GAME WORKS';
-  if (number <= 18) return 'PLANNING';
-  return number === 19 ? 'SKILLS' : number === 20 ? 'LINKS' : 'CONTACT';
+  if (number <= 17) return 'GAME WORKS';
+  if (number <= 19) return 'PLANNING';
+  return number === 20 ? 'SKILLS' : number === 21 ? 'LINKS' : 'CONTACT';
 }
 
 function text(slide, value, x, y, w, h, size = 24, options = {}) {
@@ -122,7 +122,7 @@ async function image(slide, file, x, y, w, h, alt, options = {}) {
 function page(title, subtitle = '', color = C.blue) {
   const slide = presentation.slides.add();
   const number = slides.length + 1;
-  const dark = [4, 7, 18, 21].includes(number);
+  const dark = [4, 7, 11, 13, 14, 15, 16, 17, 19, 22].includes(number);
   const accent = number >= 4 && number <= 6 ? C.teal : number >= 7 && number <= 10 ? C.pink : color;
   themes.set(slide, { dark, accent });
   slide.background.fill = dark ? C.dark : C.paper;
@@ -146,7 +146,7 @@ function label(slide, title, body, x, y, w, bodyHeight = 94, color = C.blue) {
   const theme = themes.get(slide);
   band(slide, x, y + 5, 3, 22, theme?.dark ? C.lime : color);
   text(slide, title, x + 14, y, w - 14, 36, 22, { bold: true, color });
-  text(slide, body, x, y + 43, w, bodyHeight, 23);
+  text(slide, body, x, y + 43, w, bodyHeight, 23, { bold: title === '私の担当' || title === '制作の分担' });
 }
 async function gameHeading(slide, id, title, y = 52) {
   const extensions = { 'hanten-assassination': 'jpeg' };
@@ -222,11 +222,11 @@ function gamePage(id, title, subtitle) {
   const s = gamePage('sliding-space-parking', 'すべる宇宙駐車場', '代表作 / App Store公開 / iPhone・iPad / Unity');
   await gameHeading(s, 'sliding-space-parking', 'すべる宇宙駐車場');
   await image(s, media.parking, 64, 190, 744, 344, 'App Storeに掲載したiPhone版のプレイ画面');
-  text(s, 'App Store公開', 852, 184, 362, 52, 32, { bold: true, color: C.teal });
-  text(s, '2026年10月7日リリース', 852, 245, 362, 38, 23);
-  text(s, '制作人数', 852, 313, 362, 31, 22, { color: C.mint, bold: true });
-  text(s, '4人', 852, 351, 362, 98, 68, { bold: true });
-  label(s, '私の担当', '企画立案・整理\n画像作成・SE', 852, 481, 362, 88, C.teal);
+  label(s, '私の担当', '企画立案・整理\n画像作成・SE', 852, 184, 362, 88, C.teal);
+  band(s, 852, 329, 362, 1, '#57717A');
+  text(s, '制作人数：4人', 852, 350, 362, 38, 23);
+  text(s, 'App Store公開', 852, 400, 362, 40, 25, { bold: true, color: C.teal });
+  text(s, '2026年10月7日リリース', 852, 446, 362, 38, 21);
   text(s, '慣性で滑る船を、逆噴射で駐車する。', 64, 558, 744, 44, 28, { bold: true });
   link(s, 'App Storeで見る', appStore, 64, 621, 320, 23);
   link(s, 'ブラウザーでプレイ', 'https://unityroom.com/games/sliding-space-parking', 440, 621, 368, 23);
@@ -255,9 +255,9 @@ function gamePage(id, title, subtitle) {
   const s = gamePage('v-link-battle', 'V-Link Battle', '代表作 / 公開中 / Unity / 神ゲーエボリューション2025 1次審査通過');
   await gameHeading(s, 'v-link-battle', 'V-Link Battle');
   await image(s, 'files/images/v-link-battle.jpg', 64, 183, 744, 419, '氷の攻撃とコメントが表示されたV-Link Battle');
-  text(s, '制作人数：8人', 852, 183, 360, 94, 32, { bold: true, color: C.pink });
-  label(s, 'どんな遊びか', 'VTuberの配信文化を\n題材にした3D対戦アクション。', 852, 302, 360, 80, C.pink);
-  label(s, '私の担当', '企画・仕様整理・システム設計\nタスク振り分け\n3D素材・エフェクト\nアニメーション', 852, 444, 362, 142, C.pink);
+  label(s, '私の担当', '企画・仕様整理・システム設計\nタスク振り分け\n3D素材・エフェクト\nアニメーション', 852, 183, 362, 142, C.pink);
+  text(s, '制作人数：8人', 852, 386, 360, 40, 23);
+  label(s, 'どんな遊びか', 'VTuberの配信文化を\n題材にした3D対戦アクション。', 852, 450, 360, 80, C.pink);
   link(s, 'ブラウザー版でプレイ', base + 'play/v-link-battle/', 64, 619, 420);
   link(s, 'Windows版ZIP', windowsVlink, 500, 619, 300);
   notes(s, ['src/sections/featured-works.html', '制作人数は利用者の確認：8人', '審査通過実績：src/sections/about.html']);
@@ -357,6 +357,16 @@ function gamePage(id, title, subtitle) {
   label(s, 'これから取り組みたいこと', '内容と動作負荷を精査し、\n遊びを保った軽量化を目指す。\n改善前後の比較は今後の課題。', 814, 500, 400, 105, C.teal);
   link(s, 'バグハンターをプレイ', base + 'play/bug-hunter/', 64, 642, 520, 19);
   notes(s, ['利用者の確認（2026-10-30）：制作人数は1人だが自分でプログラムを書いていない。動作負荷と内容の精査、遊びを保った軽量化・品質改善を望んでいる。', '軽量化の実施・性能向上・自作プログラムの実績は主張しない。', 'games/bug-hunter/QA.md v0.2.1：過去の検証記録。本人が実行したという意味ではない。', 'games/bug-hunter/ASSETS.md：AI生成画像とPoly Haven CC0環境テクスチャ。', 'src/sections/works.html #game-bug-hunter']);
+}
+{
+  const s = gamePage('hekorhythm', 'へこリズム', 'リズムアクション / 制作人数：7人 / Unity 2022.3 / 未公開');
+  await gameHeading(s, 'hekorhythm', 'へこリズム');
+  await image(s, 'files/images/hekorhythm-gameplay.png', 64, 184, 704, 396, 'エンドレスモードのプレイ画面');
+  text(s, 'エンドレスモードのプレイ画面', 64, 596, 704, 30, 18, { color: C.muted });
+  label(s, 'どんな遊びか', '型を見極めて、拍に合わせて\nパーツをはめ込む。', 814, 180, 400, 84);
+  label(s, '私の担当', '企画立案・仕様書作成\nタスク振り分け\nブラッシュアップ時の機能追加全般', 814, 309, 400, 110);
+  label(s, '改善の例', 'エンドレスに上限付きの段階加速と\n難易度別の自己ベスト保存を追加。', 814, 477, 400, 96);
+  notes(s, ['利用者確認：7人制作、公開URLなし。', 'へこリズムを修正：エンドレスの加速上限と自己ベスト表示。']);
 }
 {
   const s = page('企画書で広げる、遊びの切り口', '以下の2件は企画書のみの作品');
