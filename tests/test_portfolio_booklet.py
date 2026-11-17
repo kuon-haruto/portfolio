@@ -45,13 +45,14 @@ class PortfolioBookletTest(unittest.TestCase):
     def test_links_and_local_published_targets(self):
         annotations = [ref.get_object() for page in self.pdf.pages
                        for ref in page.get('/Annots', [])]
-        self.assertEqual(len(annotations), 66)
+        self.assertEqual(len(annotations), 67)
         urls = {str(a['/A']['/URI']) for a in annotations
                 if a.get('/A', {}).get('/S') == '/URI'}
         self.assertIn('https://unityroom.com/games/sansyokunobunkigakari', urls)
         self.assertIn('https://unityroom.com/games/sliding-space-parking', urls)
         self.assertIn('https://apps.apple.com/jp/app/id6816609277', urls)
         self.assertIn('https://kuon-haruto.github.io/portfolio/ideas.html', urls)
+        self.assertIn('https://kuon-haruto.github.io/portfolio/files/Vlinkvideo.mp4#t=27', urls)
         self.assertTrue(any(url.endswith('/v-link-battle-1.0.0.zip') for url in urls))
         for url in urls:
             parsed = urlsplit(url)
@@ -73,6 +74,15 @@ class PortfolioBookletTest(unittest.TestCase):
             skills = ET.fromstring(archive.read('ppt/slides/slide19.xml'))
             self.assertEqual(len(skills.findall('.//a:tbl', NS)), 1)
             self.assertEqual(len(skills.findall('.//a:tbl/a:tr', NS)), 9)
+
+    def test_evidence_and_implementation_are_distinguished(self):
+        self.assertIn('実行結果の記録は未確認です。', self.text[5])
+        self.assertIn('チームの開発内容として紹介しています。', self.text[5])
+        self.assertIn('ChatGPT画像生成', self.text[5])
+        self.assertIn('実証する画像ではありません。', self.text[7])
+        self.assertIn('現行コードもDamage/Buffの2種。', self.text[11])
+        self.assertIn('QA記録', self.text[15])
+        self.assertIn('PolyHavenのCC0', self.text[15])
 
     def test_dark_page_links_keep_the_authored_high_contrast_color(self):
         with zipfile.ZipFile(BOOKLET.with_suffix('.pptx')) as archive:
