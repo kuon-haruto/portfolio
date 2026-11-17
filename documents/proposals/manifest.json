@@ -94,5 +94,153 @@
         "height": 40
       }
     ]
+  },
+  {
+    "id": "teruteru-wars",
+    "title": "てるてるウォーズ",
+    "pages": 4,
+    "titles": [
+      "てるてるウォーズ",
+      "遊びの核とプレイヤーの判断",
+      "遊びの流れと具体例",
+      "制作範囲と今後の確認"
+    ],
+    "pptx": "documents/proposals/teruteru-wars_proposal.pptx",
+    "pdf": "files/teruteruwars_proposal.pdf",
+    "links": [
+      {
+        "page": 3,
+        "label": "公開作品をプレイ",
+        "url": "https://kuon-haruto.github.io/portfolio/play/teruteru-wars/",
+        "x": 64,
+        "y": 630,
+        "width": 1100,
+        "height": 40
+      }
+    ]
+  },
+  {
+    "id": "bug-hunter",
+    "title": "バグハンター",
+    "pages": 4,
+    "titles": [
+      "バグハンター",
+      "遊びの核とプレイヤーの判断",
+      "遊びの流れと具体例",
+      "制作範囲と今後の確認"
+    ],
+    "pptx": "documents/proposals/bug-hunter_proposal.pptx",
+    "pdf": "files/mushi-shooting.pdf",
+    "links": [
+      {
+        "page": 3,
+        "label": "公開作品をプレイ",
+        "url": "https://kuon-haruto.github.io/portfolio/play/bug-hunter/",
+        "x": 64,
+        "y": 630,
+        "width": 1100,
+        "height": 40
+      }
+    ]
+  },
+  {
+    "id": "five-minute-dungeon",
+    "title": "5分ダンジョン",
+    "pages": 4,
+    "titles": [
+      "5分ダンジョン",
+      "遊びの核とプレイヤーの判断",
+      "遊びの流れと具体例",
+      "制作範囲と今後の確認"
+    ],
+    "pptx": "documents/proposals/five-minute-dungeon_proposal.pptx",
+    "pdf": "files/FiveMinuteDungeon.pdf",
+    "links": []
+  },
+  {
+    "id": "seibutsu-master",
+    "title": "せいぶつマスター",
+    "pages": 4,
+    "titles": [
+      "せいぶつマスター",
+      "遊びの核とプレイヤーの判断",
+      "遊びの流れと具体例",
+      "制作範囲と今後の確認"
+    ],
+    "pptx": "documents/proposals/seibutsu-master_proposal.pptx",
+    "pdf": "files/seibutsu-master.pdf",
+    "links": []
+  },
+  {
+    "id": "futago",
+    "title": "双子",
+    "pages": 4,
+    "titles": [
+      "双子",
+      "遊びの核とプレイヤーの判断",
+      "遊びの流れと具体例",
+      "制作範囲と今後の確認"
+    ],
+    "pptx": "documents/proposals/futago_proposal.pptx",
+    "pdf": "files/futago_proposal.pdf",
+    "links": [
+      {
+        "page": 3,
+        "label": "公開作品をプレイ",
+        "url": "https://kuon-haruto.github.io/portfolio/play/futago/",
+        "x": 64,
+        "y": 630,
+        "width": 1100,
+        "height": 40
+      }
+    ]
+  },
+  {
+    "id": "line-boundary",
+    "title": "線のこちら側／向こう側",
+    "pages": 4,
+    "titles": [
+      "線のこちら側／向こう側",
+      "遊びの核とプレイヤーの判断",
+      "遊びの流れと具体例",
+      "制作範囲と今後の確認"
+    ],
+    "pptx": "documents/proposals/line-boundary_proposal.pptx",
+    "pdf": "files/line-boundary_proposal.pdf",
+    "links": [
+      {
+        "page": 3,
+        "label": "公開作品をプレイ",
+        "url": "https://kuon-haruto.github.io/portfolio/play/line-boundary/",
+        "x": 64,
+        "y": 630,
+        "width": 1100,
+        "height": 40
+      }
+    ]
+  },
+  {
+    "id": "hanten-assassination",
+    "title": "反転暗殺",
+    "pages": 4,
+    "titles": [
+      "反転暗殺",
+      "遊びの核とプレイヤーの判断",
+      "遊びの流れと具体例",
+      "制作範囲と今後の確認"
+    ],
+    "pptx": "documents/proposals/hanten-assassination_proposal.pptx",
+    "pdf": "files/hantenansatsu_proposal.pdf",
+    "links": [
+      {
+        "page": 3,
+        "label": "公開作品をプレイ",
+        "url": "https://kuon-haruto.github.io/portfolio/play/hanten-assassination/",
+        "x": 64,
+        "y": 630,
+        "width": 1100,
+        "height": 40
+      }
+    ]
   }
 ]

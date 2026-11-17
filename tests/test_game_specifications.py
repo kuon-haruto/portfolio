@@ -47,7 +47,7 @@ class GameSpecificationsTest(unittest.TestCase):
         for game in DATA["games"]:
             path = ROOT / "files" / game["pdf"]
             reader = PdfReader(path)
-            self.assertEqual(len(reader.pages), 3)
+            self.assertEqual(len(reader.pages), 2 + (len(game['changes']) + 1) // 2)
             text = "\n".join(p.extract_text() for p in reader.pages)
             self.assertIn(f'制作人数 {game["team"]}人', text)
             self.assertNotIn("制作期間", text)
@@ -55,6 +55,8 @@ class GameSpecificationsTest(unittest.TestCase):
             self.assertIn("背景・理由", text)
             self.assertIn("変更後", text)
             self.assertIn("影響範囲", text)
+            for change in game['changes']:
+                self.assertIn(change['id'], text)
             with pdfplumber.open(path) as pdf:
                 for page in pdf.pages:
                     self.assertGreater(len(page.extract_text()), 350)

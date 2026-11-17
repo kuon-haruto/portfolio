@@ -1,2 +1,5 @@
 # Preserve generated Unity payload bytes and their recorded checksums.
 play/builds/** -text
+# PDF streams must not be normalized as text on Windows.
+*.pdf binary
+*.pptx binary

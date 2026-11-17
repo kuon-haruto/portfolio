@@ -61,7 +61,7 @@ class Page:
         pdf.setFont("Meiryo", 8)
         pdf.setFillColor(MUTED)
         pdf.drawString(MARGIN, 28, f"資料確認日 {reviewed}  |  制作人数 {game['team']}人")
-        pdf.drawRightString(W - MARGIN, 28, f"{number} / 3")
+        pdf.drawRightString(W - MARGIN, 28, f"{number} / {2 + (len(game['changes']) + 1) // 2}")
 
     def room(self, height):
         if self.y - height < 53:
@@ -153,7 +153,11 @@ def build_game(game, reviewed):
 
     p = Page(pdf, game, 3, "03  変更の経緯と引き継ぎ", reviewed)
     p.text("変更前・背景・変更後・影響範囲を記録する。更新時も過去の判断を消さずに追記し、理由が未確認の変更は区別する。", size=9.5, color=MUTED, gap=10)
-    for change in game["changes"]:
+    for index, change in enumerate(game["changes"]):
+        if index and index % 2 == 0:
+            p.finish()
+            number = 3 + index // 2
+            p = Page(pdf, game, number, f"{number:02}  変更記録と参照資料", reviewed)
         p.heading(change["id"] + "  " + change["title"])
         p.text(change["status"], size=8.7, color=MUTED, gap=5)
         p.table([(label, change[key]) for label, key in [
@@ -169,7 +173,7 @@ def build_game(game, reviewed):
     p.finish()
     pdf.save()
     reader = PdfReader(path)
-    if len(reader.pages) != 3:
+    if len(reader.pages) != 2 + (len(game['changes']) + 1) // 2:
         raise ValueError(f"Unexpected page count: {path}")
     for index, page in enumerate(reader.pages):
         text = page.extract_text()
@@ -182,8 +186,9 @@ def render_review(paths, poppler):
     for path in paths:
         prefix = OUTPUT / path.stem
         subprocess.run([poppler, "-scale-to", "1100", "-png", str(path), str(prefix)], check=True)
-        sheet = Image.new("RGB", (2370, 1120), "#dce1e3")
-        for index in range(3):
+        count = len(PdfReader(path).pages)
+        sheet = Image.new("RGB", (790 * count, 1120), "#dce1e3")
+        for index in range(count):
             with Image.open(OUTPUT / f"{path.stem}-{index + 1}.png") as page:
                 image = ImageOps.contain(page.convert("RGB"), (770, 1100))
                 sheet.paste(image, (10 + index * 790, 10))
@@ -204,7 +209,7 @@ def main():
     if args.publish:
         for path in paths:
             shutil.copyfile(path, ROOT / "files" / path.name)
-    print(f"Validated {len(paths)} documents / {len(paths) * 3} pages. "
+    print(f"Validated {len(paths)} documents / {sum(len(PdfReader(path).pages) for path in paths)} pages. "
           + ("Canonical local PDFs updated." if args.publish else "Drafts ready for visual review."))
 
 

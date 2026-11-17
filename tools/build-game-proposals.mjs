@@ -5,7 +5,7 @@ import { execFileSync } from 'node:child_process';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const runtime = process.env.CODEX_RUNTIME || 'C:/Users/shima/.cache/codex-runtimes/codex-primary-runtime/dependencies';
-const skill = process.env.PRESENTATIONS_SKILL || 'C:/Users/shima/.codex/plugins/cache/openai-primary-runtime/presentations/26.1026.10807/skills/presentations';
+const skill = process.env.PRESENTATIONS_SKILL || 'C:/Users/shima/.codex/plugins/cache/openai-primary-runtime/presentations/26.1116.12010/skills/presentations';
 process.env.RUNTIME_NODE_MODULES ||= path.join(runtime, 'node/node_modules');
 const { Presentation, PresentationFile } = await import(pathToFileURL(path.join(runtime, 'node/node_modules/@oai/artifact-tool/dist/artifact_tool.mjs')));
 const { finalizePresentation } = await import(pathToFileURL(path.join(skill, 'container_tools/artifact_tool_utils.mjs')));
@@ -15,6 +15,8 @@ const font = 'Meiryo';
 const base = 'https://kuon-haruto.github.io/portfolio/';
 const assets = 'documents/proposals/assets/';
 const metadata = [];
+const selectedIds = process.argv.find(arg => arg.startsWith('--only='))?.slice(7).split(',');
+const existingMetadata = selectedIds ? JSON.parse(await fs.readFile(path.join(output, 'manifest.json'), 'utf8')) : [];
 await fs.mkdir(build, { recursive: true });
 
 function deck(id, title, theme, sources) {
@@ -58,6 +60,12 @@ function link(d, s, label, url, x, y, w = 1100) {
   d.links.push({ page: d.p.slides.items.indexOf(s), label, url, x, y, width: w, height: 40 });
 }
 async function save(d) {
+  if (selectedIds && !selectedIds.includes(d.id)) {
+    const previous = existingMetadata.find(item => item.id === d.id);
+    if (!previous) throw new Error(`Missing existing manifest entry: ${d.id}`);
+    metadata.push(previous);
+    return;
+  }
   const dir = path.join(build, d.id);
   await fs.mkdir(dir, { recursive: true });
   const candidatePath = path.join(dir, 'candidate.pptx');
@@ -73,13 +81,13 @@ async function save(d) {
     integrityValidatorPath: path.join(skill, 'container_tools/inspect_presentation_package_integrity.py'),
     layoutValidatorPath: path.join(skill, 'container_tools/inspect_presentation_layout_geometry.py'),
     layoutArgs: ['--expected-slide-size-emu', '12192000,6858000', '--validate-heading-fit'],
-    explicitTotalSlideCount: 6, requiredNativeTableOwnerSlides: [], requiredNativeChartOwnerSlides: [],
+    explicitTotalSlideCount: d.titles.length, requiredNativeTableOwnerSlides: [], requiredNativeChartOwnerSlides: [],
     fontPolicy: { basis: 'design', families: [font] }, verifyArtifactToolImport: true, receiptPath: receipt,
   });
   const pptx = path.join(output, `${d.id}_proposal.pptx`);
   await fs.copyFile(verified, pptx);
   await fs.unlink(verified);
-  const pdf = path.join(root, 'files', `${d.id}_proposal.pdf`);
+  const pdf = path.join(root, 'files', d.pdfName || `${d.id}_proposal.pdf`);
   const candidatePdf = path.join(dir, 'candidate.pdf');
   const command = `
 $ErrorActionPreference = 'Stop'
@@ -98,8 +106,8 @@ try {
   await fs.writeFile(navigation, JSON.stringify({ title: d.title, titles: d.titles, links: d.links }));
   execFileSync(path.join(runtime, 'python/python.exe'), [path.join(root, 'tools/finalize-proposal-pdf.py'), candidatePdf, navigation, pdf], { stdio: 'inherit' });
   execFileSync(path.join(runtime, 'native/poppler/Library/bin/pdftoppm.exe'), ['-scale-to', '1280', '-png', pdf, path.join(dir, 'page')]);
-  metadata.push({ id: d.id, title: d.title, pages: 6, titles: d.titles, pptx: path.relative(root, pptx).replaceAll('\\', '/'), pdf: path.relative(root, pdf).replaceAll('\\', '/'), links: d.links });
-  console.log(`Created ${d.id}: PPTX + PDF, 6 pages`);
+  metadata.push({ id: d.id, title: d.title, pages: d.titles.length, titles: d.titles, pptx: path.relative(root, pptx).replaceAll('\\', '/'), pdf: path.relative(root, pdf).replaceAll('\\', '/'), links: d.links });
+  console.log(`Created ${d.id}: PPTX + PDF, ${d.titles.length} pages`);
 }
 
 const v = deck('v-link-battle', 'V-Link Battle', { bg: '#211E2B', ink: '#FAF8FF', muted: '#C5BDCE', accent: '#FF72B5' }, [
@@ -119,7 +127,7 @@ const v = deck('v-link-battle', 'V-Link Battle', { bg: '#211E2B', ink: '#FAF8FF'
   const s = page(v, '企画の核とプレイヤー体験', '対戦の駆け引きに、配信者らしい「見せ場」を加える');
   await image(s, 'files/game-icons/v-link-battle.png', 64, 193, 340, 340, 'V-Link Battleのタイトルロゴ');
   block(v, s, '想定するプレイヤー', 'VTuberや配信文化に親しみがあり、\n相手との読み合いや対戦を楽しみたい人。', 460, 194, 756, 85);
-  block(v, s, '基本の遊び', '攻撃・ガード・移動で相手のHPを削る。\nそこにアピールを挟み、\n次の攻撃につながる機会を作る。', 460, 363, 756, 112);
+  block(v, s, '企画で目指す遊び', '攻撃・ガード・移動の駆け引きに、\nアピールする隙を探す判断を加える。\n公開版との違いは後のページで示します。', 460, 363, 756, 112);
   text(v, s, '目指す体験：勝つための判断そのものが、キャラクターの見せ場になる。', 64, 590, 1152, 68, 29, v.theme.accent, true);
 }
 {
@@ -127,7 +135,7 @@ const v = deck('v-link-battle', 'V-Link Battle', { bg: '#211E2B', ink: '#FAF8FF'
   await image(s, assets + 'vlink-battle.jpg', 64, 190, 736, 414, '現在掲載している映像の対戦画面。アピールの瞬間を示す画像ではなく、企画ルールの背景として掲載');
   block(v, s, '隙を見つけて魅せる', 'アピール中は無防備。\n成功後の攻撃で\nボルテージを高める。', 842, 191, 374, 115);
   block(v, s, '読み合いの場面', '安全に攻撃を続けるか。\n相手の動きを読んで、\nアピールを挟むか。', 842, 397, 374, 115);
-  text(v, s, 'ボルテージを高め、必殺技の見せ場へつなぐ構想。', 64, 620, 1152, 40, 25, v.theme.accent);
+  text(v, s, '企画上の構想です。上の対戦画面は、アピールの動作を示すものではありません。', 64, 620, 1152, 40, 23, v.theme.accent);
 }
 {
   const s = page(v, '配信を感じさせる画面と演出', 'コメントとウィンドウ風の画面で、デジタルな世界観を伝える');
@@ -192,7 +200,7 @@ const p = deck('sliding-space-parking', 'すべる宇宙駐車場', { bg: '#111D
 {
   const s = page(p, '制作体制と公開先', '制作人数：4人 / 開発環境：Unity 6');
   await image(s, 'files/game-icons/sliding-space-parking.png', 64, 194, 300, 300, '公開アプリのアイコン');
-  block(p, s, '私の担当', '企画立案・整理・画像作成・SE。\n慣性と駐車を組み合わせた遊びをまとめ、\n画面や音の素材づくりにも取り組みました。', 430, 194, 786, 122);
+  block(p, s, '私の担当', '企画立案・整理・画像作成・SE。\nドット絵にChatGPT画像生成を使用し、\n画像・音には生成スクリプトも利用しています。', 430, 194, 786, 122);
   block(p, s, '公開形態', 'iPhone・iPad向けにApp Storeで公開。\nPCではunityroomからブラウザーでプレイできます。', 430, 390, 786, 90);
   link(p, s, 'App Storeで見る', 'https://apps.apple.com/jp/app/id6816609277', 64, 559);
   link(p, s, 'unityroomでプレイ', 'https://unityroom.com/games/sliding-space-parking', 64, 616);
@@ -250,4 +258,59 @@ const c = deck('sanshoku-bunki', '三色の分岐係', { bg: '#F3F5F5', ink: '#2
   link(c, s, 'unityroomで「三色の分岐係」をプレイ', 'https://unityroom.com/games/sansyokunobunkigakari', 64, 594);
 }
 await save(c);
+const reviewed = JSON.parse(await fs.readFile(path.join(output, 'reviewed-proposals.json'), 'utf8'));
+for (const game of reviewed.games) {
+  const d = deck(game.id, game.title, { bg: '#F3F5F5', ink: '#202D36', muted: '#53616D', accent: '#087E83' }, game.sources);
+  d.pdfName = game.pdf;
+  const status = game.team === null ? '企画書のみ / 未制作' : `制作人数：${game.team}人 / Unity`;
+  {
+    const s = page(d, game.title, game.genre);
+    if (game.image || game.conceptImage) {
+      await image(s, game.image || game.conceptImage, 64, 183, 740, 416, game.conceptCaption || '実際のゲーム画面');
+      text(d, s, game.pitch, 846, 199, 370, 190, 35, d.theme.accent, true);
+      text(d, s, status, 846, 444, 370, 70, 23);
+      if (game.conceptCaption) text(d, s, game.conceptCaption, 64, 608, 1152, 32, 19, d.theme.muted);
+      if (game.id === 'seibutsu-master') {
+        text(d, s, '生物の名前', 316, 195, 232, 36, 24);
+        text(d, s, '生物の絵', 340, 318, 200, 40, 26, d.theme.muted);
+        text(d, s, '特徴・ヒント', 316, 486, 232, 36, 24);
+        text(d, s, '属性の色で分類', 316, 536, 232, 36, 22, d.theme.muted);
+      }
+    } else {
+      text(d, s, game.pitch, 64, 215, 1152, 130, 46, d.theme.accent, true);
+      text(d, s, game.overview, 64, 382, 1152, 150, 30);
+      text(d, s, status, 64, 565, 1152, 42, 24);
+    }
+    text(d, s, '企画書作成：島本善太', 64, 642, 1152, 30, 20, d.theme.muted);
+  }
+  {
+    const s = page(d, '遊びの核とプレイヤーの判断', game.pitch);
+    block(d, s, 'どんなゲームか', game.overview, 64, 190, 1152, 110);
+    block(d, s, '想定するプレイヤー', game.audience, 64, 377, 520, 170);
+    block(d, s, '何を選ぶか', game.decision, 668, 377, 548, 205);
+  }
+  {
+    const s = page(d, '遊びの流れと具体例', game.genre);
+    const steps = game.flow.split(' → ');
+    const track = 1152 / steps.length;
+    steps.forEach((step, index) => {
+      const x = 64 + index * track;
+      text(d, s, String(index + 1).padStart(2, '0'), x, 190, track - 20, 48, 36, d.theme.accent, true);
+      text(d, s, step.replace('または', 'または\n'), x, 250, track - 24, 132, 25);
+    });
+    if (game.image) {
+      await image(s, game.image, 64, 398, 520, 264, '実際のゲーム画面');
+      block(d, s, 'この場面の判断', game.example, 632, 398, 584, 208);
+    } else {
+      block(d, s, 'この場面の判断', game.example, 64, 408, 1152, 208);
+    }
+  }
+  {
+    const s = page(d, '制作範囲と今後の確認', status);
+    block(d, s, game.team === null ? '企画で大切にすること' : '私の担当', game.role, 64, 185, 1152, 130);
+    block(d, s, '現在の範囲・未確定事項', game.scope, 64, 388, 1152, 165);
+    if (game.team !== null) link(d, s, '公開作品をプレイ', base + 'play/' + game.id + '/', 64, 630);
+  }
+  await save(d);
+}
 await fs.writeFile(path.join(output, 'manifest.json'), JSON.stringify(metadata, null, 2) + '\n');

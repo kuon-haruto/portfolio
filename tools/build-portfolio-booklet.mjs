@@ -318,11 +318,11 @@ function gamePage(id, title, subtitle) {
   const s = gamePage('line-boundary', '線のこちら側 / 向こう側', 'パズルアクション / 制作人数：4人 / Unity');
   await gameHeading(s, 'line-boundary', '線のこちら側 / 向こう側');
   await image(s, 'files/images/line-boundary-gameplay.png', 64, 184, 704, 396, '境界線を引いて重力の異なる空間を作る画面');
-  label(s, 'どんな遊びか', '線を境に、重力のある領域と\n無重力の領域を作ります。', 814, 180, 400, 84);
+  label(s, 'どんな遊びか', '2点を結ぶ境界線を作り、\n領域の効果を変えて進みます。', 814, 180, 400, 84);
   label(s, '私の担当', '企画・仕様整理・レベルデザイン\nタスク振り分け・素材集め', 814, 326, 400, 85);
   label(s, '企画意図', '用意された道を通るだけでなく、\n線の置き方で攻略方法を\n作り出す楽しさを目指しました。', 814, 470, 400, 114);
   link(s, '線のこちら側 / 向こう側をプレイ', base + 'play/line-boundary/', 64, 619, 640);
-  notes(s, ['src/sections/works.html #game-line-boundary', 'files/line-boundary_proposal.pdf p.3-7', '制作人数は利用者の確認：4人']);
+  notes(s, ['src/sections/works.html #game-line-boundary', 'files/line-boundary_proposal.pdf p.2-4', '制作人数は利用者の確認：4人']);
 }
 {
   const s = page('異なる遊びを考え、形にする', 'チーム制作 / 制作人数：各4人 / Unity');
