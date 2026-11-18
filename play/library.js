@@ -121,7 +121,7 @@
     $('library').hidden = true;
     $('player').hidden = false;
     $('game-title').textContent = game.title;
-    document.title = game.title + ' | 島本善太';
+    document.title = game.title + ' | ゲーム企画';
     $('game-canvas').setAttribute('aria-label', game.title + 'のゲーム画面');
     $('loading-icon').src = url(game.icon);
     if (game.build.graphicsApi === 'WebGPU') {

@@ -121,7 +121,7 @@ const v = deck('v-link-battle', 'V-Link Battle', { bg: '#211E2B', ink: '#FAF8FF'
   await image(s, 'files/images/v-link-battle.jpg', 420, 190, 796, 448, '氷の攻撃とコメントが飛び交う対戦画面');
   text(v, s, '魅せる行動を、\n勝つための\n戦略に。', 64, 211, 346, 218, 46, v.theme.ink, true);
   text(v, s, '攻撃するだけでなく、\n相手の隙にアピール。\n配信の盛り上がりを\n戦いの力へ変える企画。', 64, 441, 346, 150, 25);
-  text(v, s, '制作人数：8人 / Unity\n企画書作成：島本善太', 64, 605, 350, 58, 18, v.theme.muted);
+  text(v, s, '制作人数：8人 / Unity\n企画書作成：ゲーム企画', 64, 605, 350, 58, 18, v.theme.muted);
 }
 {
   const s = page(v, '企画の核とプレイヤー体験', '対戦の駆け引きに、配信者らしい「見せ場」を加える');
@@ -169,7 +169,7 @@ const p = deck('sliding-space-parking', 'すべる宇宙駐車場', { bg: '#111D
 {
   const s = page(p, 'すべる宇宙駐車場', '慣性で滑る船を、逆噴射でぴたりと駐車。');
   await image(s, 'files/images/sliding-space-parking-store-title.jpg', 64, 184, 1152, 440, 'App Store掲載のタイトル画面');
-  text(p, s, 'App Store・unityroom公開 / 制作人数：4人 / Unity / 企画書作成：島本善太', 64, 633, 1152, 34, 22, p.theme.accent);
+  text(p, s, 'App Store・unityroom公開 / 制作人数：4人 / Unity / 企画書作成：ゲーム企画', 64, 633, 1152, 34, 22, p.theme.accent);
 }
 {
   const s = page(p, '身近な「駐車」を、慣性で難しくする', '目的は、宇宙船を駐車枠の中で止めること');
@@ -218,7 +218,7 @@ const c = deck('sanshoku-bunki', '三色の分岐係', { bg: '#F3F5F5', ink: '#2
   await image(s, assets + 'sanshoku-title.png', 64, 186, 664, 442, 'ゲームで使用している三色の分岐係のタイトルロゴ');
   text(c, s, '種類だけでは\n決められない。', 792, 216, 424, 136, 43, c.theme.ink, true);
   text(c, s, '流れてきた品物を見て、\n正しいレーンへ。\n壊れていたら、\n仕分けずに送り返す。', 792, 385, 424, 168, 29);
-  text(c, s, '制作人数：5人 / Unity 6\n企画書作成：島本善太', 792, 590, 424, 66, 22, c.theme.muted);
+  text(c, s, '制作人数：5人 / Unity 6\n企画書作成：ゲーム企画', 792, 590, 424, 66, 22, c.theme.muted);
 }
 {
   const s = page(c, '流れる品物を、その場で判断する', '「何の品物か」と「正常か」を見分ける遊び');
@@ -281,7 +281,7 @@ for (const game of reviewed.games) {
       text(d, s, game.overview, 64, 382, 1152, 150, 30);
       text(d, s, status, 64, 565, 1152, 42, 24);
     }
-    text(d, s, '企画書作成：島本善太', 64, 642, 1152, 30, 20, d.theme.muted);
+    text(d, s, '企画書作成：ゲーム企画', 64, 642, 1152, 30, 20, d.theme.muted);
   }
   {
     const s = page(d, '遊びの核とプレイヤーの判断', game.pitch);

@@ -11,3 +11,5 @@ games/bug-hunter/[Uu]serSettings/
 games/bug-hunter/Builds/
 games/bug-hunter/*.csproj
 games/bug-hunter/*.sln
+documents/portfolio/*_ポートフォリオ.pdf
+documents/portfolio/*_ポートフォリオ.pptx

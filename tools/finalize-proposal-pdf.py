@@ -25,7 +25,7 @@ def finalize(source, navigation_path, destination):
         rect = (x * width / 1280, (720 - y - h) * height / 720,
                 (x + w) * width / 1280, (720 - y) * height / 720)
         writer.add_annotation(item["page"], Link(rect=rect, url=item["url"]))
-    writer.add_metadata({"/Title": navigation["title"] + " 企画書", "/Author": "島本善太",
+    writer.add_metadata({"/Title": navigation["title"] + " 企画書", "/Author": "ゲーム企画",
                          "/Subject": "ゲームコンセプト・プレイヤー体験・制作体制"})
     with Path(destination).open("wb") as stream:
         writer.write(stream)

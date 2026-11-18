@@ -44,7 +44,7 @@ async function prepare() {
       frameworkUrl: `${folder}/Build/${find('.framework.js.unityweb')}`,
       codeUrl: `${folder}/Build/${find('.wasm.unityweb')}`,
       streamingAssetsUrl: `${folder}/StreamingAssets`,
-      companyName: 'Zenta Shimamoto', productName: 'Bug Hunter', productVersion: '0.3.0', unityVersion: '6000.0.54f1', simplifiedEffects: 0
+      companyName: 'Game Planner', productName: 'Bug Hunter', productVersion: '0.3.0', unityVersion: '6000.0.54f1', simplifiedEffects: 0
     },
     downloadBytes: integrity.reduce((sum, file) => sum + file.bytes, 0), integrity
   };

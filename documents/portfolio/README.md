@@ -5,8 +5,8 @@
 
 ## 更新先
 
-- 閲覧用：`島本善太_ポートフォリオ.pdf`
-- 編集用：`島本善太_ポートフォリオ.pptx`
+- 閲覧用：`portfolio.pdf`
+- 編集用：`portfolio.pptx`
 - 再生成元：`../../tools/build-portfolio-booklet.mjs`
 - 検証・書き出し作業：`../../launcher/test-output/portfolio-booklet/`（Git管理外、再利用）
 

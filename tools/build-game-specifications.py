@@ -126,7 +126,7 @@ def build_game(game, reviewed):
     path = OUTPUT / game["pdf"]
     pdf = canvas.Canvas(str(path), pagesize=A4)
     pdf.setTitle(game["title"] + " ゲーム仕様書")
-    pdf.setAuthor("島本善太")
+    pdf.setAuthor("ゲーム企画")
     pdf.setSubject("現行ルール・確認項目・仕様変更の経緯と引き継ぎ")
 
     p = Page(pdf, game, 1, "01  遊び方と現行ルール", reviewed)

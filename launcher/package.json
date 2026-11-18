@@ -2,8 +2,8 @@
   "name": "zenta-game-library",
   "version": "0.2.0",
   "private": true,
-  "description": "アプリインストーラー - 島本善太のゲームライブラリ",
-  "author": "Zenta Shimamoto",
+  "description": "アプリインストーラー - ゲーム企画のゲームライブラリ",
+  "author": "Game Planner",
   "main": "src/main.cjs",
   "scripts": {
     "postinstall": "node node_modules/electron/install.js",
@@ -34,7 +34,7 @@
   },
   "packageManager": "pnpm@11.25.0",
   "build": {
-    "appId": "jp.zentashimamoto.gamelibrary",
+    "appId": "jp.gameplanner.gamelibrary",
     "productName": "アプリインストーラー",
     "asar": true,
     "beforePack": "./tools/verify-bundles.cjs",

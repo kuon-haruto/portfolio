@@ -129,7 +129,7 @@ function page(title, subtitle = '', color = C.blue) {
   slides.push(slide);
   titles.push(title);
   text(slide, sectionFor(number), 64, 21, 600, 22, 14, { bold: true, color: accent });
-  text(slide, 'ZENTA SHIMAMOTO', 920, 21, 296, 22, 14, { color: C.muted, align: 'right' });
+  text(slide, 'GAME PLANNER', 920, 21, 296, 22, 14, { color: C.muted, align: 'right' });
   if (title) text(slide, title, 64, 54, 1152, 60, 38, { bold: true });
   if (subtitle) text(slide, subtitle, 64, 116, 1152, 32, 20, { color: C.muted });
   band(slide, 64, 157, 1152, 1, dark ? '#3A4B4D' : C.rule);
@@ -161,12 +161,12 @@ function gamePage(id, title, subtitle) {
 
 // 目次と強みを入口にし、代表作で経験を具体的に伝える。
 {
-  const s = presentation.slides.add(); s.background.fill = C.dark; themes.set(s, { dark: true, accent: C.lime }); slides.push(s); titles.push('島本善太 ポートフォリオ');
+  const s = presentation.slides.add(); s.background.fill = C.dark; themes.set(s, { dark: true, accent: C.lime }); slides.push(s); titles.push('ゲーム企画 ポートフォリオ');
   text(s, 'GAME PLANNER / 2028', 64, 61, 510, 30, 19, { color: C.lime, bold: true });
   text(s, 'PORT\nFOLIO', 58, 132, 505, 220, 86, { bold: true });
   text(s, '遊びの仕組みを考え、\n遊べる形へ。', 64, 395, 500, 100, 32, { bold: true });
   band(s, 64, 525, 432, 1, '#526366');
-  text(s, '島本 善太', 64, 551, 450, 60, 39, { bold: true });
+  text(s, 'ゲーム企画', 64, 551, 450, 60, 39, { bold: true });
   text(s, 'ゲームプランナー志望 / 2028年卒業予定', 64, 617, 510, 31, 20, { color: C.muted });
   await image(s, 'files/images/sliding-space-parking-store-title.jpg', 580, 40, 636, 298, 'App Store公開作 すべる宇宙駐車場');
   text(s, '01  すべる宇宙駐車場', 580, 346, 636, 30, 24, { color: C.mint, bold: true });
@@ -453,14 +453,14 @@ function gamePage(id, title, subtitle) {
   notes(s, ['公開URLと資料ファイル名：src/sections/works.html, proposals.html, specifications.html', '三色の分岐係は企画書のみリンク。仕様書の公開ファイルは未確認のため掲載しない。']);
 }
 {
-  const s = page('島本 善太', 'しまもと ぜんた / ゲームプランナー志望');
+  const s = page('ゲーム企画', 'GAME PLANNER / ゲームプランナー志望');
   text(s, '自分の考えを、\nわかりやすく伝えられる\nプランナーへ。', 64, 203, 680, 174, 40, { bold: true, color: C.lime });
   text(s, '独学で企画を学び、企画書や仕様書に\nまとめることに取り組んできました。\nチーム制作の経験を活かし、自分の判断を\n説明しながら改善を進めていきたいです。', 64, 428, 660, 158, 24);
   band(s, 750, 201, 1, 420, '#3A4B4D');
   text(s, '所属', 800, 203, 416, 32, 20, { color: C.mint, bold: true });
   text(s, '札幌デザイン＆テクノロジー専門学校\nスーパーゲームクリエーター専攻\n4年制 / 2024年入学・2028年卒業予定', 800, 247, 416, 116, 21);
   text(s, '連絡先', 800, 414, 416, 32, 20, { color: C.mint, bold: true });
-  link(s, 'shimachan.z@icloud.com', 'mailto:shimachan.z@icloud.com', 800, 461, 416, 23);
+  link(s, '制作作品を見る', 'https://kuon-haruto.github.io/portfolio/#works', 800, 461, 416, 23);
   text(s, 'Webポートフォリオ', 800, 535, 416, 32, 20, { color: C.mint, bold: true });
   link(s, 'kuon-haruto.github.io/portfolio/', base, 800, 580, 416, 20);
   notes(s, ['src/sections/about.html', 'src/sections/contact.html']);
@@ -477,7 +477,7 @@ for (let i = 0; i < slides.length; i++) {
   const s = slides[i];
   const dark = themes.get(s)?.dark;
   band(s, 64, 676, 1152, 1, dark ? '#3A4B4D' : C.rule);
-  text(s, 'ZENTA SHIMAMOTO / PORTFOLIO', 64, 687, 700, 22, 12, { color: C.muted });
+  text(s, 'GAME PLANNER / PORTFOLIO', 64, 687, 700, 22, 12, { color: C.muted });
   text(s, `${String(i + 1).padStart(2, '0')} / ${slides.length}`, 1128, 683, 88, 25, 17, { color: C.muted, align: 'right', bold: true });
   if (i + 1 < slides.length) {
     text(s, '次のページへ', 945, 686, 150, 23, 14, { color: C.muted, align: 'right' });
@@ -528,7 +528,7 @@ execFileSync('powershell.exe', ['-NoProfile', '-Command', exportPdfCommand], {
 }
 
 if (!process.argv.includes('--draft')) {
-  const finalPath = path.join(output, '島本善太_ポートフォリオ.pptx');
+  const finalPath = path.join(output, 'portfolio.pptx');
   const verifiedPath = path.join(build, 'validated', 'portfolio.pptx');
   const receiptPath = path.join(build, 'presentation.validation.json');
   await fs.mkdir(path.dirname(verifiedPath), { recursive: true });
@@ -546,6 +546,6 @@ if (!process.argv.includes('--draft')) {
   });
   await fs.copyFile(verifiedPath, finalPath);
   await fs.unlink(verifiedPath);
-  execFileSync(python, [path.join(root, 'tools/finalize-portfolio-pdf.py'), build, path.join(output, '島本善太_ポートフォリオ.pdf')], { env: { ...process.env, PYTHONIOENCODING: 'utf-8' }, stdio: 'inherit' });
+  execFileSync(python, [path.join(root, 'tools/finalize-portfolio-pdf.py'), build, path.join(output, 'portfolio.pdf')], { env: { ...process.env, PYTHONIOENCODING: 'utf-8' }, stdio: 'inherit' });
   console.log('Final portfolio files exported');
 }

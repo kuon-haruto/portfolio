@@ -9,7 +9,7 @@ from pypdf import PdfReader
 
 
 ROOT = Path(__file__).resolve().parents[1]
-BOOKLET = ROOT / 'documents/portfolio/島本善太_ポートフォリオ'
+BOOKLET = ROOT / 'documents/portfolio/portfolio'
 NS = {'a': 'http://schemas.openxmlformats.org/drawingml/2006/main'}
 
 

@@ -55,7 +55,7 @@ public static class BuildGame
         var importer=(TextureImporter)AssetImporter.GetAtPath(Root+"/Art/bug-hunter.png");importer.maxTextureSize=512;importer.mipmapEnabled=false;importer.textureCompression=TextureImporterCompression.Compressed;importer.SaveAndReimport();
         EditorSceneManager.SaveScene(scene,Root+"/Scenes/Woodland.unity");
         EditorBuildSettings.scenes=new[]{new EditorBuildSettingsScene(Root+"/Scenes/Woodland.unity",true)};
-        PlayerSettings.companyName="Zenta Shimamoto";PlayerSettings.productName="Bug Hunter";PlayerSettings.bundleVersion="0.1.0";
+        PlayerSettings.companyName="Game Planner";PlayerSettings.productName="Bug Hunter";PlayerSettings.bundleVersion="0.1.0";
         PlayerSettings.defaultScreenWidth=1280;PlayerSettings.defaultScreenHeight=720;PlayerSettings.runInBackground=false;
         PlayerSettings.colorSpace=ColorSpace.Gamma;PlayerSettings.SetIconsForTargetGroup(BuildTargetGroup.Unknown,new[]{game.icon});
         PlayerSettings.WebGL.initialMemorySize=64;PlayerSettings.WebGL.maximumMemorySize=256;

@@ -28,7 +28,7 @@ for item in navigation["links"]:
     target = {"url": item["url"]} if "url" in item else {"target_page_index": item["targetPage"]}
     writer.add_annotation(item["page"], Link(rect=rect, **target))
 
-writer.add_metadata({"/Title": "島本善太 ポートフォリオ", "/Author": "島本善太", "/Subject": "ゲームプランナー志望 制作作品・企画・担当内容"})
+writer.add_metadata({"/Title": "ゲーム企画 ポートフォリオ", "/Author": "ゲーム企画", "/Subject": "ゲームプランナー志望 制作作品・企画・担当内容"})
 with output.open("wb") as stream:
     writer.write(stream)
 

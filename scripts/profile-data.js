@@ -16,7 +16,7 @@ const profileQA = [
   {
     question: 'どんな人が作ったの？',
     answer:
-      'このポートフォリオの制作者は島本善太（しまもとぜんた）さんです。ゲームプランナーを目指して勉強中です。',
+      'ゲームプランナーを目指して勉強中です。',
   },
   {
     question: '学校はどこ？',
@@ -81,7 +81,7 @@ const profileQA = [
   {
     question: '連絡先は？',
     answer:
-      'ご連絡は shimachan.z@icloud.com までお願いします。Contactセクションにも記載があります。GitHubは https://github.com/kuon-haruto です。',
+      '制作作品と担当内容は作品一覧でご覧いただけます。',
   },
   {
     question: 'きみは誰？',

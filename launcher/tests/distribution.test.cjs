@@ -7,7 +7,7 @@ const portable = require('../electron-builder.portable.cjs');
 
 test('both distributions keep the application identity and use dedicated branding', () => {
   assert.equal(pkg.name, 'zenta-game-library');
-  assert.equal(pkg.build.appId, 'jp.zentashimamoto.gamelibrary');
+  assert.equal(pkg.build.appId, 'jp.gameplanner.gamelibrary');
   assert.equal(pkg.build.productName, 'アプリインストーラー');
   assert.equal(portable.productName, pkg.build.productName);
   assert.equal(pkg.build.win.icon, 'assets/app-installer.png');
