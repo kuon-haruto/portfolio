@@ -1,0 +1,75 @@
+[
+  {
+    "name": "desktop",
+    "mode": "title",
+    "width": 1440,
+    "reduced": false,
+    "animated": true,
+    "pixelsChanged": true,
+    "pointerLook": true,
+    "stableHitTargets": true,
+    "errors": []
+  },
+  {
+    "name": "desktop",
+    "mode": "home",
+    "width": 1440,
+    "reduced": false,
+    "animated": true,
+    "pixelsChanged": true,
+    "pointerLook": true,
+    "stableHitTargets": true,
+    "errors": []
+  },
+  {
+    "name": "mobile",
+    "mode": "title",
+    "width": 360,
+    "reduced": false,
+    "animated": true,
+    "pixelsChanged": true,
+    "pointerLook": true,
+    "stableHitTargets": true,
+    "errors": []
+  },
+  {
+    "name": "mobile",
+    "mode": "home",
+    "width": 360,
+    "reduced": false,
+    "animated": true,
+    "pixelsChanged": true,
+    "pointerLook": true,
+    "stableHitTargets": true,
+    "errors": []
+  },
+  {
+    "name": "reduced",
+    "mode": "title",
+    "width": 360,
+    "reduced": true,
+    "animated": false,
+    "pixelsChanged": false,
+    "pointerLook": true,
+    "stableHitTargets": true,
+    "errors": []
+  },
+  {
+    "name": "reduced",
+    "mode": "home",
+    "width": 360,
+    "reduced": true,
+    "animated": false,
+    "pixelsChanged": false,
+    "pointerLook": true,
+    "stableHitTargets": true,
+    "errors": []
+  },
+  {
+    "name": "additional-coverage",
+    "iconNavigation": true,
+    "cleanup": true,
+    "idleInvitation": true,
+    "keyboardGreeting": true
+  }
+]
