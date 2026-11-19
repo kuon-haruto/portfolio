@@ -29,21 +29,35 @@ export function mount(stage,{mode='home'}={}){
    const icon=root.querySelector('.puppet-icon'),cta=root.querySelector('.puppet-cta'),img=icon.querySelector('img');
    icon.href=cta.href='#'+work[0];img.src=new URL('../../../../files/game-icons/'+work[1]+'.png',import.meta.url);img.alt=work[2];icon.setAttribute('aria-label',work[2]+'の作品を見る');root.dataset.work=work[0];
   }
+  const ease=x=>x*x*(3-2*x);
+  const reclaim=!home||still?0:cycle>16.8?ease((cycle-16.8)/1.2):t>=18&&cycle<1.2?1-ease(cycle/1.2):0;
+  if(home){
+   const picture=root.querySelector('.puppet-icon img');
+   picture.style.transform='translateY('+reclaim*13+'%) scale('+(1-reclaim*.18)+')';
+   picture.style.opacity=String(1-reclaim);
+  }
   if(t>until)speech.textContent=invite?'これ、遊んでみて！':home?work[2]:'';
   actors.forEach(a=>{const sign=a.i?-1:1,elapsed=t-a.tap,wave=!still&&elapsed>=0&&elapsed<2.7,breath=still?0:Math.sin(t*1.8+a.i*.35),lean=still?0:Math.sin(t*.7+a.i*.6)*1.2+(wave?Math.sin(elapsed*2)*2:0);a.look+=( (pointing?Math.max(-1,Math.min(1,(px-a.x)/180)):sign*.4)-a.look)*Math.min(1,dt*7||1);a.lag+=(lean-a.lag)*Math.min(1,dt*3||1);
-   set(a.rig,`translate(${a.x} ${12+breath*1.3})`);set(a.char,`rotate(${lean} 0 320)`);set(a.head,`translate(${a.look*2} ${breath*.5}) rotate(${a.look*2+lean*.5} 0 195)`);set(a.hair,`rotate(${still?0:(lean-a.lag)*2+Math.sin(t*1.7-a.i)*.7} 0 55)`);
+   const reveal=offset=>ease(Math.max(0,Math.min(1,(t-a.i*.48-offset)/1.35)));
+   const peek=home||still?0:1-reveal(.20), faceLead=home||still?0:reveal(0)-reveal(.34);
+   const x=a.x-sign*(small?48:96)*peek;
+   set(a.rig,`translate(${x} ${12+breath*1.3+peek*12})`);set(a.char,`rotate(${lean+sign*peek*6} 0 320)`);set(a.head,`translate(${a.look*2+sign*faceLead*18} ${breath*.5}) rotate(${a.look*2+lean*.5+sign*faceLead*9} 0 195)`);set(a.hair,`rotate(${still?0:(lean-a.lag)*2+Math.sin(t*1.7-a.i)*.7-sign*faceLead*5} 0 55)`);
+   if(!home)a.hit.style.left=`${x/w*100-(small?14.5:11)}%`;
    const phase=(t+a.i*.13)%5.4,blink=still?1:phase<.16?Math.max(.06,Math.abs(phase-.08)/.08):1;
    a.head.querySelectorAll('[data-eye]').forEach(e=>set(e,`scale(1 ${blink})`));a.head.querySelectorAll('[data-lid]').forEach(e=>e.setAttribute('opacity',blink<.3?'1':'0'));a.head.querySelectorAll('[data-pupil]').forEach(e=>set(e,`translate(${a.look*3} ${pointing?Math.max(-2,Math.min(2,(py-130)/100)):0})`));
    a.head.querySelector('[data-mouth]').setAttribute('d',wave||invite?'M-10 170Q2 190 17 169Q4 176-10 170Z':'M-10 172Q3 181 17 169');a.head.querySelector('[data-mouth]').setAttribute('fill',wave||invite?'#9f596e':'none');
-   const inner=home?{x:sign*104,y:139+breath*.7}:{x:sign*58,y:286};
+   const inner=home?{x:sign*(104-19*reclaim),y:139+breath*.7+22*reclaim}:{x:sign*58,y:286};
    poseArm(a.arms[1],sign*64,231,inner.x,inner.y,sign,home?-sign*95:sign*35);
    const outer=wave?{x:-sign*(100+Math.sin(elapsed*10)*13),y:123+Math.sin(elapsed*10)*6}:invite&&!still?{x:-sign*115,y:213+Math.sin(t*5)*10}:home?{x:sign*106,y:232}:{x:-sign*88,y:344};
    poseArm(a.arms[0],-sign*66,231,outer.x,outer.y,home&&!wave&&!invite?sign:-sign,wave?sign*14:home?-sign*80:0);
    stage.dataset[a.id+'State']=wave?'wave':invite?'invite':'presenting';
   });const base=svg.getCTM();if(base){const inverse=base.inverse();palms.forEach(({source,copy})=>{const m=inverse.multiply(source.getCTM());set(copy,`matrix(${m.a} ${m.b} ${m.c} ${m.d} ${m.e} ${m.f})`)})}stage.dataset.puppetFrame=String(Math.round(t*60));
  }
- function tick(now){if(dead)return;const dt=Math.min(.05,(now-last)/1000||0);last=now;if(!media.matches)t+=dt;draw(dt);if(!media.matches)frame=requestAnimationFrame(tick)}
- function motion(){cancelAnimationFrame(frame);last=0;draw(0);if(!media.matches)frame=requestAnimationFrame(tick)}
+ const pause=document.createElement('button');pause.type='button';pause.className='host-motion';root.append(pause);
+ let paused=sessionStorage.getItem('host-motion')==='paused';
+ function tick(now){if(dead||paused||media.matches)return;const dt=last?Math.min(.05,(now-last)/1000):0;last=now;t+=dt;draw(dt);frame=requestAnimationFrame(tick)}
+ function motion(){cancelAnimationFrame(frame);last=0;pause.hidden=media.matches;pause.textContent=paused?'▶':'Ⅱ';pause.setAttribute('aria-label',pause.title=paused?'キャラクターの動きを再開':'キャラクターの動きを一時停止');draw(0);if(!paused&&!media.matches&&!document.hidden)frame=requestAnimationFrame(tick)}
+ pause.addEventListener('click',()=>{paused=!paused;sessionStorage.setItem('host-motion',paused?'paused':'running');motion()},{signal:events.signal});
  media.addEventListener('change',motion,{signal:events.signal});document.addEventListener('visibilitychange',()=>{cancelAnimationFrame(frame);last=0;if(!document.hidden)motion()},{signal:events.signal});
  draw(0);motion();stage.dataset.puppetReady='true';
  return ()=>{dead=true;cancelAnimationFrame(frame);resize.disconnect();events.abort();root.remove();delete stage.dataset.puppetReady;delete stage.dataset.puppetFrame;delete stage.dataset.ameState;delete stage.dataset.teramiState;delete stage.dataset.reaction};

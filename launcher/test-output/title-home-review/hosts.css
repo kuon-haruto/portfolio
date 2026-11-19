@@ -5,3 +5,7 @@
 @media(max-width:700px){.intro{min-height:355px;align-content:start;padding-top:12px}.intro h1{font-size:25px}.title-hosts{top:140px}.home-hosts#ame-stage{height:220px}}
 .cats a:first-child:not([aria-current]){color:#92c4ff}
 .cats a[aria-current]{color:#43dfc2;text-decoration:underline;text-underline-offset:5px}
+.host-motion{position:absolute;right:8px;bottom:8px;z-index:8;pointer-events:auto;width:36px;height:36px;padding:0;background:#0c1226;color:white;border:1px solid #64809f}
+.marked-screen .pin{transform:translate(-50%,-50%)}
+.marked-screen .pin[aria-pressed=true]{background:#165f62}
+.detail .links[hidden],.detail .pin[hidden]{display:none}

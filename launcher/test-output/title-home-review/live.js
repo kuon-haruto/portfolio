@@ -42,6 +42,18 @@ if(r==='futago'||r==='line-boundary'){
  view.innerHTML=`<article class="detail"><a href="#games">← 制作ゲーム一覧へ</a><p class="key">${twins?'つなぐ。':'分ける。'}</p><h1>${title}</h1><p>${twins?'兄弟のコマンド行動とリンクを組み合わせる戦略バトル。':'2点を結ぶ境界線で重力の違う領域を作るパズルアクション。'}</p><p><b>私の担当：</b>企画・タスク振り分け・仕様整理・${twins?'システム設計':'レベルデザイン'}・素材集め　｜　${twins?6:4}人制作</p><img class="photo" src="${files}images/${r}-gameplay.png" alt="${title}のプレイ画面"><div class="links"><button>① ${twins?'接続先':'境界'}</button><button>② ${twins?'行動順':'領域'}</button></div><p class="memo" aria-live="polite"></p><div class="links">${btn('../../../play/'+r+'/','遊ぶ',true)}<a href="${files}${twins?'futago_spec.pdf#page=3':'kochiratomukou_spec.pdf'}">仕様書を読む</a><a href="#home">ホームへ戻る</a></div></article>`;
  const memo=view.querySelector('.memo');memo.textContent=notes[0];view.querySelectorAll('.detail button').forEach((b,i)=>b.onclick=()=>memo.textContent=notes[i]);
 }
+if(r==='futago'||r==='line-boundary'){
+ const twins=r==='futago',img=view.querySelector('.photo'),controls=img.nextElementSibling,memo=controls.nextElementSibling;
+ const wrap=document.createElement('div');wrap.className='annot marked-screen';img.before(wrap);wrap.append(img);
+ const labels=twins?['接続先を考える兄弟','現在のターン表示']:['2点を結ぶ境界線','ゴール側の足場'];
+ const points=twins?[[25,42],[72,17]]:[[46,60],[86,61]];
+ const pins=[...controls.children].map((button,i)=>{
+  const pin=document.createElement('button');pin.className='pin';pin.textContent=i+1;pin.setAttribute('aria-label',(i+1)+' '+labels[i]);pin.style.left=points[i][0]+'%';pin.style.top=points[i][1]+'%';wrap.append(pin);
+  pin.onclick=()=>button.click();button.addEventListener('click',()=>pins.forEach((p,j)=>p.setAttribute('aria-pressed',String(i===j))));return pin
+ });
+ pins[0].setAttribute('aria-pressed','true');const toggle=document.createElement('button');toggle.textContent='画面だけ見る';memo.after(toggle);
+ toggle.onclick=()=>{memo.hidden=!memo.hidden;controls.hidden=memo.hidden;pins.forEach(p=>p.hidden=memo.hidden);toggle.textContent=memo.hidden?'企画メモを見る':'画面だけ見る'};
+}
 if(r==='title'||r==='home'){
  const intro=view.querySelector('.intro');
  const stage=view.querySelector('#ame-stage')||document.createElement('div');

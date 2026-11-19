@@ -1,0 +1,32 @@
+{
+  "pages": 22,
+  "modified_pages": [
+    5,
+    8,
+    11,
+    13,
+    14,
+    15,
+    16,
+    17
+  ],
+  "games": 9,
+  "original_links": 67,
+  "preview_links": 68,
+  "missing_links": [],
+  "restored_next_link": "5 -> 6",
+  "untouched_page_streams": 14,
+  "canonical_sha256": "abcc15c89cdd20e2c760d65e5180d6e0439169eb4f5e3ab2d644bb06221c8cb2",
+  "source_unchanged": true,
+  "render": "Actual final PDF / Poppler / 1440px",
+  "evidence": [
+    "page-05.png",
+    "page-08.png",
+    "page-11.png",
+    "page-13.png",
+    "page-14.png",
+    "page-15.png",
+    "page-16.png",
+    "page-17.png"
+  ]
+}
