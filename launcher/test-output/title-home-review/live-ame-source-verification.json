@@ -1,0 +1,72 @@
+{
+  "sourcePrefab": "D:/Vlink/Assets/TechC/VBattle/Models/Character/Ame/Ame_liltoon.prefab",
+  "sourceMeshes": [
+    "D:\\Vlink\\Assets\\TechC\\VBattle\\Models\\Character\\Ame\\VRM_data\\Ame.Meshes\\robe.baked.asset",
+    "D:\\Vlink\\Assets\\TechC\\VBattle\\Models\\Character\\Ame\\VRM_data\\Ame.Meshes\\Hair.baked.asset",
+    "D:\\Vlink\\Assets\\TechC\\VBattle\\Models\\Character\\Ame\\VRM_data\\Ame.Meshes\\Pants.baked.asset",
+    "D:\\Vlink\\Assets\\TechC\\VBattle\\Models\\Character\\Ame\\VRM_data\\Ame.Meshes\\Body.baked.asset",
+    "D:\\Vlink\\Assets\\TechC\\VBattle\\Models\\Character\\Ame\\VRM_data\\Ame.Meshes\\snow.baked.asset",
+    "D:\\Vlink\\Assets\\TechC\\VBattle\\Models\\Character\\Ame\\VRM_data\\Ame.Meshes\\Tops.baked.asset",
+    "D:\\Vlink\\Assets\\TechC\\VBattle\\Models\\Character\\Ame\\VRM_data\\Ame.Meshes\\Face.baked.asset"
+  ],
+  "sourceHash": "f7a7af9b0df9ebb6f2a8ded8ac247ad4ccdcce7b96d348910a91aa6bc2fb19cb",
+  "webHash": "f7a7af9b0df9ebb6f2a8ded8ac247ad4ccdcce7b96d348910a91aa6bc2fb19cb",
+  "exactMatch": true,
+  "meshes": [
+    {
+      "name": "robe.baked",
+      "vertices": 3244,
+      "triangles": 5346
+    },
+    {
+      "name": "Hair.baked",
+      "vertices": 17108,
+      "triangles": 21504
+    },
+    {
+      "name": "Pants.baked",
+      "vertices": 9137,
+      "triangles": 14076
+    },
+    {
+      "name": "Body.baked",
+      "vertices": 4154,
+      "triangles": 6719
+    },
+    {
+      "name": "snow.baked",
+      "vertices": 2336,
+      "triangles": 2182
+    },
+    {
+      "name": "Tops.baked",
+      "vertices": 6655,
+      "triangles": 10596
+    },
+    {
+      "name": "Face.baked",
+      "vertices": 4281,
+      "triangles": 7407
+    }
+  ],
+  "method": "Fresh read-only Unity YAML extraction, all source extraction writes intercepted. Full JSON deep equality and texture byte equality checked.",
+  "limitations": [
+    "Source is the prefab-referenced baked Unity Mesh assets, not a recovered .vrm or character FBX.",
+    "Both panels use the same Three.js MeshStandardMaterial and source main textures. This is NOT an original Unity/lilToon shader comparison.",
+    "Original lilToon outlines, shader effects, blendshape expressions, spring-bone physics and original animation clips are not reproduced. Gait and presentation pose are authored for this prototype."
+  ],
+  "video": {
+    "programs": [],
+    "stream_groups": [],
+    "streams": [
+      {
+        "width": 960,
+        "height": 640,
+        "nb_frames": "142"
+      }
+    ],
+    "format": {
+      "duration": "6.333333"
+    }
+  }
+}

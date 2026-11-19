@@ -1,0 +1,29 @@
+[
+  {
+    "name": "desktop",
+    "pixels": {
+      "count": 11497,
+      "total": 96000
+    },
+    "movingPixels": true,
+    "menuUsable": true,
+    "journey": "title -> home -> wave -> offer -> parking -> home -> reclaim -> leave",
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "name": "mobile",
+    "pixels": {
+      "count": 4553,
+      "total": 36000
+    },
+    "movingPixels": true,
+    "menuUsable": true,
+    "journey": "title -> home -> wave -> offer -> parking -> home -> reclaim -> leave",
+    "overflow": false,
+    "errors": []
+  },
+  {
+    "reducedMotion": "static offer, text greeting, working icon"
+  }
+]
