@@ -23,7 +23,13 @@ export function mount(stage,{mode='home'}={}){
  function poseArm(g,sx,sy,tx,ty,bend,handAngle){const dx=tx-sx,dy=ty-sy,d=Math.min(187,Math.max(25,Math.hypot(dx,dy))),theta=Math.atan2(dy,dx),alpha=Math.acos((d*d+96*96-92*92)/(2*d*96)),a=theta+bend*alpha,ex=sx+Math.cos(a)*96,ey=sy+Math.sin(a)*96,b=Math.atan2(ty-ey,tx-ex);set(g,`translate(${sx} ${sy}) rotate(${a*180/Math.PI-90})`);set(g.querySelector('[data-fore]'),`translate(0 96) rotate(${(b-a)*180/Math.PI})`);set(g.querySelector('[data-hand]'),`translate(0 92) rotate(${handAngle-(b*180/Math.PI-90)}) scale(.7)`)}
  function draw(dt){
   const still=media.matches,cycle=t%18,invite=home&&cycle>12&&cycle<15;
-  if(t>until)speech.textContent=invite?'ふたりのおすすめ、見てみる？':home?'すべる宇宙駐車場':'';
+  const works=[['parking','sliding-space-parking','すべる宇宙駐車場'],['v-link-battle','v-link-battle','V-Link Battle'],['sanshoku-bunki','sanshoku-bunki','三色の分岐係']];
+  const work=works[Math.floor(t/18)%works.length];
+  if(home&&root.dataset.work!==work[0]){
+   const icon=root.querySelector('.puppet-icon'),cta=root.querySelector('.puppet-cta'),img=icon.querySelector('img');
+   icon.href=cta.href='#'+work[0];img.src=new URL('../../../../files/game-icons/'+work[1]+'.png',import.meta.url);img.alt=work[2];icon.setAttribute('aria-label',work[2]+'の作品を見る');root.dataset.work=work[0];
+  }
+  if(t>until)speech.textContent=invite?'これ、遊んでみて！':home?work[2]:'';
   actors.forEach(a=>{const sign=a.i?-1:1,elapsed=t-a.tap,wave=!still&&elapsed>=0&&elapsed<2.7,breath=still?0:Math.sin(t*1.8+a.i*.35),lean=still?0:Math.sin(t*.7+a.i*.6)*1.2+(wave?Math.sin(elapsed*2)*2:0);a.look+=( (pointing?Math.max(-1,Math.min(1,(px-a.x)/180)):sign*.4)-a.look)*Math.min(1,dt*7||1);a.lag+=(lean-a.lag)*Math.min(1,dt*3||1);
    set(a.rig,`translate(${a.x} ${12+breath*1.3})`);set(a.char,`rotate(${lean} 0 320)`);set(a.head,`translate(${a.look*2} ${breath*.5}) rotate(${a.look*2+lean*.5} 0 195)`);set(a.hair,`rotate(${still?0:(lean-a.lag)*2+Math.sin(t*1.7-a.i)*.7} 0 55)`);
    const phase=(t+a.i*.13)%5.4,blink=still?1:phase<.16?Math.max(.06,Math.abs(phase-.08)/.08):1;

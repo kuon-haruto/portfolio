@@ -1,0 +1,304 @@
+{
+  "base": "http://127.0.0.1:4188/launcher/test-output/title-home-review/",
+  "checkedAt": "2026-11-19T13:37:34.576Z",
+  "routes": [
+    {
+      "id": "v-link-battle",
+      "width": 1440,
+      "firstBack": true,
+      "overflow": false,
+      "memoBelow": true,
+      "memoCount": 1,
+      "pins": [
+        {
+          "x": 46.998697916666664,
+          "y": 62.99768518518518,
+          "inside": true
+        },
+        {
+          "x": 66.99869791666667,
+          "y": 70,
+          "inside": true
+        }
+      ],
+      "playLinks": [
+        "http://127.0.0.1:4188/play/v-link-battle/"
+      ],
+      "interaction": "selection, hide, restore passed",
+      "screenshot": "extra-v-link-battle-1440.png"
+    },
+    {
+      "id": "sanshoku-bunki",
+      "width": 1440,
+      "firstBack": true,
+      "overflow": false,
+      "memoBelow": true,
+      "memoCount": 1,
+      "pins": [
+        {
+          "x": 50,
+          "y": 50,
+          "inside": true
+        },
+        {
+          "x": 86.99869791666667,
+          "y": 8.997895229186154,
+          "inside": true
+        }
+      ],
+      "playLinks": [
+        "https://unityroom.com/games/sansyokunobunkigakari"
+      ],
+      "interaction": "selection, hide, restore passed",
+      "screenshot": "extra-sanshoku-bunki-1440.png"
+    },
+    {
+      "id": "hanten-assassination",
+      "width": 1440,
+      "firstBack": true,
+      "overflow": false,
+      "memoBelow": true,
+      "memoCount": 1,
+      "pins": [
+        {
+          "x": 48.9990234375,
+          "y": 90,
+          "inside": true
+        },
+        {
+          "x": 60.999348958333336,
+          "y": 45.99826388888889,
+          "inside": true
+        }
+      ],
+      "playLinks": [
+        "http://127.0.0.1:4188/play/hanten-assassination/"
+      ],
+      "interaction": "selection, hide, restore passed",
+      "screenshot": "extra-hanten-assassination-1440.png"
+    },
+    {
+      "id": "teruteru-wars",
+      "width": 1440,
+      "firstBack": true,
+      "overflow": false,
+      "memoBelow": true,
+      "memoCount": 1,
+      "pins": [
+        {
+          "x": 52.99967447916667,
+          "y": 86.9994212962963,
+          "inside": true
+        },
+        {
+          "x": 73.9990234375,
+          "y": 47.99768518518518,
+          "inside": true
+        }
+      ],
+      "playLinks": [
+        "http://127.0.0.1:4188/play/teruteru-wars/"
+      ],
+      "interaction": "selection, hide, restore passed",
+      "screenshot": "extra-teruteru-wars-1440.png"
+    },
+    {
+      "id": "bug-hunter",
+      "width": 1440,
+      "firstBack": true,
+      "overflow": false,
+      "memoBelow": true,
+      "memoCount": 1,
+      "pins": [
+        {
+          "x": 50,
+          "y": 86.9994212962963,
+          "inside": true
+        },
+        {
+          "x": 23.9990234375,
+          "y": 28.998842592592595,
+          "inside": true
+        }
+      ],
+      "playLinks": [
+        "http://127.0.0.1:4188/play/bug-hunter/"
+      ],
+      "interaction": "selection, hide, restore passed",
+      "screenshot": "extra-bug-hunter-1440.png"
+    },
+    {
+      "id": "hekorhythm",
+      "width": 1440,
+      "firstBack": true,
+      "overflow": false,
+      "memoBelow": true,
+      "memoCount": 1,
+      "pins": [
+        {
+          "x": 55.00000000000001,
+          "y": 58.998842592592595,
+          "inside": true
+        },
+        {
+          "x": 58.9990234375,
+          "y": 10.99826388888889,
+          "inside": true
+        }
+      ],
+      "playLinks": [],
+      "interaction": "selection, hide, restore passed",
+      "screenshot": "extra-hekorhythm-1440.png"
+    },
+    {
+      "id": "v-link-battle",
+      "width": 390,
+      "firstBack": true,
+      "overflow": false,
+      "memoBelow": true,
+      "memoCount": 1,
+      "pins": [
+        {
+          "x": 46.99965162863612,
+          "y": 62.99450336765503,
+          "inside": true
+        },
+        {
+          "x": 66.99616791499739,
+          "y": 69.99303243787257,
+          "inside": true
+        }
+      ],
+      "playLinks": [
+        "http://127.0.0.1:4188/play/v-link-battle/"
+      ],
+      "interaction": "selection, hide, restore passed",
+      "screenshot": "extra-v-link-battle-390.png"
+    },
+    {
+      "id": "sanshoku-bunki",
+      "width": 390,
+      "firstBack": true,
+      "overflow": false,
+      "memoBelow": true,
+      "memoCount": 1,
+      "pins": [
+        {
+          "x": 50,
+          "y": 49.99608916699257,
+          "inside": true
+        },
+        {
+          "x": 86.99703884340707,
+          "y": 8.99491591709034,
+          "inside": true
+        }
+      ],
+      "playLinks": [
+        "https://unityroom.com/games/sansyokunobunkigakari"
+      ],
+      "interaction": "selection, hide, restore passed",
+      "screenshot": "extra-sanshoku-bunki-390.png"
+    },
+    {
+      "id": "hanten-assassination",
+      "width": 390,
+      "firstBack": true,
+      "overflow": false,
+      "memoBelow": true,
+      "memoCount": 1,
+      "pins": [
+        {
+          "x": 48.99843232886257,
+          "y": 89.99767747929086,
+          "inside": true
+        },
+        {
+          "x": 60.999825814318065,
+          "y": 45.99365177672834,
+          "inside": true
+        }
+      ],
+      "playLinks": [
+        "http://127.0.0.1:4188/play/hanten-assassination/"
+      ],
+      "interaction": "selection, hide, restore passed",
+      "screenshot": "extra-hanten-assassination-390.png"
+    },
+    {
+      "id": "teruteru-wars",
+      "width": 390,
+      "firstBack": true,
+      "overflow": false,
+      "memoBelow": true,
+      "memoCount": 1,
+      "pins": [
+        {
+          "x": 52.99599372931545,
+          "y": 86.99388402879926,
+          "inside": true
+        },
+        {
+          "x": 73.99843232886256,
+          "y": 47.99876132228846,
+          "inside": true
+        }
+      ],
+      "playLinks": [
+        "http://127.0.0.1:4188/play/teruteru-wars/"
+      ],
+      "interaction": "selection, hide, restore passed",
+      "screenshot": "extra-teruteru-wars-390.png"
+    },
+    {
+      "id": "bug-hunter",
+      "width": 390,
+      "firstBack": true,
+      "overflow": false,
+      "memoBelow": true,
+      "memoCount": 1,
+      "pins": [
+        {
+          "x": 50,
+          "y": 86.99388402879926,
+          "inside": true
+        },
+        {
+          "x": 23.998432328862567,
+          "y": 28.99280018580166,
+          "inside": true
+        }
+      ],
+      "playLinks": [
+        "http://127.0.0.1:4188/play/bug-hunter/"
+      ],
+      "interaction": "selection, hide, restore passed",
+      "screenshot": "extra-bug-hunter-390.png"
+    },
+    {
+      "id": "hekorhythm",
+      "width": 390,
+      "firstBack": true,
+      "overflow": false,
+      "memoBelow": true,
+      "memoCount": 1,
+      "pins": [
+        {
+          "x": 54.99912907159031,
+          "y": 58.99976774792909,
+          "inside": true
+        },
+        {
+          "x": 58.9966904720432,
+          "y": 10.993264689943485,
+          "inside": true
+        }
+      ],
+      "playLinks": [],
+      "interaction": "selection, hide, restore passed",
+      "screenshot": "extra-hekorhythm-390.png"
+    }
+  ],
+  "errors": [],
+  "catalogRoundTrip": true
+}
