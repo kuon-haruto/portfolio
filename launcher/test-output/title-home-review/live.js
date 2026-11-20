@@ -58,7 +58,14 @@ if(r==='title'||r==='home'){
  const intro=view.querySelector('.intro');
  const stage=view.querySelector('#ame-stage')||document.createElement('div');
  if(intro){intro.querySelector('.peek')?.remove();stage.className='title-hosts';intro.prepend(stage)}
- else{stage.className='home-hosts';view.querySelector('.cats').after(stage)}
+ else{
+  stage.className='home-hosts';view.querySelector('.cats').after(stage);
+  const featuredLink=view.querySelector('.rail a[href="#v-link-battle"]');
+  if(featuredLink){
+   const foreground=featuredLink.cloneNode(true);
+   foreground.classList.add('host-work-card');stage.append(foreground);
+  }
+ }
  import('./puppet/puppet.js').then(async m=>{if(t!==token)return;const clean=await m.mount(stage,{mode:r});if(t!==token)clean?.();else dispose=clean}).catch(console.error)
 }
 if(extras.has(r))renderExtra(view,r);

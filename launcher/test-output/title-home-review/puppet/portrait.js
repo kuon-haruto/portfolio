@@ -12,12 +12,12 @@ export function portraitRenderer(image,pair=false){
  void main(){
  ${pair?`
  vec2 p=uv*vec2(1536.,1024.);
- vec2 left=vec2(470.,268.),right=vec2(1120.,285.);
+ vec2 left=vec2(470.,268.),right=vec2(1120.,395.);
  p.y-=faces.y*bell(p,left,vec2(165.,165.))+faces.w*bell(p,right,vec2(170.,170.));
  p.x+=faces.y*.28*bell(p,left,vec2(165.,165.))-faces.w*.28*bell(p,right,vec2(170.,170.));
- fold(p,vec2(544.,298.),faces.x*10.,vec2(39.,39.));
- fold(p,vec2(1070.,370.),faces.z*10.,vec2(38.,40.));
- fold(p,vec2(1177.,333.),faces.z*10.,vec2(42.,40.));
+ fold(p,vec2(525.,296.),faces.x*10.,vec2(39.,39.));
+ fold(p,vec2(1075.,438.),faces.z*10.,vec2(38.,36.));
+ fold(p,vec2(1170.,414.),faces.z*10.,vec2(42.,36.));
  gl_FragColor=texture2D(art,p/vec2(1536.,1024.));`:`
  vec2 p=uv*vec2(768.,1024.);float i=actor;
  vec2 palm=mix(vec2(680.,547.),vec2(181.,560.),i);

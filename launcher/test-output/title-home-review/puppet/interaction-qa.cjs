@@ -16,7 +16,7 @@ const url='http://127.0.0.1:4188/launcher/test-output/title-home-review/';
     await unavailable.waitForURL('**/#'+category);
    }
    await unavailable.goto(url+'#home');
-   await unavailable.locator('.rail a[href="#v-link-battle"]').click();
+   await unavailable.locator('.host-work-card[href="#v-link-battle"]').click();
    await unavailable.waitForURL('**/#v-link-battle');
    await unavailable.close();
    console.log(width+': title shortcut, five categories and V-Link link with character assets blocked');
@@ -57,7 +57,12 @@ const url='http://127.0.0.1:4188/launcher/test-output/title-home-review/';
    }
    assert(crossed,'retreat crossover was reached');
    await host.locator('[data-replay]').click();
-   await page.clock.runFor(11500);
+   await page.clock.runFor(9460);
+   const beforeOffer=await sample();
+   assert(beforeOffer.card,'card exists before presentation');
+   assert.equal(await host.locator('.puppet-cta').isVisible(),false);
+   await page.clock.runFor(2040);
+   assert((await sample()).card.size>beforeOffer.card.size,'card advances before the offer appears');
    await host.locator('.puppet-icon').click();
    await page.waitForURL('**/#v-link-battle');
    await page.locator('header a[href="#home"]').first().click();

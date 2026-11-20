@@ -2,6 +2,10 @@
 .intro>:not(.title-hosts){z-index:1;position:relative}
 .title-hosts{position:absolute;inset:0;overflow:hidden}
 .home-hosts#ame-stage{height:340px;margin:0 0 20px;border-block:1px solid #314564;background:#101c36;overflow:hidden}
+.home-hosts .host-work-card{position:absolute;right:48px;bottom:48px;z-index:2;width:190px;min-height:58px}
+.home-hosts .host-work-card small{display:none}
+.home-hosts:has(.puppet-root[data-foreground]) .host-work-card{display:none}
+@media(max-width:700px){.home-hosts .host-work-card{right:10px;bottom:49px;width:auto;min-height:38px;padding:5px 7px;font-size:11px}.home-hosts .host-work-card img{width:25px;height:25px}}
 @media(max-width:700px){.intro{min-height:355px;align-content:start;padding-top:12px}.intro h1{font-size:25px}.title-hosts{top:140px}.home-hosts#ame-stage{height:220px}}
 .cats a:first-child:not([aria-current]){color:#92c4ff}
 .cats a[aria-current]{color:#43dfc2;text-decoration:underline;text-underline-offset:5px}

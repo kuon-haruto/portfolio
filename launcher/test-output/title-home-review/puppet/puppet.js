@@ -19,11 +19,15 @@ export function mount(stage,{mode='home'}={}){
  idle.src=new URL('./idle-sheet.png',import.meta.url).href;
  const turn=new Image();
  turn.src=new URL('./turn-sheet.png',import.meta.url).href;
+ const modelSprites=Object.fromEntries(['idle','walk','turn'].map(kind=>{
+  const sheet=new Image();sheet.src=new URL('./model-'+kind+'.png',import.meta.url).href;
+  return [kind,sheet];
+ }));
  const icon=root.querySelector('.puppet-icon'),cta=root.querySelector('.puppet-cta'),skip=root.querySelector('[data-skip]'),replay=root.querySelector('[data-replay]');
- let grip=null,carry=null,handoff=null,approach=null,lookUp=null,retreat=null,retreatBridge=null,gripRenderer=null;
+ const workCard=stage.querySelector('.host-work-card');
+ let grip=null,carry=null,handoff=null,approach=null,fullCarry=null,retreat=null,retreatBridge=null,gripRenderer=null;
  function gripCel(amount){
-  if(amount<.25&&handoff)return handoff;
-  if(amount<.78&&lookUp)return lookUp;
+  if(amount<.78&&handoff)return handoff;
   return grip;
  }
  function loadGrip(file,width,height,save){
@@ -41,11 +45,18 @@ export function mount(stage,{mode='home'}={}){
   sheet.src=new URL(file,import.meta.url).href;
  }
  if(home){
-  loadGrip('./offer-pose.png',1536,1024,layer=>{if(dead)return;grip=layer;try{gripRenderer=portraitRenderer(layer,true)}catch{}});
-  loadGrip('./carry-pose.png',1536,1024,layer=>{carry=layer});
-  loadGrip('./handoff-pose.png',1536,1024,layer=>{handoff=layer});
-  loadGrip('./approach-pose.png',1536,1024,layer=>{approach=layer});
-  loadGrip('./look-up-pose.png',1536,1024,layer=>{lookUp=layer});
+  loadGrip('./model-offer-pose.png',1536,1024,layer=>{if(dead)return;grip=layer;try{gripRenderer=portraitRenderer(layer,true)}catch{}});
+  loadGrip('./model-handoff-pose.png',1536,1024,layer=>{
+   handoff=layer;
+   const isolate=(left)=>{
+    const piece=document.createElement('canvas');piece.width=1536;piece.height=1024;
+    const x=left?0:780,width=left?780:756;
+    piece.getContext('2d').drawImage(layer,x,0,width,1024,x,0,width,1024);
+    return piece;
+   };
+   carry=isolate(true);approach=isolate(false);
+  });
+  loadGrip('./model-carry-full.png',1536,1024,layer=>{fullCarry=layer});
   loadGrip('./retreat-sheet.png',1776,888,layer=>{retreat=layer});
   loadGrip('./retreat-bridge.png',1024,1536,layer=>{retreatBridge=layer});
  }
@@ -67,16 +78,21 @@ export function mount(stage,{mode='home'}={}){
   const sample=time=>still?sceneAt(0,w,home,true):done?backgroundAt(time,w):
    time<prelude?prologueAt(time,w):sceneAt(time-prelude,w,home,false);
   const scene=sample(t),ahead=sample(t+.035),behind=sample(Math.max(0,t-.035));
+  root.toggleAttribute('data-foreground',home&&scene.depth>.27);
   const ease=x=>{x=Math.max(0,Math.min(1,x));return x*x*(3-2*x)};
   const phase=ease((scene.offer-.36)/.18);
   const dock=grip?ease((scene.offer-.01)/.36):0;
-  const jointScale=Math.min(.407,w/1536);
-  function retreatPose(i,figureH,ground){
+  // Advance the locked pose and its card together just before enabling links.
+  const extension=still?1:ease((scene.offer-.88)/.12);
+  const jointScale=Math.min(.407,w/1536)*(.9+.1*extension);
+  const arriving=scene.cycle>=3.5&&scene.cycle<7.5;
+  const leaving=scene.cycle>=26;
+  function travelPose(i,figureH,ground){
    const distance=ease((scene.depth-.29)/.49);
    const nearScale=Math.min(w*.49,435)/768*(i?2.55:3.1);
    const s=figureH/444+(nearScale-figureH/444)*distance;
    const position=scene.positions[i],sy=(ground-figureH)*(1-distance)+(i?38:23)*distance;
-   const step=walkingFrame(position,s,i,i?1:-1,(i?173:187)/444,true);
+   const step=walkingFrame(position,s,i,(i?1:-1)*(arriving?-1:1),(i?173:187)/444,true);
    const sx=position+step.offset-222*s;
    return {s,sx,sy,step,card:{x:sx+[206,207,207,206][step.frame]*s,y:sy+120*s,size:51*s}};
   }
@@ -89,8 +105,27 @@ export function mount(stage,{mode='home'}={}){
   for(let i=0;i<2;i++){
    const p={...poseAt(t,i,taps[i],still,home&&!done,t-prelude),offer:scene.offer},dir=i?-1:1;
    poses.push(p);
+   const peekTime=done?t%24:t;
+   const background=(home?scene.phase==='background':true)&&Object.values(modelSprites).every(sheet=>sheet.naturalWidth>0);
+   if(home&&i===1&&workCard&&scene.phase==='background'&&peekTime>=2&&peekTime<4.18){
+    const amount=ease((peekTime-2)/.55)*(1-ease((peekTime-3.55)/.63));
+    const card=workCard.getBoundingClientRect(),bounds=canvas.getBoundingClientRect();
+    const unit=440/height,cx=(card.left-bounds.left)*unit,cy=(card.top-bounds.top)*unit;
+    const k=height<=240?.168:.192,headX=cx+card.width*unit*.62;
+    const x=headX-535*k,y=cy+12-amount*83;
+    ctx.save();ctx.beginPath();ctx.rect(cx,0,card.width*unit,cy+card.height*unit);ctx.clip();
+    if(background)ctx.drawImage(modelSprites.idle,150,504,145,175,headX-40,y,80,96);
+    else if(renderer)ctx.drawImage(renderer.draw(i,p,0),x,y,768*k,1024*k);
+    else ctx.drawImage(art,768,0,768,1024,x,y,768*k,1024*k);
+    ctx.restore();
+    Object.assign(hits[i].style,{left:(headX-29)/w*100+'%',top:Math.max(0,y+18)/440*100+'%',width:58/w*100+'%',height:Math.max(0,cy-y-18)/440*100+'%'});
+    hits[i].hidden=amount<.4;
+    palm.push(null);
+    continue;
+   }
    const depth=home?scene.depth:1,zoom=ease((depth-.49)/.51);
-   const figureH=(i?173:187)+depth*85,ground=352+depth*50;
+   const figureH=!home&&background?Math.min(347,w*.43):(background?187:i?173:187)+depth*85;
+   const ground=!home?437:352+depth*50;
    const fullScale=Math.min(w*.49,435)/768*(i?1-.24*carryMix:1);
    const walkingHeadScale=figureH/(i?1900:1790);
    const baseScale=walkingHeadScale+(fullScale-walkingHeadScale)*zoom;
@@ -104,9 +139,9 @@ export function mount(stage,{mode='home'}={}){
    const x=i?baseX+(w/2+(1120-782)*jointScale-535*k-baseX)*dock:baseX;
    const farY=ground-figureH-(i?75*k:0);
    const y=farY+(8-farY)*zoom+(i?-36*k*(1-dock)*zoom:0)+p.breath*(1-dock)+Math.sin(t*6+i)*scene.travel*1.6;
-   const blend=home&&walk.complete&&walk.naturalWidth?Math.max(0,Math.min(1,(depth-.16)/.62)):1;
-   if(retreat&&scene.cycle>=26&&scene.depth<.78){
-    const pose=retreatPose(i,figureH,ground);
+   const blend=!home&&background?0:home&&walk.complete&&walk.naturalWidth?Math.max(0,Math.min(1,(depth-.16)/.62)):1;
+   if(retreat&&(arriving||leaving)&&scene.depth<.78){
+    const pose=travelPose(i,figureH,ground);
     const {s,sx,sy,step,card}=pose;
     if(!i)retreatCard=card;
     const bridge=!i&&retreatBridge&&scene.depth>.62;
@@ -116,7 +151,11 @@ export function mount(stage,{mode='home'}={}){
     }else{
      const footY=sy+444*s;
      ctx.fillStyle='#080f20a0';ctx.beginPath();ctx.ellipse(step.planted,footY,figureH*.2,4,0,0,Math.PI*2);ctx.fill();
-     ctx.drawImage(retreat,step.frame*444,i*444,444,444,sx,sy,444*s,444*s);
+     const modelWalk=i&&modelSprites.walk.naturalWidth;
+     if(modelWalk&&leaving){
+      ctx.save();ctx.translate(sx+444*s,sy);ctx.scale(-1,1);
+      ctx.drawImage(modelSprites.walk,step.frame*444,444,444,444,0,0,444*s,444*s);ctx.restore();
+     }else ctx.drawImage(modelWalk?modelSprites.walk:retreat,step.frame*444,i*444,444,444,sx,sy,444*s,444*s);
     }
     palm.push(null);
     hits[i].hidden=true;
@@ -142,19 +181,22 @@ export function mount(stage,{mode='home'}={}){
      const tw=turn.naturalWidth/3,th=turn.naturalHeight/2;
      const foot=[[300,255,217],[294,254,218]][i][cell]/512;
      const turnH=figureH*512/500,turnW=turnH*tw/th;
-     ctx.drawImage(turn,cell*tw,i*th,tw,th,center-foot*turnW,ground-turnH*500/512,turnW,turnH);
+     if(background)ctx.drawImage(modelSprites.turn,cell*444,i*444,444,444,center-figureH/2,ground-figureH,figureH,figureH);
+     else ctx.drawImage(turn,cell*tw,i*th,tw,th,center-foot*turnW,ground-turnH*500/512,turnW,turnH);
     }else if(standing){
      const beat=Math.floor((t+i*1.7)/2.6)%4;
      const cell=wave?2:beat===1?1:beat===3?3:0;
      const iw=idle.naturalWidth/4,ih=idle.naturalHeight/2;
      const bootCenter=[[248,250,246,239],[222,221,230,225]][i][cell];
-     ctx.drawImage(idle,cell*iw,i*ih,iw,ih,center-figureW*bootCenter/444,ground-figureH,figureW,figureH);
+     if(background)ctx.drawImage(modelSprites.idle,cell*444,i*444,444,444,center-figureH/2,ground-figureH,figureH,figureH);
+     else ctx.drawImage(idle,cell*iw,i*ih,iw,ih,center-figureW*bootCenter/444,ground-figureH,figureW,figureH);
     }else{
      ctx.translate(center+walkPose.offset,ground);
      const bow=dir*p.greet*.095;
      ctx.translate(walkPose.pivot,0);ctx.rotate(bow);ctx.translate(-walkPose.pivot,0);
      if(walkPose.flipped)ctx.scale(-1,1);
-     ctx.drawImage(walk,walkPose.frame*cellW,i*cellH,cellW,cellH,-figureW/2,-figureH,figureW,figureH);
+     if(background)ctx.drawImage(modelSprites.walk,walkPose.frame*444,i*444,444,444,-figureW/2,-figureH,figureW,figureH);
+     else ctx.drawImage(walk,walkPose.frame*cellW,i*cellH,cellW,cellH,-figureW/2,-figureH,figureW,figureH);
     }
     ctx.restore();
    }
@@ -196,8 +238,8 @@ export function mount(stage,{mode='home'}={}){
    let centerX=fromX+(w/2-fromX)*dock;
    const fromY=carryAnchor?.y??anchor.y-sz;
    let cardY=fromY+(8+468*k-fromY)*dock;
-   if(retreat&&scene.cycle>=26){
-    const {card}=retreatPose(0,187+scene.depth*85,352+scene.depth*50);
+   if(retreat&&(arriving||leaving)){
+    const {card}=travelPose(0,187+scene.depth*85,352+scene.depth*50);
     const align=ease((.96-scene.depth)/.18);
     centerX+=(card.x+card.size/2-centerX)*align;
     cardY+=(card.y-cardY)*align;
@@ -208,7 +250,12 @@ export function mount(stage,{mode='home'}={}){
    const visible=offering||(!done&&scene.carrying>=.02&&(carryMix>0||scene.depth>=.55));
    const picture=icon.querySelector('img');
    if(carryMix){
-    ctx.globalAlpha=carryMix;ctx.drawImage(carry,gx,gy,1536*gripScale,1024*gripScale);ctx.globalAlpha=1;
+    ctx.globalAlpha=carryMix;
+    if(fullCarry&&scene.depth<.99){
+     const s=cardSize/203;
+     ctx.drawImage(fullCarry,0,0,812,1024,cardX-578*s,cardY-207*s,812*s,1024*s);
+    }else ctx.drawImage(carry,gx,gy,1536*gripScale,1024*gripScale);
+    ctx.globalAlpha=1;
     if(carryMix>.5)Object.assign(hits[0].style,{left:(gx+270*gripScale)/w*100+'%',top:(gy+100*gripScale)/440*100+'%',width:340*gripScale/w*100+'%',height:320*gripScale/440*100+'%'});
    }
    if(approachPose){
@@ -217,7 +264,10 @@ export function mount(stage,{mode='home'}={}){
     ctx.save();
     ctx.beginPath();ctx.rect(0,0,w,440);ctx.rect(cardX,cardY,cardSize,cardSize);ctx.clip('evenodd');
     ctx.globalAlpha=p.alpha;
-    ctx.drawImage(approach,start+(gx-start)*dock,p.y+(gy-p.y)*dock,1536*s,1024*s);
+    if(fullCarry&&scene.depth<.99){
+     const fullScale=cardSize/203,face=p.x+(gx+1120*gripScale-p.x)*dock;
+     ctx.drawImage(fullCarry,812,0,724,1024,face-(1050-812)*fullScale,cardY-207*fullScale,724*fullScale,1024*fullScale);
+    }else ctx.drawImage(approach,start+(gx-start)*dock,p.y+(gy-p.y)*dock,1536*s,1024*s);
     ctx.restore();
    }
    if(gripMix){
