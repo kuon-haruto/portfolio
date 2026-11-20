@@ -5,7 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#151819">
-  <meta name="description" content="ゲーム企画の制作ゲームをブラウザーでプレイ。">
+  <meta name="description" content="ゲーム企画の制作作品一覧。ブラウザーで遊べる作品と、作品紹介を掲載。">
   <title>ゲームライブラリ | ゲーム企画</title>
   <link rel="stylesheet" href="./styles.css">
   <link rel="icon" href="./../files/icons/app-installer.png">
@@ -26,10 +26,50 @@
   </header>
   <main>
     <section id="library" class="library" aria-labelledby="library-title">
-      <div class="section-heading"><h1 id="library-title">制作したゲーム</h1><p>ブラウザー版 / PC・キーボード・マウス推奨</p></div>
+      <div class="section-heading"><h1 id="library-title">制作したゲーム</h1><p>全12作品</p></div>
+      <nav class="library-nav" aria-label="作品の分類">
+        <a href="#browser-games">サイト内でプレイ</a>
+        <a href="#unityroom-games">unityroomでプレイ</a>
+        <a href="#other-games">作品紹介</a>
+      </nav>
+      <h2 id="browser-games">このサイトで遊べるゲーム</h2>
       <p id="catalog-status" role="status">作品を読み込んでいます</p>
       <div id="game-grid" class="game-grid"></div>
       <p class="windows-note">5作品を収録した<a href="https://github.com/kuon-haruto/portfolio/releases/tag/launcher-v0.2.0">Windows版</a>もあります。</p>
+      <section class="library-group" aria-labelledby="unityroom-games">
+        <h2 id="unityroom-games">unityroomで遊べるゲーム</h2>
+        <div class="game-grid">
+          <a class="game-card" href="https://unityroom.com/games/sliding-space-parking">
+            <div class="game-card-art"><img src="../files/game-icons/sliding-space-parking.png" alt="" width="256" height="256" loading="lazy"></div>
+            <div class="game-card-body"><h3>すべる宇宙駐車場</h3><p>慣性パズルアクション</p><div class="game-card-action">unityroomでプレイ</div></div>
+          </a>
+          <a class="game-card" href="https://unityroom.com/games/sansyokunobunkigakari">
+            <div class="game-card-art"><img src="../files/game-icons/sanshoku-bunki.png" alt="" width="256" height="256" loading="lazy"></div>
+            <div class="game-card-body"><h3>三色の分岐係</h3><p>仕分けゲーム</p><div class="game-card-action">unityroomでプレイ</div></div>
+          </a>
+        </div>
+      </section>
+      <section class="library-group" aria-labelledby="other-games">
+        <h2 id="other-games">作品紹介</h2>
+        <div class="game-grid">
+          <a class="game-card" href="../#game-door-tag">
+            <div class="game-card-art"><img src="../files/game-icons/door-tag.png" alt="" width="256" height="256" loading="lazy"></div>
+            <div class="game-card-body"><h3>DOOR TAG</h3><p>WineEngineDock / Windows</p><div class="game-card-action">作品紹介を見る</div></div>
+          </a>
+          <a class="game-card" href="../#game-adventurers-shop">
+            <div class="game-card-art"><img src="../files/game-icons/adventurers-shop.png" alt="" width="256" height="256" loading="lazy"></div>
+            <div class="game-card-body"><h3>冒険者ショップ</h3><p>WineEngineDock / Windows</p><div class="game-card-action">作品紹介を見る</div></div>
+          </a>
+          <a class="game-card" href="../#game-ippatsu-choshoku">
+            <div class="game-card-art"><img src="../files/game-icons/ippatsu-choshoku.svg" alt="" width="256" height="256" loading="lazy"></div>
+            <div class="game-card-body"><h3>一発調色</h3><p>WineEngineDock / Windows</p><div class="game-card-action">作品紹介を見る</div></div>
+          </a>
+          <a class="game-card" href="../#game-hekorhythm">
+            <div class="game-card-art"><img src="../files/game-icons/hekorhythm.png" alt="" width="256" height="256" loading="lazy"></div>
+            <div class="game-card-body"><h3>へこリズム</h3><p>ゲーム本体は未公開</p><div class="game-card-action">作品紹介を見る</div></div>
+          </a>
+        </div>
+      </section>
     </section>
     <section id="player" class="player" aria-labelledby="game-title" hidden>
       <div class="player-toolbar">

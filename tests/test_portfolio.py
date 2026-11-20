@@ -1,3 +1,4 @@
+import json
 import re
 import unittest
 from collections import Counter
@@ -171,6 +172,25 @@ class PortfolioTests(unittest.TestCase):
                 source = (ROOT / file).read_text(encoding="utf-8")
                 self.assertNotRegex(source, "試作|プロトタイプ")
 
+    def test_library_lists_all_works_without_changing_the_playable_catalog(self):
+        library = Document((ROOT / "play/index.html").read_text(encoding="utf-8"))
+        links = {
+            attrs["href"] for tag, attrs in library.elements
+            if tag == "a" and attrs.get("class") == "game-card"
+        }
+        self.assertEqual(links, {
+            "https://unityroom.com/games/sliding-space-parking",
+            "https://unityroom.com/games/sansyokunobunkigakari",
+            "../#game-door-tag", "../#game-adventurers-shop",
+            "../#game-ippatsu-choshoku", "../#game-hekorhythm",
+        })
+        games = json.loads((ROOT / "play/games.json").read_text(encoding="utf-8"))["games"]
+        self.assertEqual(len(games) + len(links), 12)
+        ids = {attrs.get("id") for _, attrs in self.document.elements}
+        for link in links:
+            if link.startswith("../#"):
+                self.assertIn(link.split("#", 1)[1], ids)
+
     def test_gallery_contains_twelve_games(self):
         hero = (ROOT / "src/sections/hero.html").read_text(encoding="utf-8")
         document = Document(hero)
@@ -213,7 +233,7 @@ class PortfolioTests(unittest.TestCase):
         self.assertIn('href="files/mushi-shooting.pdf"', proposals)
         profile = (ROOT / "scripts/profile-data.js").read_text(encoding="utf-8")
         self.assertIn("計12作品", profile)
-        self.assertIn("ゲームライブラリの6作品", profile)
+        self.assertIn("サイト内で遊べる6作品", profile)
 
 
 if __name__ == "__main__":

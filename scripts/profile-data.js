@@ -36,7 +36,7 @@ const profileQA = [
   {
     question: 'どんなゲームを作った？',
     answer:
-      '「V-Link Battle」「すべる宇宙駐車場」をはじめ、計12作品を掲載しています。ゲームライブラリの6作品に加え、「すべる宇宙駐車場」と「三色の分岐係」はunityroomでプレイできます。「一発調色」はWineEngineDockで配布されています。「V-Link Battle」など5作品にはWindows用「アプリインストーラー」も用意しています。',
+      '「V-Link Battle」「すべる宇宙駐車場」をはじめ、計12作品を掲載しています。ゲームライブラリではサイト内で遊べる6作品、unityroomの2作品、紹介のみの4作品を確認できます。「V-Link Battle」など5作品にはWindows用「アプリインストーラー」も用意しています。',
   },
   {
     question: '注目作品について教えて',

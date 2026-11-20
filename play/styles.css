@@ -21,13 +21,15 @@ a:focus-visible, button:focus-visible, select:focus-visible, summary:focus-visib
 .section-heading { margin-bottom: 24px; }
 h1 { margin: 0; font-size: 26px; line-height: 1.5; word-break: keep-all; overflow-wrap: anywhere; }
 .section-heading p { color: #a8bdb4; font-size: 13px; margin: 8px 0 0; }
+.library-nav { display: flex; flex-wrap: wrap; gap: 8px 20px; margin-bottom: 24px; }
+.library-group { margin-top: 40px; }
 .game-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
 .game-card { border: 1px solid #42534b; border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; text-decoration: none; color: #f2f6f3; background: #202924; transition: border-color .15s ease; }
 .game-card:hover { border-color: #a7e8d4; }
 .game-card-art { display: grid; place-items: center; aspect-ratio: 1; padding: 24px; background: #101715; }
 .game-card-art img { display: block; width: 100%; height: auto; aspect-ratio: 1; object-fit: contain; }
 .game-card-body { padding: 18px; display: flex; flex-direction: column; flex: 1; }
-.game-card h2 { font-size: 17px; line-height: 1.65; margin: 0 0 8px; min-height: 3.3em; word-break: keep-all; overflow-wrap: anywhere; }
+.game-card h3 { font-size: 17px; line-height: 1.65; margin: 0 0 8px; min-height: 3.3em; word-break: keep-all; overflow-wrap: anywhere; }
 .game-card p { margin: 0; color: #b6c4be; font-size: 12px; line-height: 1.7; }
 .game-card-action { display: flex; align-items: center; justify-content: space-between; margin-top: 20px; border-top: 1px solid #42534b; padding-top: 14px; color: #a7e8d4; font-size: 14px; font-weight: 700; }
 .windows-note { color: #acbcb4; font-size: 13px; margin: 26px 0 0; }
@@ -86,7 +88,7 @@ h1 { margin: 0; font-size: 26px; line-height: 1.5; word-break: keep-all; overflo
   .game-grid { gap: 12px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .game-card-art { padding: 16px; }
   .game-card-body { padding: 12px; }
-  .game-card h2 { font-size: 14px; min-height: 3.3em; }
+  .game-card h3 { font-size: 14px; min-height: 3.3em; }
   .game-card p { font-size: 11px; }
   .game-card-action { font-size: 13px; margin-top: 12px; padding-top: 10px; }
   .player { padding: 16px 12px 30px; }

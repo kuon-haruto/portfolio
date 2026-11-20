@@ -103,7 +103,7 @@
       art.append(image);
       const body = document.createElement('div');
       body.className = 'game-card-body';
-      const title = document.createElement('h2'); title.textContent = game.title;
+      const title = document.createElement('h3'); title.textContent = game.title;
       const genre = document.createElement('p'); genre.textContent = game.genre;
       const action = document.createElement('div'); action.className = 'game-card-action';
       const label = document.createElement('span'); label.textContent = 'ブラウザーでプレイ';
