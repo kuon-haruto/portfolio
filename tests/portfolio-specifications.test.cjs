@@ -5,7 +5,7 @@ const path = require('node:path');
 const { pathToFileURL } = require('node:url');
 const { chromium } = require('../launcher/node_modules/playwright');
 
-test('seven specification cards have usable links, images and responsive layout', async () => {
+test('specification cards have usable links, images and responsive layout', async () => {
   const root = path.resolve(__dirname, '..');
   const output = path.join(root, 'launcher/test-output/specifications');
   const data = JSON.parse(await fs.readFile(path.join(root, 'documents/specifications/specifications.json'), 'utf8'));
@@ -17,7 +17,7 @@ test('seven specification cards have usable links, images and responsive layout'
       await page.setViewportSize({ width, height: 1000 });
       await page.goto(pathToFileURL(path.join(root, 'index.html')).href + '#specifications');
       const cards = page.locator('#specifications .proposal-card');
-      assert.equal(await cards.count(), 7);
+      assert.equal(await cards.count(), data.games.length);
       for (const game of data.games) {
         const card = cards.filter({ has: page.locator(`a[href="files/${game.pdf}"]`) });
         assert.equal(await card.count(), 1);

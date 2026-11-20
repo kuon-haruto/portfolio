@@ -313,4 +313,52 @@ for (const game of reviewed.games) {
   }
   await save(d);
 }
+for (const game of [
+  {
+    id: 'door-tag', title: 'DOOR TAG（ドアをつくる鬼ごっこ）',
+    theme: { bg: '#0E1825', ink: '#F4F8FC', accent: '#78E5DA', muted: '#A7BCCE' },
+    hook: '今の逃げ道が、次の鬼の近道になる。',
+    genre: '3D追跡アクション / WineEngine / 制作人数：1人',
+    beats: [
+      ['追われる', '正面の通路を走り続けると鬼に追いつかれる。光る印のある壁を見つける。'],
+      ['道を作る', '少し足を止めてドアを設置。追われる前に使うか、ぎりぎりまで引きつけるかを選ぶ。'],
+      ['先回りされる', '開いたドアは鬼も通れる。逃げ切るには、ドアを抜けた後の動きまで考える。'],
+    ],
+    key: ['通路を増やすこと自体を、対戦の判断にする', 'ドアを自分だけの防御手段にせず、誰でも通れる道にしました。鬼が交代しても脱落しないので、追う・追われる両方から同じ地形を読み直します。'],
+    compare: ['ドアなし練習で遊びの差を見る', 'ドアなしでは距離と曲がり角、ドアありでは「いつ、どの壁を開けるか」が増えます。通常試合と練習を分け、変化を比べられるようにしました。'],
+    role: '企画を担当。ドアを置く役割を制限せず、同じドアが攻めにも逃げにもなる遊びを設計。',
+    sources: ['企画メモ（改訂案）', 'ゲーム操作資料（ba5f6d4）'],
+  },
+  {
+    id: 'adventurers-shop', title: '冒険者ショップ',
+    theme: { bg: '#152922', ink: '#FFF6E0', accent: '#FFD180', muted: '#B6CABE' },
+    hook: '冒険に出る人のために、工房で次の一品を作る。',
+    genre: '2D採取・工房シミュレーション / WineEngine / 制作人数：1人',
+    beats: [
+      ['旅の話を聞く', '店先で目的地や困りごとを聞く。旅に何が必要かを考え、作る品を決める。'],
+      ['採って仕立てる', '森・洞窟・遺跡で素材を探し、薬は釜で、武器や道具は鍛冶場で作る。'],
+      ['届けて次を知る', '後日、渡した品が旅でどう役立ったか聞く。新しい品や必須素材の手掛かりを得る。'],
+    ],
+    key: ['素材が道を決め、手を止める場所が品質を決める', '素材を投入すると調合地図に経路が足され、釜を混ぜた分だけ進みます。輪の中心を狙うため、材料選びだけでなく、どこで混ぜるのを止めるかも考えます。'],
+    compare: ['鍛冶では、同じ素材でも手を入れる順番が違う', '温度を見ながら叩き、目標の形へ近づけます。水冷と油冷では伸びる性質も異なり、調合とは別の判断を楽しめます。'],
+    role: '企画を担当。注文から制作・納品・次の採取へ、プレイヤーの目的がつながる流れを設計。実装・画像・音はAIを活用。',
+    sources: ['企画メモ・状態記録', '1.0.0の遊び方（ac1a24f）'],
+  },
+]) {
+  const d = deck(game.id, game.title, game.theme, game.sources);
+  const cover = page(d, game.title, game.genre);
+  await image(cover, 'files/game-icons/' + game.id + '.png', 790, 182, 360, 360, '作品アイコン');
+  text(d, cover, game.hook, 64, 228, 690, 200, 53, d.theme.ink, true);
+  text(d, cover, 'ゲーム企画書', 64, 606, 700, 44, 23, d.theme.muted);
+  const loop = page(d, 'プレイヤーの一場面', '一回のプレイで繰り返す判断');
+  game.beats.forEach(([heading, body], i) => block(d, loop, '0' + (i + 1) + '  ' + heading, body, 64 + 392 * i, 230, 342, 260));
+  const design = page(d, '遊びの設計', game.hook);
+  block(d, design, ...game.key, 64, 202, 1120, 127);
+  block(d, design, ...game.compare, 64, 432, 1120, 140);
+  const role = page(d, '制作で担当したこと', '企画と実装の範囲');
+  block(d, role, '担当：企画', game.role, 64, 202, 1120, 140);
+  block(d, role, '制作済み・未公開', 'ゲーム本体は未公開です。入力、判定、確認項目、変更の経緯は仕様書に分けています。', 64, 422, 1120, 118);
+  link(d, role, 'ポートフォリオの作品詳細', base + '#game-' + game.id, 64, 610);
+  await save(d);
+}
 await fs.writeFile(path.join(output, 'manifest.json'), JSON.stringify(metadata, null, 2) + '\n');

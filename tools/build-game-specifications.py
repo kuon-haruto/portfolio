@@ -97,8 +97,21 @@ class Page:
 
     def overview(self):
         game = self.game
-        image_path = ROOT / "files/images" / game["image"]
         icon_path = ROOT / "files/game-icons" / game["icon"]
+        if not game.get("image"):
+            label = para(game["genre"], 10, True)
+            description = para(game["intent"], 10.8)
+            column = 120
+            _, lh = label.wrap(WIDTH - column, H)
+            _, th = description.wrap(WIDTH - column, H)
+            row_h = max(100, lh + th + 10)
+            self.room(row_h)
+            self.pdf.drawImage(str(icon_path), MARGIN, self.y - 100, 100, 100, mask="auto")
+            label.drawOn(self.pdf, MARGIN + column, self.y - lh)
+            description.drawOn(self.pdf, MARGIN + column, self.y - lh - th - 10)
+            self.y -= row_h + 12
+            return
+        image_path = ROOT / "files/images" / game["image"]
         iw, ih = Image.open(image_path).size
         image_w = 222
         image_h = min(132, image_w * ih / iw)
@@ -198,12 +211,16 @@ def render_review(paths, poppler):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--publish", action="store_true", help="Update canonical local PDFs after validation")
+    parser.add_argument("--only", nargs="+", help="Build only the listed game IDs")
     parser.add_argument("--render", metavar="PDFTOPPM", help="Render pages and review sheets with Poppler")
     args = parser.parse_args()
     data = json.loads(SOURCE.read_text(encoding="utf-8"))
     register_fonts()
     OUTPUT.mkdir(parents=True, exist_ok=True)
-    paths = [build_game(game, data["reviewedOn"]) for game in data["games"]]
+    games = [game for game in data["games"] if not args.only or game["id"] in args.only]
+    if args.only and set(args.only) != {game["id"] for game in games}:
+        parser.error("unknown game ID")
+    paths = [build_game(game, game.get("reviewedOn", data["reviewedOn"])) for game in games]
     if args.render:
         render_review(paths, args.render)
     if args.publish:

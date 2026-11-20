@@ -18,7 +18,7 @@ class GameProposalsTest(unittest.TestCase):
         cls.decks = json.loads((ROOT / "documents/proposals/manifest.json").read_text(encoding="utf-8"))
 
     def test_all_proposals_have_editable_decks(self):
-        self.assertEqual({d["id"] for d in self.decks}, {"v-link-battle", "sliding-space-parking", "sanshoku-bunki", "futago", "line-boundary", "hanten-assassination", "teruteru-wars", "bug-hunter", "five-minute-dungeon", "seibutsu-master"})
+        self.assertEqual({d["id"] for d in self.decks}, {"v-link-battle", "sliding-space-parking", "sanshoku-bunki", "futago", "line-boundary", "hanten-assassination", "teruteru-wars", "bug-hunter", "five-minute-dungeon", "seibutsu-master", "door-tag", "adventurers-shop"})
         for deck in self.decks:
             with self.subTest(deck=deck["id"]), zipfile.ZipFile(ROOT / deck["pptx"]) as archive:
                 slides = [name for name in archive.namelist() if re.fullmatch(r"ppt/slides/slide\d+\.xml", name)]
@@ -34,7 +34,7 @@ class GameProposalsTest(unittest.TestCase):
                 self.assertGreaterEqual(len(images), minimum)
 
     def test_pdf_page_count_text_team_and_clickable_destinations(self):
-        teams = {"v-link-battle": 8, "sliding-space-parking": 4, "sanshoku-bunki": 5, "futago": 6, "line-boundary": 4, "hanten-assassination": 4, "teruteru-wars": 4, "bug-hunter": 1}
+        teams = {"v-link-battle": 8, "sliding-space-parking": 4, "sanshoku-bunki": 5, "futago": 6, "line-boundary": 4, "hanten-assassination": 4, "teruteru-wars": 4, "bug-hunter": 1, "door-tag": 1, "adventurers-shop": 1}
         for deck in self.decks:
             with self.subTest(deck=deck["id"]):
                 pdf = PdfReader(ROOT / deck["pdf"])

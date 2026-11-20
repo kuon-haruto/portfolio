@@ -90,8 +90,14 @@ test('proposals identify developed games without inventing a development environ
   const page = await browser.newPage({ reducedMotion: 'reduce' });
   try {
     await page.goto(url + '#proposals');
-    const cards = page.locator('#proposals .proposal-card');
+    const cards = page.locator('#proposals .proposal-card:not(#proposal-door-tag, #proposal-adventurers-shop)');
     assert.equal(await cards.count(), 10);
+    for (const id of ['door-tag', 'adventurers-shop']) {
+      const added = page.locator('#proposal-' + id);
+      assert.match(await added.locator('.meta').innerText(), /WineEngine.*制作人数：1人/s);
+      assert.equal(await added.locator('a[href$=".pdf"]').count(), 1);
+      assert.equal(await added.locator('a[href$=".pptx"]').count(), 1);
+    }
     const icons = ['v-link-battle.png', 'sliding-space-parking.png', 'sanshoku-bunki.png', 'line-boundary.png', 'hanten-assassination.jpeg', 'teruteru-wars.png', 'futago.png', null, null, 'bug-hunter.png'];
     for (let i = 0; i < icons.length; i++) {
       const card = cards.nth(i);
@@ -190,7 +196,7 @@ test('new work cards show verified production details and playable destinations'
   const page = await browser.newPage();
   try {
     await page.goto(url + '#works');
-    assert.equal(await page.locator('#works .work-detail').count(), 7);
+    assert.equal(await page.locator('#works .work-detail').count(), 10);
     const bug = page.locator('#works #game-bug-hunter');
     assert.equal(await bug.locator('h3').innerText(), 'バグハンター');
     assert.equal(await bug.locator('.work-play-link').getAttribute('href'), 'https://kuon-haruto.github.io/portfolio/play/bug-hunter/');

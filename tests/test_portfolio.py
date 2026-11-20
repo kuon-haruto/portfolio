@@ -140,7 +140,7 @@ class PortfolioTests(unittest.TestCase):
         expected = [
             "game-line-boundary", "game-hanten-assassination", "game-teruteru-wars",
             "game-futago", "game-bug-hunter", "game-sliding-space-parking", "game-sanshoku-bunki",
-            "game-hekorhythm",
+            "game-door-tag", "game-adventurers-shop", "game-hekorhythm",
         ]
         for file in ("src/sections/works.html", "index.html"):
             document = Document((ROOT / file).read_text(encoding="utf-8"))
@@ -171,16 +171,18 @@ class PortfolioTests(unittest.TestCase):
                 source = (ROOT / file).read_text(encoding="utf-8")
                 self.assertNotRegex(source, "試作|プロトタイプ")
 
-    def test_gallery_contains_nine_games(self):
+    def test_gallery_contains_eleven_games(self):
         hero = (ROOT / "src/sections/hero.html").read_text(encoding="utf-8")
         document = Document(hero)
         links = [
             attrs["href"] for tag, attrs in document.elements
             if tag == "a" and attrs.get("class") == "game-icon-link"
         ]
-        self.assertEqual(len(links), 9)
-        self.assertEqual(len(set(links)), 9)
-        self.assertIn("ゲーム作品 <strong>9</strong>", hero)
+        self.assertEqual(len(links), 11)
+        self.assertEqual(len(set(links)), 11)
+        self.assertIn("ゲーム作品 <strong>11</strong>", hero)
+        self.assertIn("#game-door-tag", links)
+        self.assertIn("#game-adventurers-shop", links)
         self.assertIn("#game-hekorhythm", links)
         self.assertIn("#game-sanshoku-bunki", links)
         self.assertIn("#featured-works", links)
@@ -198,7 +200,9 @@ class PortfolioTests(unittest.TestCase):
             attrs["id"] for tag, attrs in works.elements
             if tag == "article" and "work-detail" in attrs.get("class", "").split()
         }
-        self.assertEqual(len(cards), 8)
+        self.assertEqual(len(cards), 10)
+        self.assertIn("game-door-tag", cards)
+        self.assertIn("game-adventurers-shop", cards)
         self.assertIn("game-sanshoku-bunki", cards)
         self.assertIn("game-bug-hunter", cards)
         self.assertIn("game-sliding-space-parking", cards)
@@ -206,7 +210,7 @@ class PortfolioTests(unittest.TestCase):
         self.assertIn('id="proposal-bug-hunter"', proposals)
         self.assertIn('href="files/mushi-shooting.pdf"', proposals)
         profile = (ROOT / "scripts/profile-data.js").read_text(encoding="utf-8")
-        self.assertIn("計9作品", profile)
+        self.assertIn("計11作品", profile)
         self.assertIn("ゲームライブラリの6作品", profile)
 
 

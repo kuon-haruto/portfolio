@@ -8,11 +8,11 @@ DATA = json.loads((ROOT / "documents/specifications/specifications.json").read_t
 
 
 class GameSpecificationsTest(unittest.TestCase):
-    def test_all_playable_games_have_specs_and_verified_team_sizes(self):
+    def test_documented_games_have_specs_and_verified_team_sizes(self):
         teams = {
             "sliding-space-parking": 4, "v-link-battle": 8, "futago": 6,
             "bug-hunter": 1, "line-boundary": 4,
-            "hanten-assassination": 4, "teruteru-wars": 4,
+            "hanten-assassination": 4, "teruteru-wars": 4, "door-tag": 1, "adventurers-shop": 1,
         }
         games = DATA["games"]
         self.assertEqual({g["id"]: g["team"] for g in games}, teams)
@@ -21,7 +21,8 @@ class GameSpecificationsTest(unittest.TestCase):
         for game in games:
             self.assertTrue((ROOT / "files" / game["pdf"]).is_file())
             self.assertTrue((ROOT / "files/game-icons" / game["icon"]).is_file())
-            self.assertTrue((ROOT / "files/images" / game["image"]).is_file())
+            if game.get("image"):
+                self.assertTrue((ROOT / "files/images" / game["image"]).is_file())
             self.assertIn(f'href="files/{game["pdf"]}"', section)
             self.assertEqual(section.count(f'href="files/{game["pdf"]}"'), 1)
 

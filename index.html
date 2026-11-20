@@ -44,7 +44,7 @@
     <section class="hero portfolio-hero" aria-labelledby="portfolio-title">
       <div class="game-gallery" data-game-gallery aria-labelledby="game-gallery-title">
         <div class="game-gallery-heading container">
-          <h2 id="game-gallery-title">ゲーム作品 <strong>9</strong><span>点</span></h2>
+          <h2 id="game-gallery-title">ゲーム作品 <strong>11</strong><span>点</span></h2>
           <div class="game-gallery-actions">
             <a href="#works">作品一覧</a>
             <button class="gallery-toggle" type="button" aria-label="自動巡回を一時停止" title="自動巡回を一時停止" hidden>
@@ -58,6 +58,8 @@
             <ul class="game-gallery-group">
               <li><a class="game-icon-link" href="#game-sanshoku-bunki"><span class="game-icon-frame"><img class="game-icon-art" src="files/game-icons/sanshoku-bunki.png" alt="" width="500" height="330" fetchpriority="high"></span><span>三色の分岐係</span></a></li>
               <li><a class="game-icon-link" href="#game-hekorhythm"><span class="game-icon-frame"><img class="game-icon-art" src="files/game-icons/hekorhythm.png" alt="" width="1254" height="1254"></span><span>へこリズム</span></a></li>
+              <li><a class="game-icon-link" href="#game-door-tag"><span class="game-icon-frame"><img class="game-icon-art" src="files/game-icons/door-tag.png" alt="" width="256" height="256"></span><span>DOOR TAG</span></a></li>
+              <li><a class="game-icon-link" href="#game-adventurers-shop"><span class="game-icon-frame"><img class="game-icon-art" src="files/game-icons/adventurers-shop.png" alt="" width="256" height="256"></span><span>冒険者ショップ</span></a></li>
               <li><a class="game-icon-link" href="#featured-works"><span class="game-icon-frame"><img class="game-icon-art" src="files/game-icons/v-link-battle.png" alt="" width="1254" height="1254" fetchpriority="high"></span><span>V-Link Battle</span></a></li>
               <li><a class="game-icon-link" href="#game-line-boundary"><span class="game-icon-frame"><img class="game-icon-art" src="files/game-icons/line-boundary.png" alt="" width="500" height="500" fetchpriority="high"></span><span>線のこちら側 / 向こう側</span></a></li>
               <li><a class="game-icon-link" href="#game-hanten-assassination"><span class="game-icon-frame"><img class="game-icon-art" src="files/game-icons/hanten-assassination.jpeg" alt="" width="1024" height="1024"></span><span>反転暗殺</span></a></li>
@@ -472,9 +474,40 @@
               </ul>
             </div>
           </article>
+          <article class="work-detail" id="game-door-tag">
+            <div class="work-thumb">
+              <small>作品 08 / 制作済み・未公開</small>
+              <h3 class="work-game-heading"><img src="files/game-icons/door-tag.png" alt="" width="256" height="256" loading="lazy"><span>DOOR TAG（ドアをつくる鬼ごっこ）</span></h3>
+              <p>今の逃げ道が、次の鬼の近道になる。</p>
+            </div>
+            <div class="work-body">
+              <div class="meta"><span class="tag">開発環境：WineEngine</span><span class="tag">制作人数：1人</span><span class="tag">担当：企画</span></div>
+              <h4>概要</h4>
+              <p>壁にドアを作って追跡ルートを変える、4人の鬼ごっこです。捕まると鬼が交代し、試合を通じて鬼だった時間が短いほど上位になります。</p>
+              <h4>企画の狙い</h4>
+              <p>作ったドアは、鬼も逃げる側も通れるようにしました。いま距離を取るために開けた道が、次に追われるときには相手の近道になります。</p>
+              <p><a href="files/door-tag_proposal.pdf">企画書を見る</a> / <a href="files/door-tag_spec.pdf">仕様書を見る</a></p>
+            </div>
+          </article>
+          <article class="work-detail" id="game-adventurers-shop">
+            <div class="work-thumb">
+              <small>作品 09 / 制作済み・未公開</small>
+              <h3 class="work-game-heading"><img src="files/game-icons/adventurers-shop.png" alt="" width="256" height="256" loading="lazy"><span>冒険者ショップ</span></h3>
+              <p>旅の困りごとを聞いて、次の冒険に持っていく品を作る。</p>
+            </div>
+            <div class="work-body">
+              <div class="meta"><span class="tag">開発環境：WineEngine</span><span class="tag">制作人数：1人</span><span class="tag">担当：企画</span></div>
+              <h4>概要</h4>
+              <p>店主として注文を聞き、自分で素材を採って、調合や鍛冶で商品を作る2Dゲームです。納品した品が旅でどう役立ったかを聞き、次に作る品の手掛かりを得ます。</p>
+              <h4>企画の狙い</h4>
+              <p>調合では、素材で経路を決める判断と、かき混ぜて狙った場所で止める操作を分けました。レシピを選んで終わるのではなく、経路を読みながら未知の効果を探します。</p>
+              <p>実装・画像・音はAIを活用して制作しました。</p>
+              <p><a href="files/adventurers-shop_proposal.pdf">企画書を見る</a> / <a href="files/adventurers-shop_spec.pdf">仕様書を見る</a></p>
+            </div>
+          </article>
           <article class="work-detail" id="game-hekorhythm">
             <div class="work-thumb">
-              <small>作品 08 / 未公開</small>
+              <small>作品 10 / 未公開</small>
               <h3 class="work-game-heading"><img src="files/game-icons/hekorhythm.png" alt="" width="1254" height="1254" loading="lazy"><span>へこリズム</span></h3>
               <p>拍に合わせて、形を見極めてはめ込む。</p>
             </div>
@@ -500,11 +533,23 @@
         <div class="section-heading">
           <div class="label">Proposals</div>
           <h2>企画書</h2>
-          <p>公開中の8作品と、企画書のみの2作品。どんな遊びか、何を面白くするかを、コンセプトとゲーム画面から紹介します。</p>
+          <p>制作した作品と企画段階の作品について、どんな遊びか、何を面白くするかを紹介します。</p>
           <p><a href="ideas.html">構想中のアイデアを見る</a></p>
         </div>
 
         <div class="proposal-grid">
+          <article class="proposal-card" id="proposal-door-tag">
+            <h3 class="proposal-game-heading"><img src="files/game-icons/door-tag.png" alt="" width="64" height="64" loading="lazy"><span>DOOR TAG</span></h3>
+            <div class="meta"><span class="tag">開発環境：WineEngine</span><span class="tag">制作人数：1人</span></div>
+            <p>逃げ道を自分で作れる鬼ごっこ。開けた道を相手にも使われることが、追う側と逃げる側の判断を変えます。</p>
+            <p><a href="files/door-tag_proposal.pdf">企画書を見る（PDF）</a> / <a href="documents/proposals/door-tag_proposal.pptx" download>PowerPoint</a></p>
+          </article>
+          <article class="proposal-card" id="proposal-adventurers-shop">
+            <h3 class="proposal-game-heading"><img src="files/game-icons/adventurers-shop.png" alt="" width="64" height="64" loading="lazy"><span>冒険者ショップ</span></h3>
+            <div class="meta"><span class="tag">開発環境：WineEngine</span><span class="tag">制作人数：1人</span></div>
+            <p>冒険を支える店主になり、注文・採取・制作をつなぐ。誰に何を渡すかが、次の発見につながります。</p>
+            <p><a href="files/adventurers-shop_proposal.pdf">企画書を見る（PDF）</a> / <a href="documents/proposals/adventurers-shop_proposal.pptx" download>PowerPoint</a></p>
+          </article>
           <article class="proposal-card" id="proposal-v-link-battle">
             <h3 class="proposal-game-heading"><img src="files/game-icons/v-link-battle.png" alt="" width="64" height="64" loading="lazy"><span>V-Link Battle</span></h3>
             <div class="meta"><span class="tag">開発環境：Unity</span><span class="tag">制作人数：8人</span></div>
@@ -713,10 +758,22 @@
         <div class="section-heading">
           <div class="label">Specifications</div>
           <h2>仕様書</h2>
-          <p>公開している7作品のルールと確認項目を整理しました。変更前・変更理由・変更後も残し、途中から参加した人にも経緯が伝わる資料を目指しています。</p>
+          <p>制作した作品のルールと確認項目を整理しました。変更前・変更理由・変更後も残し、途中から参加した人にも経緯が伝わる資料を目指しています。</p>
         </div>
 
         <div class="proposal-grid">
+          <article class="proposal-card">
+            <h3 class="proposal-game-heading"><img src="files/game-icons/door-tag.png" alt="" width="64" height="64" loading="lazy"><span>DOOR TAG</span></h3>
+            <div class="meta"><span class="tag">WineEngine</span><span class="tag">制作人数：1人</span></div>
+            <p>鬼の交代、共有ドアの設置・閉鎖、回避の実装変更と確認項目。</p>
+            <p><a href="files/door-tag_spec.pdf">仕様書を見る</a></p>
+          </article>
+          <article class="proposal-card">
+            <h3 class="proposal-game-heading"><img src="files/game-icons/adventurers-shop.png" alt="" width="64" height="64" loading="lazy"><span>冒険者ショップ</span></h3>
+            <div class="meta"><span class="tag">WineEngine</span><span class="tag">制作人数：1人</span></div>
+            <p>注文から採取・調合・鍛冶への進行、図鑑の達成条件と確認項目。</p>
+            <p><a href="files/adventurers-shop_spec.pdf">仕様書を見る</a></p>
+          </article>
           <article class="proposal-card">
             <h3 class="proposal-game-heading"><img src="files/game-icons/sliding-space-parking.png" alt="" width="64" height="64" loading="lazy"><span>すべる宇宙駐車場</span></h3>
             <div class="meta"><span class="tag">Unity</span><span class="tag">制作人数：4人</span></div>

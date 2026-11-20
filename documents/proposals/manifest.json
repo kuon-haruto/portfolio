@@ -242,5 +242,53 @@
         "height": 40
       }
     ]
+  },
+  {
+    "id": "door-tag",
+    "title": "DOOR TAG（ドアをつくる鬼ごっこ）",
+    "pages": 4,
+    "titles": [
+      "DOOR TAG（ドアをつくる鬼ごっこ）",
+      "プレイヤーの一場面",
+      "遊びの設計",
+      "制作で担当したこと"
+    ],
+    "pptx": "documents/proposals/door-tag_proposal.pptx",
+    "pdf": "files/door-tag_proposal.pdf",
+    "links": [
+      {
+        "page": 3,
+        "label": "ポートフォリオの作品詳細",
+        "url": "https://kuon-haruto.github.io/portfolio/#game-door-tag",
+        "x": 64,
+        "y": 610,
+        "width": 1100,
+        "height": 40
+      }
+    ]
+  },
+  {
+    "id": "adventurers-shop",
+    "title": "冒険者ショップ",
+    "pages": 4,
+    "titles": [
+      "冒険者ショップ",
+      "プレイヤーの一場面",
+      "遊びの設計",
+      "制作で担当したこと"
+    ],
+    "pptx": "documents/proposals/adventurers-shop_proposal.pptx",
+    "pdf": "files/adventurers-shop_proposal.pdf",
+    "links": [
+      {
+        "page": 3,
+        "label": "ポートフォリオの作品詳細",
+        "url": "https://kuon-haruto.github.io/portfolio/#game-adventurers-shop",
+        "x": 64,
+        "y": 610,
+        "width": 1100,
+        "height": 40
+      }
+    ]
   }
 ]
