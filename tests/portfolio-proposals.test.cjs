@@ -196,7 +196,7 @@ test('new work cards show verified production details and playable destinations'
   const page = await browser.newPage();
   try {
     await page.goto(url + '#works');
-    assert.equal(await page.locator('#works .work-detail').count(), 10);
+    assert.equal(await page.locator('#works .work-detail').count(), 11);
     const bug = page.locator('#works #game-bug-hunter');
     assert.equal(await bug.locator('h3').innerText(), 'バグハンター');
     assert.equal(await bug.locator('.work-play-link').getAttribute('href'), 'https://kuon-haruto.github.io/portfolio/play/bug-hunter/');
