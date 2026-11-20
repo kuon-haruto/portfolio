@@ -12,7 +12,7 @@ class GameSpecificationsTest(unittest.TestCase):
         teams = {
             "sliding-space-parking": 4, "v-link-battle": 8, "futago": 6,
             "bug-hunter": 1, "line-boundary": 4,
-            "hanten-assassination": 4, "teruteru-wars": 4, "door-tag": 1, "adventurers-shop": 1,
+            "hanten-assassination": 4, "teruteru-wars": 4, "door-tag": 1, "adventurers-shop": 1, "ippatsu-choshoku": 1,
         }
         games = DATA["games"]
         self.assertEqual({g["id"]: g["team"] for g in games}, teams)

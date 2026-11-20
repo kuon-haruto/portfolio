@@ -290,5 +290,29 @@
         "height": 40
       }
     ]
+  },
+  {
+    "id": "ippatsu-choshoku",
+    "title": "一発調色",
+    "pages": 4,
+    "titles": [
+      "一発調色",
+      "プレイヤーの一場面",
+      "遊びの設計",
+      "制作で担当したこと"
+    ],
+    "pptx": "documents/proposals/ippatsu-choshoku_proposal.pptx",
+    "pdf": "files/ippatsu-choshoku_proposal.pdf",
+    "links": [
+      {
+        "page": 3,
+        "label": "ポートフォリオの作品詳細",
+        "url": "https://kuon-haruto.github.io/portfolio/#game-ippatsu-choshoku",
+        "x": 64,
+        "y": 610,
+        "width": 1100,
+        "height": 40
+      }
+    ]
   }
 ]

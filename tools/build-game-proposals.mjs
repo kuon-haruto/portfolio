@@ -318,6 +318,7 @@ for (const game of [
     id: 'door-tag', title: 'DOOR TAG（ドアをつくる鬼ごっこ）',
     theme: { bg: '#0E1825', ink: '#F4F8FC', accent: '#78E5DA', muted: '#A7BCCE' },
     hook: '今の逃げ道が、次の鬼の近道になる。',
+    coverHook: '今の逃げ道が、\n次の鬼の近道に。',
     genre: '3D追跡アクション / WineEngine / 制作人数：1人',
     beats: [
       ['追われる', '正面の通路を走り続けると鬼に追いつかれる。光る印のある壁を見つける。'],
@@ -333,6 +334,7 @@ for (const game of [
     id: 'adventurers-shop', title: '冒険者ショップ',
     theme: { bg: '#152922', ink: '#FFF6E0', accent: '#FFD180', muted: '#B6CABE' },
     hook: '冒険に出る人のために、工房で次の一品を作る。',
+    coverHook: '冒険に出る人へ、\n工房で次の一品を。',
     genre: '2D採取・工房シミュレーション / WineEngine / 制作人数：1人',
     beats: [
       ['旅の話を聞く', '店先で目的地や困りごとを聞く。旅に何が必要かを考え、作る品を決める。'],
@@ -344,11 +346,28 @@ for (const game of [
     role: '企画を担当。注文から制作・納品・次の採取へ、プレイヤーの目的がつながる流れを設計。実装・画像・音はAIを活用。',
     sources: ['企画メモ・状態記録', '1.0.0の遊び方（ac1a24f）'],
   },
+  {
+    id: 'ippatsu-choshoku', title: '一発調色',
+    theme: { bg: '#292023', ink: '#FFF6EA', accent: '#FFB26D', muted: '#DBC3B4' },
+    hook: '混ぜるまで分からない。見本の色を、一発で。',
+    coverHook: '色は混ぜるまで未知。\n見本の色を一発で。',
+    genre: '調色パズル / WineEngine / 制作人数：1人',
+    beats: [
+      ['見本を読む', 'お客さんが持ってきた桜色を見て、赤を中心に、どの色を足すか考えます。'],
+      ['小さじで量る', '白・黒・赤・黄・青の量を決めます。混ぜる前なら入れ直せますが、完成色はまだ見えません。'],
+      ['一度だけ決める', '混ぜた色が見本の隣に出ます。色の差を読み、同じ見本で配合を変えて練習できます。'],
+    ],
+    key: ['混ぜるボタンを、予想に答えを出す瞬間にする', '配合中は完成色を表示しません。色を見ながら少しずつ合わせるのではなく、仕上がりを想像してから確定します。'],
+    compare: ['得点と練習を分け、外れても次につなげる', '同じ色でやり直しても得点に入るのは初回だけ。見本との差を振り返り、本番と同じ配合で何を変えたらよいか試せます。'],
+    role: '企画立案を担当。見本を読む、配合を決める、混ぜて答え合わせをする、という一連の遊びを提案しました。',
+    sources: ['WineEngineDock掲載の遊び方', 'Windows版 v1.0.1 実画面'],
+  },
 ]) {
   const d = deck(game.id, game.title, game.theme, game.sources);
   const cover = page(d, game.title, game.genre);
-  await image(cover, 'files/game-icons/' + game.id + '.png', 790, 182, 360, 360, '作品アイコン');
-  text(d, cover, game.hook, 64, 228, 690, 200, 53, d.theme.ink, true);
+  await image(cover, 'files/images/' + game.id + '-gameplay.jpg', 600, 165, 616, 410, game.title + 'の実際のゲーム画面');
+  text(d, cover, game.coverHook, 64, 228, 500, 210, 43, d.theme.ink, true);
+  text(d, cover, '実際のゲーム画面', 600, 580, 500, 35, 20, d.theme.muted);
   text(d, cover, 'ゲーム企画書', 64, 606, 700, 44, 23, d.theme.muted);
   const loop = page(d, 'プレイヤーの一場面', '一回のプレイで繰り返す判断');
   game.beats.forEach(([heading, body], i) => block(d, loop, '0' + (i + 1) + '  ' + heading, body, 64 + 392 * i, 230, 342, 260));
@@ -357,7 +376,7 @@ for (const game of [
   block(d, design, ...game.compare, 64, 432, 1120, 140);
   const role = page(d, '制作で担当したこと', '企画と実装の範囲');
   block(d, role, '担当：企画', game.role, 64, 202, 1120, 140);
-  block(d, role, '制作済み・未公開', 'ゲーム本体は未公開です。入力、判定、確認項目、変更の経緯は仕様書に分けています。', 64, 422, 1120, 118);
+  block(d, role, '配布環境：WineEngineDock / Windows', 'このサイトではゲーム本体を配布していません。入力、判定、確認項目は仕様書に分けています。', 64, 422, 1120, 118);
   link(d, role, 'ポートフォリオの作品詳細', base + '#game-' + game.id, 64, 610);
   await save(d);
 }

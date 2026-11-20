@@ -23,7 +23,7 @@ test('portfolio stays compact and links to the complete separate catalog and bac
   try {
     await page.goto(home);
     assert.equal(await page.locator('#ideas details').count(), 0);
-    assert.equal(await page.locator('#proposals .proposal-card').count(), 12);
+    assert.equal(await page.locator('#proposals .proposal-card').count(), 13);
     assert.equal(await page.locator('.game-gallery-group .game-icon-link').count(), 8);
     await page.locator('#ideas a[href="ideas.html"]').click();
     assert.equal(page.url(), url);

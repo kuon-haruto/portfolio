@@ -90,9 +90,9 @@ test('proposals identify developed games without inventing a development environ
   const page = await browser.newPage({ reducedMotion: 'reduce' });
   try {
     await page.goto(url + '#proposals');
-    const cards = page.locator('#proposals .proposal-card:not(#proposal-door-tag, #proposal-adventurers-shop)');
+    const cards = page.locator('#proposals .proposal-card:not(#proposal-door-tag, #proposal-adventurers-shop, #proposal-ippatsu-choshoku)');
     assert.equal(await cards.count(), 10);
-    for (const id of ['door-tag', 'adventurers-shop']) {
+    for (const id of ['door-tag', 'adventurers-shop', 'ippatsu-choshoku']) {
       const added = page.locator('#proposal-' + id);
       assert.match(await added.locator('.meta').innerText(), /WineEngine.*制作人数：1人/s);
       assert.equal(await added.locator('a[href$=".pdf"]').count(), 1);
