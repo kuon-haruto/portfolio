@@ -3,6 +3,11 @@
   const base = new URL('.', document.currentScript.src);
   const $ = id => document.getElementById(id);
   const selectedId = document.body.dataset.game;
+  // Keep the browser build available to local regression tests only.
+  if (selectedId === 'v-link-battle' && !['localhost', '127.0.0.1', '[::1]'].includes(location.hostname)) {
+    location.replace(new URL('../#featured-works', base));
+    return;
+  }
   let unity = null;
   let failed = false;
   let started = false;
@@ -248,7 +253,7 @@
     if (!response.ok) throw new Error('作品情報を取得できません。ページを再読み込みしてください。');
     const { games } = await response.json();
     if (!Array.isArray(games) || !games.length) throw new Error('公開中の作品がありません。');
-    if (!selectedId) return renderLibrary(games);
+    if (!selectedId) return renderLibrary(games.filter(game => game.id !== 'v-link-battle'));
     const game = games.find(game => game.id === selectedId);
     if (!game) throw new Error('この作品のブラウザー版が見つかりません。作品一覧から選び直してください。');
     return loadGame(game);

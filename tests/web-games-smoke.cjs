@@ -35,7 +35,7 @@ async function main() {
       const libraryRequests = [];
       page.on('request', request => libraryRequests.push(request.url()));
       await page.goto(base);
-      await page.waitForFunction(count => document.querySelectorAll('#game-grid .game-card').length === count, games.length);
+      await page.waitForFunction(count => document.querySelectorAll('#game-grid .game-card').length === count, games.filter(game => game.id !== 'v-link-battle').length);
       assert(!libraryRequests.some(url => url.includes('/Build/')), 'Library must not download game payloads');
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth), false);
       await page.screenshot({ path: path.join(output, `library-${viewport.width}.png`), fullPage: true });

@@ -110,7 +110,7 @@ class PortfolioTests(unittest.TestCase):
             with self.subTest(section=section):
                 self.assertEqual(len(links), 1)
                 self.assertEqual(links[0]["href"], "https://kuon-haruto.github.io/portfolio/play/")
-                self.assertIn("Web版6作品", source)
+                self.assertIn("Web版5作品", source)
                 self.assertIn("PC", source)
                 self.assertIn("ブラウザーでプレイ", source)
 
@@ -159,7 +159,7 @@ class PortfolioTests(unittest.TestCase):
         ]
         self.assertEqual(set(links), {
             f"https://kuon-haruto.github.io/portfolio/play/{game}/" for game in
-            ("line-boundary", "hanten-assassination", "teruteru-wars", "futago", "v-link-battle", "bug-hunter")
+            ("line-boundary", "hanten-assassination", "teruteru-wars", "futago", "bug-hunter")
         } | {"https://unityroom.com/games/sliding-space-parking", "https://unityroom.com/games/sansyokunobunkigakari"})
         for file in ("index.html", "scripts/main.js", "scripts/profile-data.js"):
             with self.subTest(file=file):
@@ -182,10 +182,12 @@ class PortfolioTests(unittest.TestCase):
             "https://unityroom.com/games/sliding-space-parking",
             "https://unityroom.com/games/sansyokunobunkigakari",
             "../#game-door-tag", "../#game-adventurers-shop",
-            "../#game-ippatsu-choshoku", "../#game-hekorhythm",
+            "../#game-ippatsu-choshoku",
+            "https://github.com/kuon-haruto/portfolio/releases/download/launcher-v0.2.0/v-link-battle-1.0.0.zip",
+            "https://github.com/kuon-haruto/portfolio/releases/download/hekorhythm-windows-v1/Hekorhythm-Windows.zip",
         })
         games = json.loads((ROOT / "play/games.json").read_text(encoding="utf-8"))["games"]
-        self.assertEqual(len(games) + len(links), 12)
+        self.assertEqual(sum(g["id"] != "v-link-battle" for g in games) + len(links), 12)
         ids = {attrs.get("id") for _, attrs in self.document.elements}
         for link in links:
             if link.startswith("../#"):
@@ -233,7 +235,7 @@ class PortfolioTests(unittest.TestCase):
         self.assertIn('href="files/mushi-shooting.pdf"', proposals)
         profile = (ROOT / "scripts/profile-data.js").read_text(encoding="utf-8")
         self.assertIn("計12作品", profile)
-        self.assertIn("サイト内で遊べる6作品", profile)
+        self.assertIn("サイト内で遊べる5作品", profile)
 
 
 if __name__ == "__main__":

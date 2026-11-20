@@ -52,16 +52,16 @@ before(async () => {
 });
 after(async () => { await browser?.close(); });
 
-test('V-Link offers both editions with explicit limits and responsive explanations', async () => {
+test('V-Link requires a Windows download and explains its API-dependent effects', async () => {
   const page = await browser.newPage({ reducedMotion: 'reduce' });
   try {
     await page.goto(url);
     const section = page.locator('#featured-works');
-    assert.equal(await section.locator('.work-play-link').getAttribute('href'), 'https://kuon-haruto.github.io/portfolio/play/v-link-battle/');
+    assert.equal(await section.locator('.work-play-link').count(), 0);
     assert.equal(await section.locator('.vlink-windows-link').getAttribute('href'), 'https://github.com/kuon-haruto/portfolio/releases/download/launcher-v0.2.0/v-link-battle-1.0.0.zip');
     assert.equal(await section.locator('.vlink-play-actions a[href="#featured-video"]').count(), 1);
     const copy = await section.locator('.vlink-editions').innerText();
-    for (const phrase of ['セキュリティ方針', '約724 MB', '未署名', '通信・読み込み', '疑似ウィンドウ', '再現していません', '簡易表示', '完全な表示一致を保証するものではありません']) assert(copy.includes(phrase), phrase);
+    for (const phrase of ['Windows API', '約724 MB', '未署名', 'プレイ映像']) assert(copy.includes(phrase), phrase);
     for (const link of await section.locator('.vlink-play-actions a[aria-describedby]').all()) {
       const id = await link.getAttribute('aria-describedby');
       assert.equal(await page.locator(`[id="${id}"]`).count(), 1);
