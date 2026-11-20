@@ -64,7 +64,13 @@ export function walkingFrame(x,scale,index,direction,groundScale=scale,retreat=f
  const sourceSole=flipped?444-sole:sole;
  const pivot=(sourceSole-nominal)*scale;
  const planted=direction*(step+.62)*stride;
- return {frame,flipped,offset:planted-x-pivot,pivot,planted};
+ const offset=planted-x-pivot;
+ // During the retreat, the feet in successive painted cels have different
+ // centers. Return to the root at each cel boundary instead of teleporting
+ // the entire character from one foot anchor to the next.
+ const edgeDistance=Math.min(progress,Math.abs(progress-.52),1-progress);
+ const displayOffset=retreat?Math.max(-10,Math.min(10,offset))*smooth(edgeDistance/.2):offset;
+ return {frame,flipped,offset:displayOffset,pivot,planted:x+displayOffset+pivot};
 }
 export function poseAt(time,index,tap=-100,reduced=false,home=true,sceneTime=time){
  const sign=index?-1:1,t=reduced?12:time,cycle=(reduced?12:Math.max(0,sceneTime))%CYCLE,age=time-tap;

@@ -5,6 +5,21 @@ const url='http://127.0.0.1:4188/launcher/test-output/title-home-review/';
  const browser=await chromium.launch({channel:'msedge'});
  try{
   for(const width of [1440,360]){
+   const unavailable=await browser.newPage({viewport:{width,height:850}});
+   await unavailable.route('**/puppet/*.png',route=>route.abort());
+   await unavailable.goto(url+'#title');
+   await unavailable.getByRole('link',{name:/代表作をすぐ見る/}).click();
+   await unavailable.waitForURL('**/#parking');
+   for(const category of ['games','proposals','specifications','ideas','about']){
+    await unavailable.goto(url+'#home');
+    await unavailable.locator('.cats a[href="#'+category+'"]').click();
+    await unavailable.waitForURL('**/#'+category);
+   }
+   await unavailable.goto(url+'#home');
+   await unavailable.locator('.rail a[href="#v-link-battle"]').click();
+   await unavailable.waitForURL('**/#v-link-battle');
+   await unavailable.close();
+   console.log(width+': title shortcut, five categories and V-Link link with character assets blocked');
    const page=await browser.newPage({viewport:{width,height:850},hasTouch:width===360});
    page.setDefaultTimeout(5500);
    const errors=[];page.on('pageerror',error=>errors.push(error.message));
