@@ -1,6 +1,6 @@
 const files='../../../files/',site='../../../index.html',game='https://unityroom.com/games/sliding-space-parking',shot=files+'images/sliding-space-parking-store-gameplay.jpg',view=document.querySelector('#view');
 const btn=(url,label,primary=false)=>`<a class="btn ${primary?'primary':''}" href="${url}">${label}</a>`;
-const games=[['sliding-space-parking','すべる宇宙駐車場','App Store公開','#parking'],['v-link-battle','V-Link Battle','神ゲーエボリューション 1次審査通過',site+'#featured-works'],['sanshoku-bunki','三色の分岐係','仕分けゲーム',site+'#game-sanshoku-bunki']];
+const games=[['sliding-space-parking','すべる宇宙駐車場','App Store公開','#parking'],['v-link-battle','V-Link Battle','神ゲーエボリューション 1次審査通過','#v-link-battle'],['sanshoku-bunki','三色の分岐係','仕分けゲーム',site+'#game-sanshoku-bunki']];
 const tile=([id,title,info,url])=>`<a class="tile" href="${url}"><img src="${files}game-icons/${id}.png" alt=""><span><strong>${title}</strong><small>${info}</small></span></a>`;
 const cats=`<nav class="cats"><a href="#games">制作ゲーム</a><a href="#proposals">企画書</a><a href="#specifications">仕様書</a><a href="#ideas">ゲームアイデア</a><a href="#about">自己紹介</a></nav>`;
 let dispose,token=0,from='home',lastVerb='すべて';const positions=new Map();

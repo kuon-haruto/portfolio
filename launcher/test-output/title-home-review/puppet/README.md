@@ -1,68 +1,29 @@
-# Live 2D Puppet Duo
+# V-Link Battle 紹介のローカル試作
 
-Canonical component: `puppet.js`. No deployment or Git operations performed.
-All authored files and browser evidence are contained in this directory.
+- ブランチ: `experiment/portfolio-title-home`
+- 確認先: http://127.0.0.1:4188/launcher/test-output/title-home-review/#home
+- 初回は背景での行動から紹介へ進む。「作品紹介を見る」で待たずに再生し、紹介後は「もう一度見る」で再生する。
+- 「見送る」と二人がアイコンを引き取り退場する。詳細を開いて戻った場合、直後は背景の行動のみ。
+- 「動きを減らす」設定では静止した紹介ポーズと同じ作品リンクが出る。
 
-```js
-import {mount} from './puppet/puppet.js';
-const cleanup = mount(stage, {mode: 'home'}); // or 'title'
-// On route teardown:
-cleanup();
-```
+## 実装
 
-The parent owns stage dimensions and placement. The component fills the stage,
-leaves central title copy interactive, and does not change parent markup or CSS.
-The existing local integration imports it on both routes:
-http://127.0.0.1:4188/launcher/test-output/title-home-review/#title
-http://127.0.0.1:4188/launcher/test-output/title-home-review/#home
+`puppet.js` は親レイアウト内でキャラの画・操作を管理する。
+`motion.js` は奥行き・移動・接地の計算、`portrait.js` はまばたきと顔周辺の変形を担当する。
+旧 `art.js` はこの画面の描画には使用しない。
 
-## Artwork and Sources
+`hosts.png` と歩行、待機、方向転換、運搬、接近、片手で支える、視線を上げる、正面の差し出しはWeb専用絵。
+本編のモデルとは別の素材で、ゲームアイコンは既存の正式画像を使用する。
+専用絵の緑色の仮カード領域を抜き、アイコンと握る指を別順序で描く。
+全身歩行は描き分けたコマと靴底位置を使う。手前へ移る途中は全身絵と上半身絵を切り替える。
 
-`art.js` contains original, clothed, layered SVG illustration, not isolated model
-renders, a generic placeholder, or a copy of the user's mood/composition image.
-The game's available select/cut-in images were inspected; they are flattened
-model imagery, not separable illustrated puppet parts. The authored rig follows
-the actual game's identity and clothing rather than the reference image's costume:
+## 確認
 
-- Ame: silver-blue asymmetric fringe, animal ears, star ornament, collar ring,
-  pale shirt, purple tie, dark lapelled vest, snowflake-like brooch/chain,
-  fur-trim cape, belt and dark gloves.
-- Terami: short blue hair, ruffled cap, diamond earring, brown puff sleeves,
-  dark gold-buttoned waistcoat, neck ribbon and belt.
+`node launcher/test-output/title-home-review/puppet/interaction-qa.cjs` で、
+EdgeのPC幅・スマホ幅でカテゴリ、挨拶、見送り、再視聴、作品詳細、ホーム復帰、モーション設定を検証する。
 
-Observed sources (read only): `../ame-idle.png`, `../terami/desktop-duo.png`,
-`D:/Vlink/Assets/TechC/VBattle/Images/Ame/CutInTransparent.png`, and the existing
-Terami model-conversion provenance in `../terami/conversion.json`.
-The real featured app icon is reused directly from
-`files/game-icons/sliding-space-parking.png` in the portfolio root.
-This is an authored 2D interpretation, not an official character illustration.
+`node launcher/test-output/title-home-review/puppet/record-scene.cjs --first --full` で、
+初回のホームから紹介、退場、背景への復帰までを通常速度で収録する。
+FFmpegを使用し、既存の `desktop-vlink-full.mp4` と `mobile-vlink-full.mp4` を更新する。
 
-## Motion and Interaction
-
-One requestAnimationFrame loop coordinates breath, lean, delayed hair movement,
-blink, pupils, idle glances, periodic invitations, and two-bone arm articulation.
-Both characters present the icon with two hands; a greeting lifts one outer arm,
-then the partner responds after 450 ms. Foreground finger layers overlap the icon.
-Hit buttons remain fixed while the illustration moves. The icon and CTA both
-open the existing local work detail. Title mode has no icon or extra CTA.
-Reduced motion does not schedule a continuous animation loop; direct interaction
-still updates gaze/text. Visibility changes suspend animation. Cleanup removes
-DOM, handlers, resize observation and pending animation frames.
-
-## Verification
-
-Run with the existing server on port 4188 and existing launcher dependencies:
-
-```powershell
-node launcher/test-output/title-home-review/puppet/qa.cjs
-```
-
-The test uses local Edge through existing Playwright, with 1440px desktop,
-360px mobile, and reduced-motion 360px viewports on title and home. `qa.json`
-records results. PNGs are overwritten in place on each run. Assertions cover
-real screenshot pixel changes, reduced-motion stillness, pointer tracking,
-fixed hit boxes, greetings, loaded app art, absence of canvas, title icon
-absence, no horizontal overflow, both work links and cleanup. No new packages,
-WebGL, Unity runtime, external assets, or remote services are used.
-
-Mobile testing is browser emulation, not a physical-device test.
+`launcher/test-output` はローカル試作用。公開サイト、PDF、mainへの反映は行わない。
