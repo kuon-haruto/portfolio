@@ -78,7 +78,7 @@ export async function createRig(data, resources = new Set()) {
     root.updateMatrixWorld(true);
     for (const mesh of meshes) mesh.skeleton.update();
   }
-  return {root,bones,meshes,pose};
+  return {root,bones,meshes,pose,reach};
 }
 
 export function lightScene(scene) {

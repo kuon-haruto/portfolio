@@ -50,15 +50,16 @@ export function sceneAt(time,width,home=true,reduced=false){
 }
 // Map travel in source pixels to the four drawn poses. The planted
 // shoe is kept on the same ground point through each contact/passing pair.
-export function walkingFrame(x,scale,index,direction,groundScale=scale,retreat=false){
+export function walkingFrame(x,scale,index,direction,groundScale=scale,retreat=false,model=false){
  const stride=112*groundScale,travel=direction*x;
  const step=Math.floor(travel/stride);
  const progress=travel/stride-step;
  const passing=progress>=.52;
  const frame=((step%2+2)%2)*2+Number(passing);
  // Measured sole centers in the original 1776px-wide sheet, as cell offsets.
- const sole=(retreat?[[145,237,162,233],[327,214,305,224]]:[[316,230,307,223],[146,226,132,207]])[index][frame];
- const facing=(index?-1:1)*(retreat?-1:1);
+ const sole=(model?[[247,254,274,278],[202,197,178,176]]:
+  retreat?[[145,237,162,233],[327,214,305,224]]:[[316,230,307,223],[146,226,132,207]])[index][frame];
+ const facing=(index?-1:1)*(retreat&&!model?-1:1);
  const flipped=direction!==facing;
  const nominal=222;
  const sourceSole=flipped?444-sole:sole;

@@ -1,5 +1,6 @@
 import {poseAt,sceneAt,backgroundAt,prologueAt,walkingFrame,CYCLE,PROLOGUE} from './motion.js';
 import {portraitRenderer} from './portrait.js';
+import {prepareMini,drawMini} from './mini.js';
 const css=`.puppet-root{position:absolute;inset:0;pointer-events:none;overflow:hidden;isolation:isolate}.puppet-root svg{width:100%;height:100%;display:block}.puppet-root .puppet-hit{position:absolute;top:8%;height:78%;width:22%;padding:0;background:none;border:0;border-radius:0;pointer-events:auto;cursor:pointer}.puppet-hit:focus-visible{outline:2px solid #f4d38b;outline-offset:-5px}.puppet-root a{pointer-events:auto;position:absolute;left:50%;transform:translateX(-50%);text-decoration:none}.puppet-icon{top:35%;width:116px;height:116px;background:#152841;border:2px solid #a5e9eb;border-radius:8px;box-shadow:0 6px 28px #35cbd12e}.puppet-icon img{width:100%;height:100%;object-fit:contain;border-radius:6px}.puppet-cta{bottom:5%;min-height:44px;padding:8px 22px;background:#dff8f2;color:#133f47;border:1px solid #71d9c8;border-radius:5px;font-size:16px;font-weight:700;white-space:nowrap}.puppet-speech{position:absolute;top:3%;left:50%;transform:translateX(-50%);margin:0;color:#f8edd1;font-size:16px;font-weight:700;white-space:nowrap}.puppet-speech:empty{display:none}@media(max-width:700px){.puppet-icon{width:76px;height:76px;top:36%}.puppet-cta{font-size:14px;bottom:2%;padding:7px 15px}.puppet-speech{font-size:13px;top:2%}.puppet-root .puppet-hit{width:29%;height:85%}}`;
 export function mount(stage,{mode='home'}={}){
  const home=mode==='home',root=document.createElement('div');
@@ -12,6 +13,8 @@ export function mount(stage,{mode='home'}={}){
  <button type="button" class="host-motion" aria-label="動きを一時停止">Ⅱ</button>`;
  stage.append(root);
  const canvas=root.querySelector('canvas'),ctx=canvas.getContext('2d'),art=new Image(),media=matchMedia('(prefers-reduced-motion: reduce)');
+ const mini=new Image(),miniCarry=new Image();
+ let miniLayer=null,miniCarryLayer=null;
  const reduced=()=>matchMedia(media.media).matches;
  const walk=new Image();
  walk.src=new URL('./walk-sheet.png',import.meta.url).href;
@@ -26,10 +29,6 @@ export function mount(stage,{mode='home'}={}){
  const icon=root.querySelector('.puppet-icon'),cta=root.querySelector('.puppet-cta'),skip=root.querySelector('[data-skip]'),replay=root.querySelector('[data-replay]');
  const workCard=stage.querySelector('.host-work-card');
  let grip=null,carry=null,handoff=null,approach=null,fullCarry=null,retreat=null,retreatBridge=null,gripRenderer=null;
- function gripCel(amount){
-  if(amount<.78&&handoff)return handoff;
-  return grip;
- }
  function loadGrip(file,width,height,save){
   const sheet=new Image();
   sheet.onload=()=>{
@@ -78,9 +77,35 @@ export function mount(stage,{mode='home'}={}){
   const sample=time=>still?sceneAt(0,w,home,true):done?backgroundAt(time,w):
    time<prelude?prologueAt(time,w):sceneAt(time-prelude,w,home,false);
   const scene=sample(t),ahead=sample(t+.035),behind=sample(Math.max(0,t-.035));
+  if(miniLayer){
+   const picture=icon?.querySelector('img');
+   const unit=440/height;
+   const landmark=workCard&&{x:workCard.offsetLeft*unit,y:workCard.offsetTop*unit,width:workCard.offsetWidth*unit};
+   if(home)root.toggleAttribute('data-foreground',still||(!done&&scene.cycle>5.7&&scene.cycle<27));
+   const {actors,card,showCard,presenting}=drawMini(ctx,miniLayer,picture,{...scene,speed:ahead.positions.map((x,i)=>x-behind.positions[i])},t,w,{home,still,done,skipAt,taps,carry:miniCarryLayer,landmark});
+   actors.forEach(({x,y,s,peek,hit,opacity,clipY},i)=>{
+    const left=hit?.left??x+125*s,top=Math.max(0,hit?.top??y),width=hit?.width??270*s,bottom=hit?.bottom??(peek?clipY:y+490*s);
+    hits[i].hidden=opacity<.15||left+width<=0||left>=w||bottom<=top;
+    Object.assign(hits[i].style,{left:left/w*100+'%',top:top/440*100+'%',width:width/w*100+'%',height:Math.max(0,bottom-top)/440*100+'%'});
+   });
+   if(home){
+    icon.hidden=!presenting||!showCard;
+    icon.classList.add('puppet-icon-gripped');
+    picture.style.opacity='0';
+    Object.assign(icon.style,{left:(card.x+card.size/2)/w*100+'%',top:card.y/440*100+'%',width:card.size*height/440+'px',height:card.size*height/440+'px'});
+    cta.hidden=!presenting;skip.hidden=!presenting||still;replay.hidden=presenting||still;
+    if(presenting||done)hasOffered=true;
+    replay.textContent=hasOffered?'もう一度見る':'作品紹介を見る';
+    if(t>=greetUntil)speech.textContent=presenting?'これ、遊んでみて！':'';
+    if(showCard)root.dataset.card=JSON.stringify(card);else delete root.dataset.card;
+   }else if(t>=greetUntil)speech.textContent='';
+   stage.dataset.puppetFrame=String(Math.round(t*60));
+   root.dataset.scene=JSON.stringify(scene);
+   return;
+  }
   root.toggleAttribute('data-foreground',home&&scene.depth>.27);
   const ease=x=>{x=Math.max(0,Math.min(1,x));return x*x*(3-2*x)};
-  const phase=ease((scene.offer-.36)/.18);
+  const phase=ease((scene.offer-.41)/.075);
   const dock=grip?ease((scene.offer-.01)/.36):0;
   // Advance the locked pose and its card together just before enabling links.
   const extension=still?1:ease((scene.offer-.88)/.12);
@@ -92,7 +117,7 @@ export function mount(stage,{mode='home'}={}){
    const nearScale=Math.min(w*.49,435)/768*(i?2.55:3.1);
    const s=figureH/444+(nearScale-figureH/444)*distance;
    const position=scene.positions[i],sy=(ground-figureH)*(1-distance)+(i?38:23)*distance;
-   const step=walkingFrame(position,s,i,(i?1:-1)*(arriving?-1:1),(i?173:187)/444,true);
+   const step=walkingFrame(position,s,i,(i?1:-1)*(arriving?-1:1),(i?173:187)/444,true,!!(i&&modelSprites.walk.naturalWidth));
    const sx=position+step.offset-222*s;
    return {s,sx,sy,step,card:{x:sx+[206,207,207,206][step.frame]*s,y:sy+120*s,size:51*s}};
   }
@@ -152,7 +177,7 @@ export function mount(stage,{mode='home'}={}){
      const footY=sy+444*s;
      ctx.fillStyle='#080f20a0';ctx.beginPath();ctx.ellipse(step.planted,footY,figureH*.2,4,0,0,Math.PI*2);ctx.fill();
      const modelWalk=i&&modelSprites.walk.naturalWidth;
-     if(modelWalk&&leaving){
+     if(modelWalk&&step.flipped){
       ctx.save();ctx.translate(sx+444*s,sy);ctx.scale(-1,1);
       ctx.drawImage(modelSprites.walk,step.frame*444,444,444,444,0,0,444*s,444*s);ctx.restore();
      }else ctx.drawImage(modelWalk?modelSprites.walk:retreat,step.frame*444,i*444,444,444,sx,sy,444*s,444*s);
@@ -171,7 +196,7 @@ export function mount(stage,{mode='home'}={}){
     const movement=ahead.positions[i]-behind.positions[i];
     const standing=idle.complete&&idle.naturalWidth&&Math.abs(movement)<1.25;
     const direction=Math.abs(movement)>.06?Math.sign(movement):i?-1:1;
-    const walkPose=walkingFrame(center,figureW/444,i,direction,(i?173:187)*cellW/cellH/444);
+    const walkPose=walkingFrame(center,figureW/444,i,direction,(i?173:187)*cellW/cellH/444,false,background);
     ctx.save();ctx.globalAlpha=(1-blend)*(1-gripMix);
     ctx.fillStyle='#080f20a0';ctx.beginPath();ctx.ellipse(standing?center:walkPose.planted,ground,figureW*.22,4,0,0,Math.PI*2);ctx.fill();
     const pivot=scene.pivots?.[i],wave=scene.wave?.[i]||(taps[i]>-100&&t-taps[i]<1.1);
@@ -251,7 +276,7 @@ export function mount(stage,{mode='home'}={}){
    const picture=icon.querySelector('img');
    if(carryMix){
     ctx.globalAlpha=carryMix;
-    if(fullCarry&&scene.depth<.99){
+    if(fullCarry){
      const s=cardSize/203;
      ctx.drawImage(fullCarry,0,0,812,1024,cardX-578*s,cardY-207*s,812*s,1024*s);
     }else ctx.drawImage(carry,gx,gy,1536*gripScale,1024*gripScale);
@@ -264,7 +289,7 @@ export function mount(stage,{mode='home'}={}){
     ctx.save();
     ctx.beginPath();ctx.rect(0,0,w,440);ctx.rect(cardX,cardY,cardSize,cardSize);ctx.clip('evenodd');
     ctx.globalAlpha=p.alpha;
-    if(fullCarry&&scene.depth<.99){
+    if(fullCarry){
      const fullScale=cardSize/203,face=p.x+(gx+1120*gripScale-p.x)*dock;
      ctx.drawImage(fullCarry,812,0,724,1024,face-(1050-812)*fullScale,cardY-207*fullScale,724*fullScale,1024*fullScale);
     }else ctx.drawImage(approach,start+(gx-start)*dock,p.y+(gy-p.y)*dock,1536*s,1024*s);
@@ -273,10 +298,16 @@ export function mount(stage,{mode='home'}={}){
    if(gripMix){
     ctx.save();
     ctx.globalCompositeOperation='lighter';
-    ctx.globalAlpha=gripMix;
-    const cel=gripCel(frontMix);
-    const heldPose=cel===grip&&gripRenderer?gripRenderer.drawPair(...poses):cel;
-    ctx.drawImage(heldPose,gx,gy,1536*gripScale,1024*gripScale);
+    const present=ease((frontMix-.64)/.28);
+    if(present<1&&handoff){
+     ctx.globalAlpha=gripMix*(1-present);
+     ctx.drawImage(handoff,gx,gy,1536*gripScale,1024*gripScale);
+    }
+    if(present>0){
+     ctx.globalAlpha=gripMix*present;
+     const heldPose=gripRenderer?gripRenderer.drawPair(...poses):grip;
+     ctx.drawImage(heldPose,gx,gy,1536*gripScale,1024*gripScale);
+    }
     ctx.restore();
     if(gripMix>.5)hits.forEach((el,i)=>Object.assign(el.style,{left:(gx+(i?920:270)*k)/w*100+'%',top:(gy+100*k)/440*100+'%',width:340*k/w*100+'%',height:320*k/440*100+'%'}));
    }
@@ -285,6 +316,19 @@ export function mount(stage,{mode='home'}={}){
     ctx.globalCompositeOperation='destination-over';
     ctx.globalAlpha=offering?1:carryingPose?carryMix+gripMix:scene.carrying;
     ctx.drawImage(picture,cardX,cardY,cardSize,cardSize);
+    ctx.restore();
+   }
+   const gripBottom=gy+1012*gripScale;
+   const carryBottom=cardY+(1012-207)*cardSize/203;
+   const ledgeY=fullCarry&&(carryMix||approachPose)
+    ? Math.min(carryBottom,440)+(Math.min(gripBottom,440)-Math.min(carryBottom,440))*gripMix
+    : gripBottom;
+   if((gripMix||fullCarry&&(carryMix||approachPose))&&ledgeY<440&&ledgeY>cardY+cardSize){
+    ctx.save();
+    ctx.fillStyle='#101a30';
+    ctx.fillRect(0,ledgeY,w,440-ledgeY);
+    ctx.fillStyle='#334966';
+    ctx.fillRect(0,ledgeY,w,1);
     ctx.restore();
    }
    if(visible)root.dataset.card=JSON.stringify({x:cardX,y:cardY,size:cardSize});
@@ -341,5 +385,9 @@ export function mount(stage,{mode='home'}={}){
  document.addEventListener('visibilitychange',run,on);
  art.onload=()=>{if(dead)return;try{renderer=portraitRenderer(art)}catch{}ready=true;stage.dataset.puppetReady='true';run()};
  art.src=new URL('./hosts.png',import.meta.url).href;
+ mini.onload=()=>{if(!dead){miniLayer=prepareMini(mini);ready=true;stage.dataset.puppetReady='true';run()}};
+ mini.src=new URL('./mini-atlas.png',import.meta.url).href;
+ miniCarry.onload=()=>{if(!dead){miniCarryLayer=prepareMini(miniCarry,true);draw()}};
+ if(home)miniCarry.src=new URL('./mini-carry.png',import.meta.url).href;
  return ()=>{dead=true;cancelAnimationFrame(frame);resize.disconnect();events.abort();renderer?.dispose();gripRenderer?.dispose();root.remove();delete stage.dataset.puppetReady;delete stage.dataset.puppetFrame;delete stage.dataset.reaction};
 }

@@ -1,15 +1,22 @@
 .intro{isolation:isolate;justify-items:center;text-align:center;min-height:375px}
 .intro>:not(.title-hosts){z-index:1;position:relative}
 .title-hosts{position:absolute;inset:0;overflow:hidden}
-.home-hosts#ame-stage{height:340px;margin:0 0 20px;border-block:1px solid #314564;background:#101c36;overflow:hidden}
+.home-hosts#ame-stage{height:396px;margin:0 0 20px;border-block:1px solid #314564;background:#101c36;overflow:hidden}
 .home-hosts .host-work-card{position:absolute;right:48px;bottom:48px;z-index:2;width:190px;min-height:58px}
 .home-hosts .host-work-card small{display:none}
-.home-hosts:has(.puppet-root[data-foreground]) .host-work-card{display:none}
+.home-hosts:has(.puppet-root[data-foreground]) .host-work-card{visibility:hidden}
 @media(max-width:700px){.home-hosts .host-work-card{right:10px;bottom:49px;width:auto;min-height:38px;padding:5px 7px;font-size:11px}.home-hosts .host-work-card img{width:25px;height:25px}}
-@media(max-width:700px){.intro{min-height:355px;align-content:start;padding-top:12px}.intro h1{font-size:25px}.title-hosts{top:140px}.home-hosts#ame-stage{height:220px}}
+@media(max-width:700px){.intro{min-height:355px;align-content:start;padding-top:12px}.intro h1{font-size:25px}.title-hosts{top:140px}}
 .cats a:first-child:not([aria-current]){color:#92c4ff}
 .cats a[aria-current]{color:#43dfc2;text-decoration:underline;text-underline-offset:5px}
 .host-motion{position:absolute;right:8px;bottom:8px;z-index:8;pointer-events:auto;width:36px;height:36px;padding:0;background:#0c1226;color:white;border:1px solid #64809f}
 .marked-screen .pin{transform:translate(-50%,-50%)}
 .marked-screen .pin[aria-pressed=true]{background:#165f62}
 .detail .links[hidden],.detail .pin[hidden]{display:none}
+.home-hosts .puppet-root{bottom:56px;overflow:visible}
+.home-hosts .puppet-root .puppet-speech{top:2px;left:calc(50% + 32px)}
+.home-hosts .puppet-root .puppet-cta,.home-hosts .puppet-root .scene-controls,.home-hosts .puppet-root .host-motion{bottom:-49px}
+@media(max-width:700px){
+  .home-hosts#ame-stage{height:276px}
+  .home-hosts .puppet-root .puppet-speech{left:calc(50% + 24px)}
+}

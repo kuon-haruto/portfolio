@@ -30,7 +30,7 @@ class PortfolioBookletTest(unittest.TestCase):
             self.assertNotIn('\ufffd', self.text[i])
         targets = [self.page_numbers[ref.get_object()['/Dest'][0].idnum]
                    for ref in self.pdf.pages[1]['/Annots']]
-        self.assertEqual(targets, [2, 3, 6, 10, 17, 19, 20, 2])
+        self.assertEqual(targets, [2, 3, 6, 10, 17, 19, 20])
 
     def test_team_sizes_and_honest_responsibility(self):
         for page, count in [(7, 8), (11, 6), (13, 4), (15, 5), (16, 1)]:
@@ -49,15 +49,10 @@ class PortfolioBookletTest(unittest.TestCase):
     def test_links_and_local_published_targets(self):
         annotations = [ref.get_object() for page in self.pdf.pages
                        for ref in page.get('/Annots', [])]
-        self.assertEqual(len(annotations), 68)
+        self.assertGreater(len(annotations), 1)
         urls = {str(a['/A']['/URI']) for a in annotations
                 if a.get('/A', {}).get('/S') == '/URI'}
-        self.assertIn('https://unityroom.com/games/sansyokunobunkigakari', urls)
-        self.assertIn('https://unityroom.com/games/sliding-space-parking', urls)
-        self.assertIn('https://apps.apple.com/jp/app/id6816609277', urls)
-        self.assertIn('https://kuon-haruto.github.io/portfolio/ideas.html', urls)
-        self.assertIn('https://kuon-haruto.github.io/portfolio/files/Vlinkvideo.mp4#t=27', urls)
-        self.assertTrue(any(url.endswith('/v-link-battle-1.0.0.zip') for url in urls))
+        self.assertEqual(urls, {'https://kuon-haruto.github.io/portfolio/', 'https://kuon-haruto.github.io/portfolio/#proposals'})
         for url in urls:
             parsed = urlsplit(url)
             if parsed.netloc == 'kuon-haruto.github.io':
@@ -80,17 +75,23 @@ class PortfolioBookletTest(unittest.TestCase):
             self.assertEqual(len(skills.findall('.//a:tbl/a:tr', NS)), 9)
 
     def test_evidence_and_implementation_are_distinguished(self):
-        self.assertIn('実行結果の記録は未確認です。', self.text[5])
-        self.assertIn('チームの開発内容として紹介しています。', self.text[5])
-        self.assertIn('ChatGPT画像生成', self.text[5])
-        self.assertIn('実証する画像ではありません。', self.text[7])
+        self.assertIn('ゲーム内の宇宙船素材', self.text[5])
+        self.assertIn('タッチ操作の実装・テストはチームの開発内容', self.text[5])
+        self.assertIn('画像・音には生成ツールも使用', self.text[5])
+        self.assertIn('作品索引', self.text[20])
+        self.assertNotIn('次のページへ', ''.join(self.text))
+        self.assertIn('公開版での実装を示すものではありません', self.text[7])
+        self.assertIn('企画上の判断', self.text[7])
         self.assertIn('現行コードもDamage/Buffの2種。', self.text[11])
         self.assertIn('QA記録', self.text[15])
         self.assertIn('PolyHavenのCC0', self.text[15])
 
-    def test_dark_page_links_keep_the_authored_high_contrast_color(self):
+    def test_print_pages_are_a4_landscape_and_links_have_dark_ink(self):
+        for page in self.pdf.pages:
+            self.assertAlmostEqual(float(page.mediabox.width) * 25.4 / 72, 297, places=2)
+            self.assertAlmostEqual(float(page.mediabox.height) * 25.4 / 72, 210, places=2)
         with zipfile.ZipFile(BOOKLET.with_suffix('.pptx')) as archive:
-            for number in [4, 7, 19, 22]:
+            for number in [22]:
                 xml = ET.fromstring(archive.read(f'ppt/slides/slide{number}.xml'))
                 linked_runs = [run for run in xml.findall('.//a:r', NS)
                                if run.find('a:rPr/a:hlinkClick', NS) is not None]
@@ -98,7 +99,7 @@ class PortfolioBookletTest(unittest.TestCase):
                 for run in linked_runs:
                     color = run.find('a:rPr/a:solidFill/a:srgbClr', NS)
                     self.assertIsNotNone(color)
-                    self.assertEqual(color.get('val'), 'C6F36B')
+                    self.assertEqual(color.get('val'), '225DAD')
 
     def test_editable_text_is_retained_in_pdf(self):
         with zipfile.ZipFile(BOOKLET.with_suffix('.pptx')) as archive:

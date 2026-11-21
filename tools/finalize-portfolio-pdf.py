@@ -14,6 +14,11 @@ writer = PdfWriter()
 writer.append(reader, import_outline=False)
 writer.remove_annotations(subtypes="/Link")
 assert len(writer.pages) == len(navigation["titles"])
+layout_height = navigation.get("printHeight", 720)
+top = navigation.get("printTop", 0)
+if "printHeight" in navigation:
+    for page in writer.pages:
+        page.scale_to(297 * 72 / 25.4, 210 * 72 / 25.4)
 
 for i, title in enumerate(navigation["titles"]):
     writer.add_outline_item(title, i)
@@ -23,8 +28,9 @@ for item in navigation["links"]:
     width = float(page.mediabox.width)
     height = float(page.mediabox.height)
     x, y, w, h = (item[key] for key in ("x", "y", "width", "height"))
-    rect = (x * width / 1280, (720 - y - h) * height / 720,
-            (x + w) * width / 1280, (720 - y) * height / 720)
+    y += top
+    rect = (x * width / 1280, (layout_height - y - h) * height / layout_height,
+            (x + w) * width / 1280, (layout_height - y) * height / layout_height)
     target = {"url": item["url"]} if "url" in item else {"target_page_index": item["targetPage"]}
     writer.add_annotation(item["page"], Link(rect=rect, **target))
 

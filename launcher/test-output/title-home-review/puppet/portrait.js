@@ -6,7 +6,7 @@ export function portraitRenderer(image,pair=false){
  const program=gl.createProgram(),shaders=[];
  function shader(kind,code){const s=gl.createShader(kind);shaders.push(s);gl.shaderSource(s,code);gl.compileShader(s);if(!gl.getShaderParameter(s,gl.COMPILE_STATUS))throw Error(gl.getShaderInfoLog(s));gl.attachShader(program,s)}
  shader(gl.VERTEX_SHADER,'attribute vec2 pos;varying vec2 uv;void main(){uv=vec2((pos.x+1.)*.5,(1.-pos.y)*.5);gl_Position=vec4(pos,0.,1.);}');
- shader(gl.FRAGMENT_SHADER,`precision highp float;varying vec2 uv;uniform sampler2D art;uniform float actor,blink,mouth,hair,lift,nod;uniform vec4 faces;
+ shader(gl.FRAGMENT_SHADER,`precision highp float;varying vec2 uv;uniform sampler2D art;uniform float actor,blink,mouth,hair,lift,nod;uniform vec4 faces,details;
  float bell(vec2 p,vec2 c,vec2 r){vec2 v=(p-c)/r;return exp(-dot(v,v)*2.);}
  void fold(inout vec2 p,vec2 c,float amt,vec2 size){vec2 d=p-c;float k=bell(p,c,size);p.y+=d.y*amt*k;}
  void main(){
@@ -18,6 +18,10 @@ export function portraitRenderer(image,pair=false){
  fold(p,vec2(525.,296.),faces.x*10.,vec2(39.,39.));
  fold(p,vec2(1075.,438.),faces.z*10.,vec2(38.,36.));
  fold(p,vec2(1170.,414.),faces.z*10.,vec2(42.,36.));
+ fold(p,vec2(466.,369.),details.x,vec2(55.,43.));
+ fold(p,vec2(1139.,488.),details.z,vec2(52.,42.));
+ p.x-=details.y*bell(p,vec2(415.,178.),vec2(155.,115.));
+ p.x-=details.w*bell(p,vec2(1130.,315.),vec2(137.,83.));
  gl_FragColor=texture2D(art,p/vec2(1536.,1024.));`:`
  vec2 p=uv*vec2(768.,1024.);float i=actor;
  vec2 palm=mix(vec2(680.,547.),vec2(181.,560.),i);
@@ -37,8 +41,8 @@ export function portraitRenderer(image,pair=false){
  for(const v of [gl.TEXTURE_WRAP_S,gl.TEXTURE_WRAP_T])gl.texParameteri(gl.TEXTURE_2D,v,gl.CLAMP_TO_EDGE);
  gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);gl.texImage2D(gl.TEXTURE_2D,0,gl.RGBA,gl.RGBA,gl.UNSIGNED_BYTE,image);
  const names=['actor','blink','mouth','hair','lift','nod'],uniforms=names.map(n=>gl.getUniformLocation(program,n));
- const faces=gl.getUniformLocation(program,'faces');
+ const faces=gl.getUniformLocation(program,'faces'),details=gl.getUniformLocation(program,'details');
  return {draw(i,p,lift){[i,p.blink,1-p.mouth,p.hair*155,lift,p.head*100].forEach((v,j)=>gl.uniform1f(uniforms[j],v));gl.drawArrays(gl.TRIANGLE_STRIP,0,4);return surface},
- drawPair(a,b){gl.uniform4f(faces,a.blink,a.greet*17,b.blink,b.greet*17);gl.drawArrays(gl.TRIANGLE_STRIP,0,4);return surface},
+ drawPair(a,b){gl.uniform4f(faces,a.blink,a.greet*17,b.blink,b.greet*17);gl.uniform4f(details,(1-a.mouth)*2.2,a.hair*245,(1-b.mouth)*2.2,b.hair*245);gl.drawArrays(gl.TRIANGLE_STRIP,0,4);return surface},
  dispose(){gl.deleteTexture(tex);gl.deleteBuffer(buffer);gl.deleteProgram(program);shaders.forEach(s=>gl.deleteShader(s));gl.getExtension('WEBGL_lose_context')?.loseContext()}};
 }
